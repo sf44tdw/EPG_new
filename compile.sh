@@ -5,7 +5,7 @@ separator () {
 }
 
 maven_install(){
-mvn install >> ${LOGFILE} 2>&1
+    mvn install >> ${LOGFILE} 2>&1
 }
 
 PATH=/usr/bin:/bin
@@ -69,6 +69,9 @@ separator
 cd ChannelListMaker
 maven_install
 separator
+
+
+
 # ここまではできた
 
 rm $_lockfile

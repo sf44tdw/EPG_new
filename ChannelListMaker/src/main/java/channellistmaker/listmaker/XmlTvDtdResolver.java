@@ -16,10 +16,10 @@
  */
 package channellistmaker.listmaker;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.EntityResolver;
@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
  *
  * @author normal
  */
-public class XmlTvDtdResolver implements EntityResolver {
+public final class XmlTvDtdResolver implements EntityResolver {
 
     private static final Log LOG;
 
@@ -39,34 +39,27 @@ public class XmlTvDtdResolver implements EntityResolver {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = LogFactory.getLog(myClass);
     }
-    private static final File DTD_FILE = new File("./dtd/xmltv.dtd");
+    public static final String DTD_NAME = "xmltv.dtd";
 
+ 
     /**
-     * xmltv.dtdを既定の場所から読み込ませる。
+     * xmltv.dtdを既定の場所(resourcesフォルダ)から読み込ませる。
      * dtdファイルが存在しない場合、このクラスをセットされたDocumentBuilderはデフォルトの動作をする。
      *
      * @author normal
      */
     public XmlTvDtdResolver() {
     }
-    
-    private static final String DTD_NAME = "xmltv.dtd";
 
     /**
-     * 公開識別子もしくはシステム識別子にxmltv.dtdを含んだ文字列があった場合、DocumentBuilderに対し、このクラスで指定されたファイルからxmltv.dtdを読み込ませる。
+     * 公開識別子もしくはシステム識別子にxmltv.dtdを含んだ文字列があった場合、DocumentBuilderに対し、xmltv.dtdを読み込ませる。
      * ファイルが指定されなかった場合はnullを返す。
      */
     @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-        if (this.DTD_FILE == null) {
-            LOG.warn("DTDファイルが指定されませんでした。");
-            return null;
-        } else {
-            LOG.trace("DTDファイルをセットしました。");
-        }
         if ((publicId != null && publicId.contains(DTD_NAME)) || (systemId != null && systemId.contains(DTD_NAME))) {
             LOG.trace("識別子を確認しました。");
-            InputSource source = new InputSource(new FileInputStream(this.DTD_FILE));
+            final InputSource source = new InputSource(XmlTvDtdResolver.class.getClassLoader().getResourceAsStream(DTD_NAME));
             source.setPublicId(publicId);
             source.setSystemId(systemId);
             return source;
