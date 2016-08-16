@@ -81,6 +81,11 @@ separator
 echo "" >> ${LOGFILE}
 cd ../
 
+separator
+cd SinglePacketDump
+maven_install
+separator
+
 # ここまではできた
 
 rm $_lockfile
