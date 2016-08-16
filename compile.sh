@@ -4,6 +4,13 @@ separator () {
     echo "***************************************************************************************************************************************" >> ${LOGFILE}
 }
 
+#指定されたディレクトリが無いなら作る
+make_dir_if_not_exist () {
+    if [ ! -e $1 ]; then
+       `mkdir $1`
+    fi
+}
+
 maven_install(){
     mvn install >> ${LOGFILE} 2>&1
 }
@@ -14,9 +21,7 @@ LOGDIR=~/install-log/
 
 LOGFILE=${LOGDIR}`date +%Y%m%d%H%M%S`.log
 
-if [ ! -e ${LOGDIR} ]; then
-`mkdir ${LOGDIR}`
-fi
+make_dir_if_not_exist ${LOGDIR}
 
 touch ${LOGFILE}
 
@@ -111,5 +116,20 @@ maven_install
 separator
 
 echo "" >> ${LOGFILE}
+cd ../
+
+#依存ファイルをすべて組み込んだ実行可能jarを1か所に集める。既にある場合は上書きする。
+
+DISTDIR=.~/dist
+
+make_dir_if_not_exist ${DISTDIR}
+
+separator
+echo "ファイル移動開始" >> ${LOGFILE}
+
+find . -type f -name "*jar-with-dependencies.jar" | xargs mv -t -v -f ${DISTDIR}
+
+echo "ファイル移動完了" >> ${LOGFILE}
+separator
 
 rm $_lockfile
