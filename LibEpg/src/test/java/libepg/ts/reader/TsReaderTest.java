@@ -29,12 +29,14 @@ import libepg.ts.packet.PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
 import org.apache.commons.logging.Log;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeThat;
 
 /**
  *
@@ -58,6 +60,8 @@ public class TsReaderTest {
 
     }
 
+    private final File TARGET_TS_FILE = TsFile.getTsFile();
+
     @BeforeClass
     public static void setUpClass() {
     }
@@ -68,6 +72,7 @@ public class TsReaderTest {
 
     @Before
     public void setUp() {
+        LOG.info("tsファイルが無い場合、このテストは実施できない。");
     }
 
     @After
@@ -75,15 +80,8 @@ public class TsReaderTest {
     }
 
     private TsReader limittedWrapper(File TSFile, Set<Integer> pids, Long readLimit) throws FileNotFoundException {
-        LOG.info("このテストは実際のtsファイルが必要なため、ファイルが無い場合は実施しないこと。");
-        try {
-            TsReader ret= new TsReader(TSFile, pids, readLimit);
-              LOG.info("ファイルが存在するため、テストを実施します。");
-            return ret;
-        } catch (FileNotFoundException ex) {
-            LOG.fatal("tsファイルが無いため、このテストは実施できません。", ex);
-            throw ex;
-        }
+        TsReader ret = new TsReader(TSFile, pids, readLimit);
+        return ret;
     }
 
     private TsReader eofWrapper(File TSFile, Set<Integer> pids) throws FileNotFoundException {
@@ -92,15 +90,17 @@ public class TsReaderTest {
 
     @Test(expected = FileNotFoundException.class)
     public void noFile() throws FileNotFoundException {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         LOG.info("noFile");
         TsReader instance = new TsReader(new File("aaa.ts"), this.pids);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nopid_null() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.info("nopid_null");
-            TsReader instance = eofWrapper(TsFile.getTsFile(), null);
+            TsReader instance = eofWrapper(TARGET_TS_FILE, null);
         } catch (FileNotFoundException ex) {
 
         }
@@ -108,9 +108,10 @@ public class TsReaderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nopid_notNull() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.info("nopid_notNull");
-            TsReader instance = eofWrapper(TsFile.getTsFile(), new HashSet<>());
+            TsReader instance = eofWrapper(TARGET_TS_FILE, new HashSet<>());
         } catch (FileNotFoundException ex) {
 
         }
@@ -118,9 +119,10 @@ public class TsReaderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void limit_less_than_0() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.info("limit_less_than_0");
-            TsReader instance = limittedWrapper(TsFile.getTsFile(), this.pids, -1L);
+            TsReader instance = limittedWrapper(TARGET_TS_FILE, this.pids, -1L);
         } catch (FileNotFoundException ex) {
 
         }
@@ -132,9 +134,10 @@ public class TsReaderTest {
      */
     @Test
     public void testIsReadEOF_true() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.info("isReadEOF_true");
-            TsReader instance = this.eofWrapper(TsFile.getTsFile(), this.pids);
+            TsReader instance = this.eofWrapper(TARGET_TS_FILE, this.pids);
             boolean expResult = true;
             boolean result = instance.isReadEOF();
             assertEquals(expResult, result);
@@ -149,9 +152,10 @@ public class TsReaderTest {
      */
     @Test
     public void testIsReadEOF_false() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.info("isReadEOF_false");
-            TsReader instance = this.limittedWrapper(TsFile.getTsFile(), this.pids, 2000L);
+            TsReader instance = this.limittedWrapper(TARGET_TS_FILE, this.pids, 2000L);
             boolean expResult = false;
             boolean result = instance.isReadEOF();
             assertEquals(expResult, result);
@@ -166,9 +170,10 @@ public class TsReaderTest {
      */
     @Test
     public void testGetReadLimit() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.info("getReadLimit");
-            TsReader instance = this.limittedWrapper(TsFile.getTsFile(), this.pids, 2000L);
+            TsReader instance = this.limittedWrapper(TARGET_TS_FILE, this.pids, 2000L);
             long expResult = 2000L;
             long result = instance.getReadLimit();
             assertEquals(expResult, result);
@@ -183,9 +188,10 @@ public class TsReaderTest {
      */
     @Test(expected = NullPointerException.class)
     public void testGetReadLimit_readEOF() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.info("getReadLimit_readEOF");
-            TsReader instance = this.eofWrapper(TsFile.getTsFile(), this.pids);
+            TsReader instance = this.eofWrapper(TARGET_TS_FILE, this.pids);
             long l = instance.getReadLimit();
         } catch (FileNotFoundException ex) {
 
@@ -197,9 +203,10 @@ public class TsReaderTest {
      */
     @Test
     public void testGetPackets_NoLimit() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.debug("getPackets_noLimit");
-            TsReader instance = this.eofWrapper(TsFile.getTsFile(), this.pids);
+            TsReader instance = this.eofWrapper(TARGET_TS_FILE, this.pids);
             this.read(instance);
         } catch (FileNotFoundException ex) {
         }
@@ -210,9 +217,10 @@ public class TsReaderTest {
      */
     @Test
     public void testGetPackets_Limit() {
+        assumeThat(TARGET_TS_FILE, notNullValue());
         try {
             LOG.debug("getPackets_Limit");
-            TsReader instance = this.limittedWrapper(TsFile.getTsFile(), this.pids, 500L);
+            TsReader instance = this.limittedWrapper(TARGET_TS_FILE, this.pids, 500L);
             this.read(instance);
         } catch (FileNotFoundException ex) {
 
