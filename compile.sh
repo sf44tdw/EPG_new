@@ -119,7 +119,6 @@ echo "" >> ${LOGFILE}
 cd ../
 
 #依存ファイルをすべて組み込んだ実行可能jarを1か所に集める。既にある場合は上書きする。
-
 DISTDIR=~/dist/
 
 make_dir_if_not_exist ${DISTDIR}
