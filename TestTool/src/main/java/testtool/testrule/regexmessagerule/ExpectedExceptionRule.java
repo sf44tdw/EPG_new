@@ -15,11 +15,11 @@ import org.junit.runners.model.Statement;
 import static org.junit.Assert.*;
 
 /**
- * 例外メッセージの正規表現マッチングを行う。<br>
+ * 例外メッセージの検査を行う。<br>
  * クラス内に下記をRuleアノテーションをつけて定義し、<br>
  * public ExpectedExceptionRule rule = new ExpectedExceptionRule();<br>
  * 例外メッセージのテストメソッドのTestアノテーションの下に、ExpectedExceptionMessageアノテーションを正規表現と共に付けると、<br>
- * そのメソッドで発生した例外のメッセージが正規表現にマッチした時点でテスト成功と判定する。<br>
+ * そのメソッドで発生した例外のメッセージが正規表現にマッチするか、あるいは渡された文字列と完全に一致した時点でテスト成功と判定する。<br>
  * ※ExpectedExceptionMessageアノテーションを指定した場合、例外はTestアノテーションに取られてしまうので、Testアノテーションに例外を指定しないこと。
  */
 public class ExpectedExceptionRule implements TestRule {
@@ -53,7 +53,10 @@ public class ExpectedExceptionRule implements TestRule {
                         sb.append("\n");
                         final Pattern expectedPattern = Pattern.compile(expectedExceptionMessage.value());
                         boolean x = e.getMessage() != null && expectedPattern.matcher(e.getMessage()).find();
-                        if (x == false) {
+
+                        boolean y = expectedExceptionMessage.value().equals(e.getMessage());
+
+                        if (x == false && y == false) {
                             throw new AssertionError(sb.toString(), e);
                         }
 

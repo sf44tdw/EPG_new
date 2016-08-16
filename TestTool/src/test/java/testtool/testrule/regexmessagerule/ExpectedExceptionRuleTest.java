@@ -70,6 +70,17 @@ public class ExpectedExceptionRuleTest {
         throw new IllegalArgumentException("cccdddeeefffaaabbbcccyyy");
     }
 
+    
+        /**
+     * Test of apply method, of class ExpectedExceptionRule.
+     */
+    @Test
+    @ExpectedExceptionMessage("123456789abcdef")
+    public void testApply2() {
+        LOG.info("");
+        throw new IllegalArgumentException("123456789abcdef");
+    }
+    
 //    /**
 //     * これをやると例外はTestアノテーションにとられてしまうので検知できない。
 //     */
