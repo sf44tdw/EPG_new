@@ -25,13 +25,15 @@ import libepg.common.packet.TestPacket_EIT;
 import libepg.common.packet.TestPacket_SDT;
 import libepg.epg.section.Section;
 import libepg.epg.section.Section.CRC_STATUS;
-import libepg.epg.section.sectionreconstructor.SectionReconstructor;
 import libepg.ts.aligner.TsPacketAligner;
 import libepg.ts.packet.PROGRAM_ID;
 import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
 import static org.junit.Assert.assertEquals;
+import org.junit.Rule;
+import testtool.testrule.regexmessagerule.ExpectedExceptionMessage;
+import testtool.testrule.regexmessagerule.ExpectedExceptionRule;
 
 /**
  * EITを含むパケットを1000個送り込んでセクションを再構築させ、全てのセクションについてCRCエラーが無ければ問題なし。
@@ -92,7 +94,11 @@ public class SectionReconstructorTest {
         return Collections.unmodifiableMap(parcels);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Rule
+    public ExpectedExceptionRule rule = new ExpectedExceptionRule();
+
+    @Test
+    @ExpectedExceptionMessage("指定されたPid以外のPidを持つパケットが混じっています")
     public void con_NG_multi_pid_list() throws DecoderException {
         LOG.debug("con_NG");
 
@@ -142,7 +148,6 @@ public class SectionReconstructorTest {
         return Collections.unmodifiableSet(ret);
     }
 
-
 //    /**
 //     * Test of getSections method, of class SectionReconstructor.
 //     */
@@ -156,7 +161,6 @@ public class SectionReconstructorTest {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
-
     /**
      * Test of getSectionByteArrays method, of class SectionReconstructor.
      */
