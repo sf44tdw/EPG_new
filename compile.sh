@@ -127,7 +127,7 @@ make_dir_if_not_exist ${DISTDIR}
 separator
 echo "ファイル移動開始" >> ${LOGFILE}
 
-find . -type f -name "*jar-with-dependencies.jar" | xargs mv -t -v -f ${DISTDIR}
+find . -type f -name "*jar-with-dependencies.jar" | xargs mv -t -v -f ${DISTDIR} >> ${LOGFILE} 2>&1
 
 echo "ファイル移動完了" >> ${LOGFILE}
 separator
