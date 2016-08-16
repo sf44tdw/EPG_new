@@ -108,7 +108,10 @@ public class TsReader {
      * @return パケットの最大読み込み数。EOFまで読むことになっている場合、取得しようとすると例外が発生する。
      */
     public long getReadLimit() {
-        return readLimit;
+        if (!this.isReadEOF()) {
+            return readLimit;
+        }
+        throw new NullPointerException("EOFまで読み込む設定になっています。");
     }
 
     public synchronized Map<Integer, List<TsPacketParcel>> getPackets() {
