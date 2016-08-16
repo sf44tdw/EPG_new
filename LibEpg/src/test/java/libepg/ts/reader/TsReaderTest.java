@@ -54,7 +54,7 @@ public class TsReaderTest {
     private final Set<Integer> pids;
 
     public TsReaderTest() {
-        pids = new HashSet();
+        pids = new HashSet<>();
         pids.addAll(PROGRAM_ID.SDT_OR_BAT.getPids());
         pids.addAll(PROGRAM_ID.EIT_GR_ST.getPids());
 

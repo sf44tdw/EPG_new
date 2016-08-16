@@ -71,7 +71,7 @@ public class ByteArraySplitterTest {
         expResult.add(Hex.decodeHex("99aabb".toCharArray()));
         expResult.add(Hex.decodeHex("ccddee".toCharArray()));
         expResult.add(Hex.decodeHex("ff0000".toCharArray()));
-        List result = ByteArraySplitter.split(src, size);
+        List<byte[]> result = ByteArraySplitter.split(src, size);
 
         Iterator<byte[]> it_result = result.iterator();
         Iterator<byte[]> it_expResult = expResult.iterator();

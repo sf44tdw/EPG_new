@@ -467,7 +467,7 @@ public enum NIBBLE_LEVEL_2 {
     static {
         {
             for (NIBBLE_LEVEL_2 nibble2 : NIBBLE_LEVEL_2.values()) {
-                MultiKey<Integer> key = new MultiKey(nibble2.getParentNibble().getCode(), nibble2.getCode());
+                MultiKey<Integer> key = new MultiKey<>(nibble2.getParentNibble().getCode(), nibble2.getCode());
                 if (!rev.containsKey(key)) {
                     rev.put(key, nibble2);
                 } else {
@@ -490,7 +490,7 @@ public enum NIBBLE_LEVEL_2 {
      * @return ジャンル中分類コードを含む定数。なければnull。
      */
         public static synchronized NIBBLE_LEVEL_2 reverseLookUp(int parentCode, int code) {
-        MultiKey<Integer> key = new MultiKey(parentCode, code);
+        MultiKey<Integer> key = new MultiKey<>(parentCode, code);
         return rev.get(key);
     }
 
