@@ -86,6 +86,29 @@ cd SinglePacketDump
 maven_install
 separator
 
+echo "" >> ${LOGFILE}
+cd ../
+
+separator
+cd SingleSectionDump
+maven_install
+separator
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ここまではできた
 
 rm $_lockfile
