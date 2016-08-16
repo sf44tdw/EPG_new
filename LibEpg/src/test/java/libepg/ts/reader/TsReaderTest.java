@@ -28,6 +28,8 @@ import libepg.common.tsfile.TsFile;
 import libepg.ts.packet.PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -74,6 +76,20 @@ public class TsReaderTest {
     public void tearDown() {
     }
 
+    private TsReader limittedWrapper(File TSFile, Set<Integer> pids, Long readLimit) throws FileNotFoundException {
+        LOG.info("このテストは実際のtsファイルが必要なため、ファイルが無い場合は実施しないこと。");
+        try {
+            return new TsReader(TSFile, pids, readLimit);
+        } catch (FileNotFoundException ex) {
+            LOG.fatal("tsファイルが無いため、このテストは実施できません。", ex);
+            throw ex;
+        }
+    }
+
+    private TsReader eofWrapper(File TSFile, Set<Integer> pids) throws FileNotFoundException {
+        return limittedWrapper(TSFile, pids, null);
+    }
+
     @Test(expected = FileNotFoundException.class)
     public void noFile() throws FileNotFoundException {
         LOG.info("noFile");
@@ -81,21 +97,33 @@ public class TsReaderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void nopid_null() throws FileNotFoundException {
-        LOG.info("nopid_null");
-        TsReader instance = new TsReader(TsFile.getTsFile(), null);
+    public void nopid_null() {
+        try {
+            LOG.info("nopid_null");
+            TsReader instance = eofWrapper(TsFile.getTsFile(), null);
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void nopid_notNull() throws FileNotFoundException {
-        LOG.info("nopid_notNull");
-        TsReader instance = new TsReader(TsFile.getTsFile(), new HashSet<>());
+    public void nopid_notNull() {
+        try {
+            LOG.info("nopid_notNull");
+            TsReader instance = eofWrapper(TsFile.getTsFile(), new HashSet<>());
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void limit_less_than_0() throws FileNotFoundException {
-        LOG.info("limit_less_than_0");
-        TsReader instance = new TsReader(TsFile.getTsFile(), this.pids, -1L);
+    public void limit_less_than_0() {
+        try {
+            LOG.info("limit_less_than_0");
+            TsReader instance = limittedWrapper(TsFile.getTsFile(), this.pids, -1L);
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     /**
@@ -104,12 +132,16 @@ public class TsReaderTest {
      * @throws java.io.FileNotFoundException
      */
     @Test
-    public void testIsReadEOF_true() throws FileNotFoundException {
-        LOG.info("isReadEOF_true");
-        TsReader instance = new TsReader(TsFile.getTsFile(), this.pids);
-        boolean expResult = true;
-        boolean result = instance.isReadEOF();
-        assertEquals(expResult, result);
+    public void testIsReadEOF_true() {
+        try {
+            LOG.info("isReadEOF_true");
+            TsReader instance = this.eofWrapper(TsFile.getTsFile(), this.pids);
+            boolean expResult = true;
+            boolean result = instance.isReadEOF();
+            assertEquals(expResult, result);
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     /**
@@ -118,12 +150,16 @@ public class TsReaderTest {
      * @throws java.io.FileNotFoundException
      */
     @Test
-    public void testIsReadEOF_false() throws FileNotFoundException {
-        LOG.info("isReadEOF_false");
-        TsReader instance = new TsReader(TsFile.getTsFile(), this.pids, 2000L);
-        boolean expResult = false;
-        boolean result = instance.isReadEOF();
-        assertEquals(expResult, result);
+    public void testIsReadEOF_false() {
+        try {
+            LOG.info("isReadEOF_false");
+            TsReader instance = this.limittedWrapper(TsFile.getTsFile(), this.pids, 2000L);
+            boolean expResult = false;
+            boolean result = instance.isReadEOF();
+            assertEquals(expResult, result);
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     /**
@@ -132,12 +168,16 @@ public class TsReaderTest {
      * @throws java.io.FileNotFoundException
      */
     @Test
-    public void testGetReadLimit() throws FileNotFoundException {
-        LOG.info("getReadLimit");
-        TsReader instance = new TsReader(TsFile.getTsFile(), this.pids, 2000L);
-        long expResult = 2000L;
-        long result = instance.getReadLimit();
-        assertEquals(expResult, result);
+    public void testGetReadLimit() {
+        try {
+            LOG.info("getReadLimit");
+            TsReader instance = this.limittedWrapper(TsFile.getTsFile(), this.pids, 2000L);
+            long expResult = 2000L;
+            long result = instance.getReadLimit();
+            assertEquals(expResult, result);
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     /**
@@ -146,30 +186,41 @@ public class TsReaderTest {
      * @throws java.io.FileNotFoundException
      */
     @Test(expected = NullPointerException.class)
-    public void testGetReadLimit_readEOF() throws FileNotFoundException {
-        LOG.info("getReadLimit_readEOF");
-        TsReader instance = new TsReader(TsFile.getTsFile(), this.pids);
-        long l = instance.getReadLimit();
+    public void testGetReadLimit_readEOF() {
+        try {
+            LOG.info("getReadLimit_readEOF");
+            TsReader instance = this.eofWrapper(TsFile.getTsFile(), this.pids);
+            long l = instance.getReadLimit();
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     /**
      * Test of getPackets method, of class TsReader.
      */
     @Test
-    public void testGetPackets_NoLimit() throws FileNotFoundException {
-        LOG.debug("getPackets_noLimit");
-        TsReader instance = new TsReader(TsFile.getTsFile(), this.pids);
-        this.read(instance);
+    public void testGetPackets_NoLimit() {
+        try {
+            LOG.debug("getPackets_noLimit");
+            TsReader instance = this.eofWrapper(TsFile.getTsFile(), this.pids);
+            this.read(instance);
+        } catch (FileNotFoundException ex) {
+        }
     }
 
     /**
      * Test of getPackets method, of class TsReader.
      */
     @Test
-    public void testGetPackets_Limit() throws FileNotFoundException {
-        LOG.debug("getPackets_Limit");
-        TsReader instance = new TsReader(TsFile.getTsFile(), this.pids, 500L);
-        this.read(instance);
+    public void testGetPackets_Limit() {
+        try {
+            LOG.debug("getPackets_Limit");
+            TsReader instance = this.limittedWrapper(TsFile.getTsFile(), this.pids, 500L);
+            this.read(instance);
+        } catch (FileNotFoundException ex) {
+
+        }
     }
 
     private void read(TsReader instance) {
@@ -181,7 +232,6 @@ public class TsReaderTest {
             Iterator<TsPacketParcel> it = l.iterator();
             while (it.hasNext()) {
                 TsPacketParcel pk = it.next();
-
                 LOG.debug("***********************************************************************************************************************************");
                 LOG.debug(pk.toString());
                 LOG.debug("***********************************************************************************************************************************");
