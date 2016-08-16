@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import libepg.epg.section.SectionBody;
+import libepg.epg.section.transportstreamid.TransportStreamIdRangeChecker;
 import libepg.util.bytearray.ByteArraySplitter;
 import org.apache.commons.codec.binary.Hex;
 
@@ -96,12 +97,17 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * transport_stream_id(トランスポートストリーム識別): これは16 ビットのフィールドで、 EIT
      * が示すこのトランスポートストリームをその分配システム内の他の多重から識別するラベルの役割をする。
+     * @return 
+     * @throws  IllegalStateException 0x0000もしくは0xffffのとき。
      */
-    public final synchronized int getTransport_stream_id() {
+    public final synchronized int getTransport_stream_id() throws IllegalStateException{
         byte[] t = new byte[2];
         System.arraycopy(this.getData(), 5, t, 0, t.length);
-        int temp = ByteConverter.bytesToInt(t);
-        return temp;
+        int x = ByteConverter.bytesToInt(t);
+        if (!TransportStreamIdRangeChecker.TRANSPORT_STREAM_ID_RANGE.contains(x)) {
+            throw new IllegalStateException("トランスポートストリーム識別が範囲外です。 値 = "+Integer.toHexString(x));
+        }
+        return x;
     }
 
     /**

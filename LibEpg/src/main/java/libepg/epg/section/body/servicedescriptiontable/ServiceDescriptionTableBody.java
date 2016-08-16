@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import libepg.epg.section.SectionBody;
+import libepg.epg.section.transportstreamid.TransportStreamIdRangeChecker;
 import libepg.util.bytearray.ByteArraySplitter;
 import org.apache.commons.codec.binary.Hex;
 
@@ -28,13 +29,17 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * トランスポートストリーム識別<br>
      * 16bit。<br>
      * SDTが示すトランスポートストリームをその分配システム内の他の多重から識別するラベルの役割をする<br>
-     *
      * @return
+     * @throws IllegalStateException 0x0000もしくは0xffffのとき。
      */
-    public final synchronized int getTransport_stream_id() {
+    public final synchronized int getTransport_stream_id() throws IllegalStateException {
         byte[] t = new byte[2];
         System.arraycopy(this.getData(), 0, t, 0, t.length);
-        return ByteConverter.bytesToInt(t);
+        int x = ByteConverter.bytesToInt(t);
+        if (!TransportStreamIdRangeChecker.TRANSPORT_STREAM_ID_RANGE.contains(x)) {
+            throw new IllegalStateException("トランスポートストリーム識別が範囲外です。 値 = " + Integer.toHexString(x));
+        }
+        return x;
     }
 
     /**
@@ -54,7 +59,8 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * バージョン番号はサブテーブル内の情報に変化があった場合に1加算される。
      * その値が31になった場合は、その次は0に戻る。カレントネクスト指示が「1」の場合は、バージョン番号はテーブル識別とネットワーク識別で定義される現在のサブテーブルのバージョン番号になる。
      * カレントネクスト指示が「0」の場合は、バージョン番号はテーブル識別とネットワーク識別で定義される次のサブテーブルのバージョン番号になる。
-     * @return 
+     *
+     * @return
      */
     public final synchronized int getVersion_number() {
         int temp;
@@ -68,7 +74,8 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * current_next_indicator(カレントネクスト指示):この1ビットの指示は、
      * それが「1」の場合はサブテーブルが現在のサブテーブルであることを示す。
      * 「0」の場合は、送られるサブテーブルはまだ適用されず、次のサブテーブルとして使用されることを示す。
-     * @return 
+     *
+     * @return
      */
     public final synchronized int getCurrent_next_indicator() {
         int temp;
@@ -81,7 +88,8 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * section_number(セクション番号):この8ビットのフィールドはセクションの番号を表す。
      * サブテーブル中の最初のセクションのセクション番号は、0x00である。
      * セクション番号は、同一のテーブル識別、トランスポートストリーム識別、オリジナルネットワーク識別を持つセクションの追加ごとに1加算される。
-     * @return 
+     *
+     * @return
      */
 //    int section_number;
     public final synchronized int getSection_number() {
@@ -93,7 +101,8 @@ public final class ServiceDescriptionTableBody extends SectionBody {
     /**
      * last_section_number(最終セクション番号):この8ビットのフィールドは、 そのセクションが属するサブテーブルの最後のセクション
      * (すなわち、最大のセクション番号を持つセクション)の番号を規定する。
-     * @return 
+     *
+     * @return
      */
 //    int last_section_number;
     public final synchronized int getLast_section_number() {
@@ -105,7 +114,8 @@ public final class ServiceDescriptionTableBody extends SectionBody {
     /**
      * original_network_id(オリジナルネットワーク識別):この16ビットのフィールドは、
      * 元の分配システムのネットワーク識別を規定するラベルの役割をする。
-     * @return 
+     *
+     * @return
      */
     public final synchronized int getOriginal_network_id() {
         byte[] t = new byte[2];
@@ -117,7 +127,8 @@ public final class ServiceDescriptionTableBody extends SectionBody {
     /**
      * 符号化ビットストリームを定義する項の中で使用する場合、 その値が将来、ARIB
      * STD-B10が定義する拡張子として使用されるかもしれないことを表す。 8bit
-     * @return 
+     *
+     * @return
      */
     public final synchronized int getReserved_future_use2() {
         int temp;
@@ -127,7 +138,8 @@ public final class ServiceDescriptionTableBody extends SectionBody {
 
     /**
      * 繰り返し項目のバイト列
-     * @return 
+     *
+     * @return
      */
     public final synchronized byte[] getRepeatingPart() {
         byte[] t = new byte[this.getData().length - 8];
@@ -141,7 +153,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * @return
      */
     public final synchronized List<ServiceDescriptionTableRepeatingPart> getSDTRepeatingPartList() {
-        List<byte[]> t = ByteArraySplitter.splitByLengthField(this.getRepeatingPart(), 4, 2,(x) -> x & 0x0FFF);
+        List<byte[]> t = ByteArraySplitter.splitByLengthField(this.getRepeatingPart(), 4, 2, (x) -> x & 0x0FFF);
         List<ServiceDescriptionTableRepeatingPart> dest = new ArrayList<>();
         for (byte[] temp : t) {
             dest.add(new ServiceDescriptionTableRepeatingPart(temp));
@@ -149,7 +161,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
         return Collections.unmodifiableList(dest);
     }
 
-    private static final MessageFormat TABLE_DESC = new MessageFormat( "{0}\n"
+    private static final MessageFormat TABLE_DESC = new MessageFormat("{0}\n"
             + "トランスポートストリーム識別 = {1}\n"
             + "Reserved2 = {2}\n"
             + "バージョン番号 = {3}\n"
