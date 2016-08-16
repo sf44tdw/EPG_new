@@ -154,7 +154,7 @@ public class TsReader {
                         TsPacketAligner tspa = temp_ret.get(tsp.getPid());
                         TsPacketAligner.ADD_RESULT resp = tspa.add(tsp);
                         if (LOG.isTraceEnabled()) {
-                            LOG.trace("追加結果=" + resp);
+                            LOG.trace("追加結果 = " + resp);
                         }
                     }
                     count++;
