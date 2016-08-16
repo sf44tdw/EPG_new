@@ -58,13 +58,13 @@ public final class XmlTvDtdResolver implements EntityResolver {
     @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         if ((publicId != null && publicId.contains(DTD_NAME)) || (systemId != null && systemId.contains(DTD_NAME))) {
-            LOG.info("識別子を確認しました。");
+            LOG.trace("識別子を確認しました。");
             final InputSource source = new InputSource(XmlTvDtdResolver.class.getClassLoader().getResourceAsStream(DTD_NAME));
             source.setPublicId(publicId);
             source.setSystemId(systemId);
             return source;
         } else {
-            LOG.info("公開識別子、システム識別子とも、" + DTD_NAME + " を含む文字列ではありませんでした。");
+            LOG.trace("公開識別子、システム識別子とも、" + DTD_NAME + " を含む文字列ではありませんでした。");
             return null;
         }
     }
