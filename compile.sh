@@ -70,7 +70,16 @@ cd ChannelListMaker
 maven_install
 separator
 
+echo "" >> ${LOGFILE}
+cd ../
 
+separator
+cd DumpTsPacket
+maven_install
+separator
+
+echo "" >> ${LOGFILE}
+cd ../
 
 # ここまではできた
 
