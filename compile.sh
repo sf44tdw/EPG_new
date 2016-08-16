@@ -94,21 +94,22 @@ cd SingleSectionDump
 maven_install
 separator
 
+echo "" >> ${LOGFILE}
+cd ../
 
+separator
+cd DumpSDT
+maven_install
+separator
 
+echo "" >> ${LOGFILE}
+cd ../
 
+separator
+cd DumpEIT
+maven_install
+separator
 
-
-
-
-
-
-
-
-
-
-
-
-# ここまではできた
+echo "" >> ${LOGFILE}
 
 rm $_lockfile
