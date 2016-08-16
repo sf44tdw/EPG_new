@@ -13,7 +13,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>libepg</artifactId>
+            <artifactId>LibEpg</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
