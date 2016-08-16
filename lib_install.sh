@@ -2,7 +2,7 @@
 
 PATH=/usr/bin:/bin
 
-LOGDIR=./var/install-log/
+LOGDIR=~/install-log/
 
 LOGFILE=${LOGDIR}`date +%Y%m%d%H%M%S`.log
 
