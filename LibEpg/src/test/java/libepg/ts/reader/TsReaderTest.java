@@ -28,8 +28,6 @@ import libepg.common.tsfile.TsFile;
 import libepg.ts.packet.PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -79,7 +77,9 @@ public class TsReaderTest {
     private TsReader limittedWrapper(File TSFile, Set<Integer> pids, Long readLimit) throws FileNotFoundException {
         LOG.info("このテストは実際のtsファイルが必要なため、ファイルが無い場合は実施しないこと。");
         try {
-            return new TsReader(TSFile, pids, readLimit);
+            TsReader ret= new TsReader(TSFile, pids, readLimit);
+              LOG.info("ファイルが存在するため、テストを実施します。");
+            return ret;
         } catch (FileNotFoundException ex) {
             LOG.fatal("tsファイルが無いため、このテストは実施できません。", ex);
             throw ex;
@@ -129,7 +129,6 @@ public class TsReaderTest {
     /**
      * Test of isReadEOF method, of class TsReader.
      *
-     * @throws java.io.FileNotFoundException
      */
     @Test
     public void testIsReadEOF_true() {
@@ -147,7 +146,6 @@ public class TsReaderTest {
     /**
      * Test of isReadEOF method, of class TsReader.
      *
-     * @throws java.io.FileNotFoundException
      */
     @Test
     public void testIsReadEOF_false() {
@@ -165,7 +163,6 @@ public class TsReaderTest {
     /**
      * Test of getReadLimit method, of class TsReader.
      *
-     * @throws java.io.FileNotFoundException
      */
     @Test
     public void testGetReadLimit() {
@@ -183,7 +180,6 @@ public class TsReaderTest {
     /**
      * Test of getReadLimit method, of class TsReader.
      *
-     * @throws java.io.FileNotFoundException
      */
     @Test(expected = NullPointerException.class)
     public void testGetReadLimit_readEOF() {
