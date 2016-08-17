@@ -33,8 +33,8 @@ import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 
 /**
- * 指定されたtsファイルを師弟のパケット数だけ読み、それに含まれているチャンネル情報の一部を取り出し、xmlファイルとして保存する。
- * ファイル名はtsファイル名+pid+SDT.xmlになる。 取り出す情報は以下の通り。 transport_stream_id
+ * 指定されたtsファイルを指定のパケット数だけ読み、それに含まれているチャンネル情報の一部を取り出し、xmlファイルとして保存する。
+ * ファイル名はtsファイル名+SDT.xmlになる。 取り出す情報は以下の通り。 transport_stream_id
  * original_network_id service_id display-name(service_name)
  *
  * @author normal
