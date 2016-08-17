@@ -119,7 +119,7 @@ public class KeyFieldsTest {
      */
     @Test
     public void testGetTransportStreamId() {
-        System.out.println("getTransportStreamId");
+       LOG.info("getTransportStreamId");
         KeyFields instance = KEY_1;
         int expResult = 1;
         int result = instance.getTransport_stream_id();
@@ -132,7 +132,7 @@ public class KeyFieldsTest {
      */
     @Test
     public void testGetOriginalNetworkId() {
-        System.out.println("getOriginalNetworkId");
+       LOG.info("getOriginalNetworkId");
         KeyFields instance = KEY_1;
         int expResult = 1;
         int result = instance.getOriginal_network_id();
@@ -145,7 +145,7 @@ public class KeyFieldsTest {
      */
     @Test
     public void testGetServiceId() {
-        System.out.println("getServiceId");
+       LOG.info("getServiceId");
         KeyFields instance = KEY_1;
         int expResult = 2;
         int result = instance.getService_id();
@@ -157,7 +157,7 @@ public class KeyFieldsTest {
      */
     @Test
     public void testGetMuiltiKey() {
-        System.out.println("getMuiltiKey");
+       LOG.info("getMuiltiKey");
         KeyFields instance = KEY_1;
         MultiKey<Integer> expResult = new MultiKey<>(1, 1, 2);
         MultiKey<Integer> result = instance.getMuiltiKey();
@@ -169,7 +169,7 @@ public class KeyFieldsTest {
      */
     @Test
     public void testHashCode() {
-        System.out.println("hashCode");
+       LOG.info("hashCode");
         KeyFields instance1 = KEY_1;
         KeyFields instance2 = KEY_2_EQUALS_KEY_1;
         KeyFields instance3 = KEY_3;
@@ -184,7 +184,7 @@ public class KeyFieldsTest {
     public void testEquals() {
         LOG.info("");
         EqualsChecker<KeyFields> eqc = new EqualsChecker<>();
-        assertTrue(eqc.check_same(KEY_1, KEY_1, KEY_1));
+        assertTrue(eqc.check_same(KEY_1, KEY_2_EQUALS_KEY_1, KEY_1));
     }
 
     /**
@@ -194,7 +194,7 @@ public class KeyFieldsTest {
     public void testNotEquals() {
         LOG.info("");
         EqualsChecker<KeyFields> eqc = new EqualsChecker<>();
-        assertTrue(eqc.check_not_same(KEY_3, KEY_1, KEY_1));
+        assertTrue(eqc.check_not_same(KEY_3, KEY_1, KEY_2_EQUALS_KEY_1));
     }
 
     /**
@@ -202,8 +202,8 @@ public class KeyFieldsTest {
      */
     @Test
     public void testToString() {
-        System.out.println("toString");
-        System.out.println(KEY_1.toString());
+       LOG.info("toString");
+       LOG.info(KEY_1.toString());
 
     }
 

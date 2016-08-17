@@ -22,12 +22,12 @@ package common;
  */
 public final class TestKeyFields {
 
-    private static final int a = 1, b = 1, c = 2;
+    public static final int a = 1, b = 1, c = 2;
     public static final epgtools.dumpchannelfromts.dataextractor.channel.KeyFields KEY_1 = new epgtools.dumpchannelfromts.dataextractor.channel.KeyFields(a, b, c);
     public static final epgtools.dumpchannelfromts.dataextractor.channel.KeyFields KEY_2_EQUALS_KEY_1 = new epgtools.dumpchannelfromts.dataextractor.channel.KeyFields(a, b, c);
 
     //サブチャンネル想定
-    private static final int x = 3, y = 3;
+    public static final int x = 3, y = 3;
     public static final epgtools.dumpchannelfromts.dataextractor.channel.KeyFields KEY_3 = new epgtools.dumpchannelfromts.dataextractor.channel.KeyFields(x, y, 3);
     public static final epgtools.dumpchannelfromts.dataextractor.channel.KeyFields KEY_4 = new epgtools.dumpchannelfromts.dataextractor.channel.KeyFields(x, y, 4);
 

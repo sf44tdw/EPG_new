@@ -16,38 +16,71 @@
  */
 package epgtools.dumpchannelfromts.dataextractor.channel;
 
+import static common.TestChannel.*;
+import static common.TestKeyFields.a;
+import static common.TestKeyFields.b;
+import static common.TestKeyFields.c;
+import java.lang.invoke.MethodHandles;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import testtool.EqualsChecker;
+import testtool.testrule.regexmessagerule.ExpectedExceptionMessage;
+import testtool.testrule.regexmessagerule.ExpectedExceptionRule;
 
 /**
  *
  * @author normal
  */
 public class ChannelTest {
-    
-    private final Channel target=new Channel(100,200,300,"name");
-    
+
+    private static final Log LOG;
+
+    static {
+        final Class<?> myClass = MethodHandles.lookup().lookupClass();
+        LOG = LogFactory.getLog(myClass);
+    }
+
+    @Rule
+    public ExpectedExceptionRule rule = new ExpectedExceptionRule();
+
     public ChannelTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
+    }
+
+    @Test
+    @ExpectedExceptionMessage("サービス名がnullもしくは空文字列です。")
+    public void testDispNull() {
+        LOG.info("");
+        Channel test = new Channel(100, 100, 100, null);
+    }
+
+    @Test
+    @ExpectedExceptionMessage("サービス名がnullもしくは空文字列です。")
+    public void testDispEmpty() {
+        LOG.info("");
+        Channel test = new Channel(100, 100, 100, "");
     }
 
     /**
@@ -55,13 +88,11 @@ public class ChannelTest {
      */
     @Test
     public void testGetTransport_stream_id() {
-        System.out.println("getTransport_stream_id");
-        Channel instance = null;
-        int expResult = 0;
+        LOG.info("getTransport_stream_id");
+        Channel instance = CH_1;
+        int expResult = a;
         int result = instance.getTransport_stream_id();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -69,13 +100,11 @@ public class ChannelTest {
      */
     @Test
     public void testGetOriginal_network_id() {
-        System.out.println("getOriginal_network_id");
-        Channel instance = null;
-        int expResult = 0;
+        LOG.info("getOriginal_network_id");
+        Channel instance = CH_1;
+        int expResult = b;
         int result = instance.getOriginal_network_id();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -83,13 +112,11 @@ public class ChannelTest {
      */
     @Test
     public void testGetService_id() {
-        System.out.println("getService_id");
-        Channel instance = null;
-        int expResult = 0;
+        LOG.info("getService_id");
+        Channel instance = CH_1;
+        int expResult = c;
         int result = instance.getService_id();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -97,13 +124,11 @@ public class ChannelTest {
      */
     @Test
     public void testGetDisplay_name() {
-        System.out.println("getDisplay_name");
-        Channel instance = null;
-        String expResult = "";
+        LOG.info("getDisplay_name");
+        Channel instance = CH_1;
+        String expResult = s;
         String result = instance.getDisplay_name();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -111,28 +136,29 @@ public class ChannelTest {
      */
     @Test
     public void testHashCode() {
-        System.out.println("hashCode");
-        Channel instance = null;
-        int expResult = 0;
-        int result = instance.hashCode();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        LOG.info("hashCode");
+        assertEquals(CH_1.hashCode(), CH_1.hashCode());
+        assertTrue(CH_1.hashCode() != CH_4.hashCode());
     }
 
     /**
      * Test of equals method, of class Channel.
      */
     @Test
-    public void testEquals() {
-        System.out.println("equals");
-        Object obj = null;
-        Channel instance = null;
-        boolean expResult = false;
-        boolean result = instance.equals(obj);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testEquals_same() {
+        LOG.info("");
+        EqualsChecker<Channel> eqc = new EqualsChecker<>();
+        assertTrue(eqc.check_same(CH_1, CH_1, CH_2_EQUALS_CH_1));
+    }
+
+    /**
+     * Test of equals method, of class Channel.
+     */
+    @Test
+    public void testEquals_notSame() {
+        LOG.info("");
+        EqualsChecker<Channel> eqc = new EqualsChecker<>();
+        assertTrue(eqc.check_not_same(CH_1, CH_2_EQUALS_CH_1, CH_3));
     }
 
     /**
@@ -140,13 +166,8 @@ public class ChannelTest {
      */
     @Test
     public void testToString() {
-        System.out.println("toString");
-        Channel instance = null;
-        String expResult = "";
-        String result = instance.toString();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        LOG.info("toString");
+        System.out.println(CH_4);
     }
-    
+
 }

@@ -31,7 +31,7 @@ public class TestChannel {
     private TestChannel() {
     }
 
-    private static final String s = "Disp1";
+    public static final String s = "Disp1";
 
     public static final Channel CH_1 = new Channel(KEY_1.getTransport_stream_id(), KEY_1.getOriginal_network_id(), KEY_1.getService_id(), s);
     public static final Channel CH_2_EQUALS_CH_1 = new Channel(KEY_2_EQUALS_KEY_1.getTransport_stream_id(), KEY_2_EQUALS_KEY_1.getOriginal_network_id(), KEY_2_EQUALS_KEY_1.getService_id(), s);
