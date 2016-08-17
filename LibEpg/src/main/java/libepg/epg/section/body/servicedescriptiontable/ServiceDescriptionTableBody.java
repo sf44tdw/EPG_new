@@ -172,17 +172,18 @@ public final class ServiceDescriptionTableBody extends SectionBody {
         return Collections.unmodifiableList(dest);
     }
 
-    private static final MessageFormat TABLE_DESC = new MessageFormat("{0}\n"
-            + "トランスポートストリーム識別 = {1}\n"
-            + "Reserved2 = {2}\n"
-            + "バージョン番号 = {3}\n"
-            + "カレントネクスト指示 = {4}\n"
-            + "セクション番号 = {5}\n"
-            + "最終セクション番号 = {6}\n"
-            + "オリジナルネットワーク識別 = {7}\n"
-            + "Reserved_future_use2 = {8}\n"
-            + "繰り返し項目 = {9}\n"
-            + "繰り返し項目の解析結果={10}\n"
+    private static final MessageFormat TABLE_DESC = new MessageFormat(
+            "サービス記述テーブル {0}\n"
+            + "サービス記述テーブル トランスポートストリーム識別 = {1}\n"
+            + "サービス記述テーブル Reserved2 = {2}\n"
+            + "サービス記述テーブル バージョン番号 = {3}\n"
+            + "サービス記述テーブル カレントネクスト指示 = {4}\n"
+            + "サービス記述テーブル セクション番号 = {5}\n"
+            + "サービス記述テーブル 最終セクション番号 = {6}\n"
+            + "サービス記述テーブル オリジナルネットワーク識別 = {7}\n"
+            + "サービス記述テーブル Reserved_future_use2 = {8}\n"
+            + "サービス記述テーブル 繰り返し項目 = {9}\n"
+            + "サービス記述テーブル 繰り返し項目の解析結果={10}\n"
     );
 
     @Override

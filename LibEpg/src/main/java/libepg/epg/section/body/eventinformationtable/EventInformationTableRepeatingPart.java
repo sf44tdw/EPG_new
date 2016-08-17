@@ -191,16 +191,17 @@ public final class EventInformationTableRepeatingPart {
         return new DescriptorsLoop(t);
     }
 
-    private static final MessageFormat EIT_RP_DESC = new MessageFormat("バイト列 = {0}\n"
-            + "イベント識別 = {1}\n"
-            + "開始時間 = {2}\n"
-            + "開始時間(タイムスタンプ) = {3}\n"
-            + "継続時間 = {4}\n"
-            + "終了時間(タイムスタンプ) = {5}\n"
-            + "進行状態 = {6}\n"
-            + "スクランブル = {7}\n"
-            + "記述子ループ長 = {8}\n"
-            + "記述子ループ = {9}\n"
+    private static final MessageFormat EIT_RP_DESC = new MessageFormat(
+            "イベント記述繰り返し項目 バイト列 = {0}\n"
+            + "イベント記述繰り返し項目 イベント識別 = {1}\n"
+            + "イベント記述繰り返し項目 開始時間 = {2}\n"
+            + "イベント記述繰り返し項目 開始時間(タイムスタンプ) = {3}\n"
+            + "イベント記述繰り返し項目 継続時間 = {4}\n"
+            + "イベント記述繰り返し項目 終了時間(タイムスタンプ) = {5}\n"
+            + "イベント記述繰り返し項目 進行状態 = {6}\n"
+            + "イベント記述繰り返し項目 スクランブル = {7}\n"
+            + "イベント記述繰り返し項目 記述子ループ長 = {8}\n"
+            + "イベント記述繰り返し項目 記述子ループ = {9}\n"
     );
 
     @Override

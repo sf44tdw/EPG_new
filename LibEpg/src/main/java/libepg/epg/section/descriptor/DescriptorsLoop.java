@@ -93,8 +93,8 @@ public class DescriptorsLoop {
     }
 
     private static final MessageFormat DESC = new MessageFormat(
-            "バイト列 = {0}\n"
-            + "記述子 = {1}\n"
+            "記述子ループ バイト列 = {0}\n"
+            + "記述子ループ 記述子 = {1}\n"
     );
 
     @Override

@@ -242,7 +242,7 @@ public final class Section {
             SectionBody target = constructor.newInstance(args);
             return target;
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
-            LOG.fatal("キャスト中に問題が発生しました。問題の発生したセクション本体 = " + temp.toString(), ex);
+            LOG.fatal("キャスト中に問題が発生しました。問題の発生したセクション = " + Hex.encodeHexString(this.getData()), ex);
             return temp;
         }
     }
@@ -324,17 +324,18 @@ public final class Section {
     }
 
     private static final MessageFormat TABLE_DESC = new MessageFormat(
-            "バイト列 = {0}\n"
-            + "テーブル識別値定数 = {1}\n"
-            + "テーブル識別値 = {2}\n"
-            + "section_syntax_indicator = {3}\n"
-            + "予約1 = {4}\n"
-            + "予約2 = {5}\n"
-            + "セクション長 = {6}\n"
-            + "セクション = {7}\n"
-            + "テーブル識別拡張 = {8}\n"
-            + "CRC = {9}\n"
-            + "CRC検査結果 = {10}\n"
+            "\n"
+            + "セクション バイト列 = {0}\n"
+            + "セクション テーブル識別値定数 = {1}\n"
+            + "セクション テーブル識別値 = {2}\n"
+            + "セクション section_syntax_indicator = {3}\n"
+            + "セクション 予約1 = {4}\n"
+            + "セクション 予約2 = {5}\n"
+            + "セクション セクション長 = {6}\n"
+            + "セクション セクション = {7}\n"
+            + "セクション テーブル識別拡張 = {8}\n"
+            + "セクション CRC = {9}\n"
+            + "セクション CRC検査結果 = {10}\n"
     );
 
     @Override

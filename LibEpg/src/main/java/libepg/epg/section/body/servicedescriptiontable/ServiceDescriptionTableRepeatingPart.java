@@ -186,16 +186,17 @@ public final class ServiceDescriptionTableRepeatingPart {
         return new DescriptorsLoop(t);
     }
 
-    private static final MessageFormat SDT_RP_DESC = new MessageFormat("バイト列 = {0}\n"
-            + "サービス識別 = {1}\n"
-            + "予約 = {2}\n"
-            + "EIT事業者定義フラグ = {3}\n"
-            + "EIT[スケジュール]フラグ = {4}\n"
-            + "EIT[現在/次]フラグ = {5}\n"
-            + "進行状態 = {6}\n"
-            + "スクランブル = {7}\n"
-            + "記述子ループ長 = {8}\n"
-            + "記述子ループ = {9}\n"
+    private static final MessageFormat SDT_RP_DESC = new MessageFormat(
+            "サービス記述繰り返し項目 バイト列 = {0}\n"
+            + "サービス記述繰り返し項目 サービス識別 = {1}\n"
+            + "サービス記述繰り返し項目 予約 = {2}\n"
+            + "サービス記述繰り返し項目 EIT事業者定義フラグ = {3}\n"
+            + "サービス記述繰り返し項目 EIT[スケジュール]フラグ = {4}\n"
+            + "サービス記述繰り返し項目 EIT[現在/次]フラグ = {5}\n"
+            + "サービス記述繰り返し項目 進行状態 = {6}\n"
+            + "サービス記述繰り返し項目 スクランブル = {7}\n"
+            + "サービス記述繰り返し項目 記述子ループ長 = {8}\n"
+            + "サービス記述繰り返し項目 記述子ループ = {9}\n"
     );
 
     @Override

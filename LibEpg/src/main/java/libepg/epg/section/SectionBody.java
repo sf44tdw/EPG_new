@@ -105,9 +105,8 @@ public class SectionBody {
     }
 
     private static final MessageFormat SECTION_BODY_DESC = new MessageFormat(
-            "\n"
-            + "テーブル識別値 = {0}\n"
-            + "バイト列 = {1}\n"
+            "セクション本体 テーブル識別値 = {0}\n"
+            + "セクション本体 バイト列 = {1}\n"
     );
 
     @Override
