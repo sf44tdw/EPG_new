@@ -30,6 +30,9 @@ import org.junit.Rule;
 import testtool.EqualsChecker;
 import testtool.testrule.regexmessagerule.ExpectedExceptionMessage;
 import testtool.testrule.regexmessagerule.ExpectedExceptionRule;
+import static common.TestKeyFields.KEY_1;
+import static common.TestKeyFields.KEY_3;
+import static common.TestKeyFields.KEY_2_EQUALS_KEY_1;
 
 /**
  *
@@ -47,10 +50,7 @@ public class KeyFieldsTest {
     @Rule
     public ExpectedExceptionRule rule = new ExpectedExceptionRule();
 
-    private final KeyFields target1 = new KeyFields(1, 1, 2);
-    private final KeyFields target1_2 = new KeyFields(1, 1, 2);
-    private final KeyFields target2 = new KeyFields(3, 2, 3);
-    private final KeyFields target3 = new KeyFields(4, 3, 4);
+
 
     public KeyFieldsTest() {
     }
@@ -120,7 +120,7 @@ public class KeyFieldsTest {
     @Test
     public void testGetTransportStreamId() {
         System.out.println("getTransportStreamId");
-        KeyFields instance = target1;
+        KeyFields instance = KEY_1;
         int expResult = 1;
         int result = instance.getTransport_stream_id();
         assertEquals(expResult, result);
@@ -133,7 +133,7 @@ public class KeyFieldsTest {
     @Test
     public void testGetOriginalNetworkId() {
         System.out.println("getOriginalNetworkId");
-        KeyFields instance = target1;
+        KeyFields instance = KEY_1;
         int expResult = 1;
         int result = instance.getOriginal_network_id();
         assertEquals(expResult, result);
@@ -146,7 +146,7 @@ public class KeyFieldsTest {
     @Test
     public void testGetServiceId() {
         System.out.println("getServiceId");
-        KeyFields instance = target1;
+        KeyFields instance = KEY_1;
         int expResult = 2;
         int result = instance.getService_id();
         assertEquals(expResult, result);
@@ -158,7 +158,7 @@ public class KeyFieldsTest {
     @Test
     public void testGetMuiltiKey() {
         System.out.println("getMuiltiKey");
-        KeyFields instance = target1;
+        KeyFields instance = KEY_1;
         MultiKey<Integer> expResult = new MultiKey<>(1, 1, 2);
         MultiKey<Integer> result = instance.getMuiltiKey();
         assertEquals(expResult, result);
@@ -170,9 +170,9 @@ public class KeyFieldsTest {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
-        KeyFields instance1 = this.target1;
-        KeyFields instance2 = this.target1_2;
-        KeyFields instance3 = this.target2;
+        KeyFields instance1 = KEY_1;
+        KeyFields instance2 = KEY_2_EQUALS_KEY_1;
+        KeyFields instance3 = KEY_3;
         assertEquals(instance1.hashCode(), instance2.hashCode());
         assertTrue(!(instance1.hashCode() == instance3.hashCode()));
     }
@@ -184,7 +184,7 @@ public class KeyFieldsTest {
     public void testEquals() {
         LOG.info("");
         EqualsChecker<KeyFields> eqc = new EqualsChecker<>();
-        assertTrue(eqc.check_same(target1, target1, target1));
+        assertTrue(eqc.check_same(KEY_1, KEY_1, KEY_1));
     }
 
     /**
@@ -194,7 +194,7 @@ public class KeyFieldsTest {
     public void testNotEquals() {
         LOG.info("");
         EqualsChecker<KeyFields> eqc = new EqualsChecker<>();
-        assertTrue(eqc.check_not_same(target2, target1, target1));
+        assertTrue(eqc.check_not_same(KEY_3, KEY_1, KEY_1));
     }
 
     /**
@@ -203,7 +203,7 @@ public class KeyFieldsTest {
     @Test
     public void testToString() {
         System.out.println("toString");
-        System.out.println(target1.toString());
+        System.out.println(KEY_1.toString());
 
     }
 
