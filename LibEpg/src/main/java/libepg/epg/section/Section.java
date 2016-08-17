@@ -191,10 +191,13 @@ public final class Section {
         return temp;
     }
 
-    /*    
+    /**
      * 12bitのフィールドで、先頭の2ビットは常に「00」とする。
      * これは、セクション長フィールドの直後からCRCを含むセクションの最後までのセクションのバイト数を規定する。
-     * 全セクションの長さが1024バイトもしくは4096バイトを超えないようにするため、セクション長は1021バイトもしくは4093バイトを超えてはならない。*/
+     * 全セクションの長さが1024バイトもしくは4096バイトを超えないようにするため、セクション長は1021バイトもしくは4093バイトを超えてはならない
+     *
+     * @return 上記の値
+     */
     public final synchronized int getSectionLength() {
         byte[] t = new byte[2];
         System.arraycopy(this.getData(), 1, t, 0, t.length);
