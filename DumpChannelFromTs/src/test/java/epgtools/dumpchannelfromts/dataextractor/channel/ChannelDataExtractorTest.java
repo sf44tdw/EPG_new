@@ -18,12 +18,16 @@ package epgtools.dumpchannelfromts.dataextractor.channel;
 
 import common.TestSection;
 import java.lang.invoke.MethodHandles;
+import java.util.Map;
 import libepg.epg.section.Section;
 import org.apache.commons.codec.DecoderException;
+import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,7 +92,10 @@ public class ChannelDataExtractorTest {
         LOG.info("");
         Section sec = TestSection.getSdt1();
         ChannelDataExtractor instance = new ChannelDataExtractor(sec);
-        instance.getChannels();
+      Map<MultiKey<Integer>, Channel> map =  instance.getChannels();
+      assertTrue(map.size()==1);
+      Channel ch=map.get( new MultiKey<>(0x4750,0x4,0xfc));
+      assertEquals(ch.getDisplay_name(),"イマジカＢＳ・映画");
     }
 
     /**
@@ -99,9 +106,9 @@ public class ChannelDataExtractorTest {
         LOG.info("");
         Section sec = TestSection.getSdt1();
         ChannelDataExtractor instance = new ChannelDataExtractor(sec);
-        System.out.println("\nセクション_S****************************************************************************************************************************************************************************************************");
-        System.out.println(instance.getSource());
-        System.out.println("セクション_E****************************************************************************************************************************************************************************************************\n");
+        LOG.info("\nセクション_S****************************************************************************************************************************************************************************************************");
+        LOG.info(instance.getSource());
+        LOG.info("セクション_E****************************************************************************************************************************************************************************************************\n");
     }
 
 }
