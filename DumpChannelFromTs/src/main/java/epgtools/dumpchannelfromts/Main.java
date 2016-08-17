@@ -45,9 +45,9 @@ public class Main {
      * falseのとき、このクラスはログを出さなくなる
      */
     public static final boolean CLASS_LOG_OUTPUT_MODE = true;
-    
+
     private static final Log LOG;
-    
+
     static {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, Main.CLASS_LOG_OUTPUT_MODE).getLOG();
@@ -65,7 +65,7 @@ public class Main {
             System.exit(1);
         }
     }
-    
+
     private String dumpCollection(Collection<?> target) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -78,22 +78,22 @@ public class Main {
         sb.append("}");
         return sb.toString();
     }
-    
+
     private String dumpArgs(String[] args) {
         Collection<String> strs = Arrays.asList(args);
         return this.dumpCollection(strs);
     }
-    
+
     private String dumpSet(Set<?> target) {
         return this.dumpCollection(target);
     }
-    
+
     public void start(String[] args) throws org.apache.commons.cli.ParseException {
         final String fileName;
         final Long limit;
-        
+
         System.out.println("args   : " + dumpArgs(args));
-        
+
         final Option fileNameOption = Option.builder("f")
                 .required()
                 .longOpt("filename")
@@ -101,7 +101,7 @@ public class Main {
                 .hasArg()
                 .type(String.class)
                 .build();
-        
+
         final Option limitOption = Option.builder("l")
                 .required(false)
                 .longOpt("limit")
@@ -109,24 +109,24 @@ public class Main {
                 .hasArg()
                 .type(Long.class)
                 .build();
-        
+
         Options opts = new Options();
         opts.addOption(fileNameOption);
         opts.addOption(limitOption);
         CommandLineParser parser = new DefaultParser();
         CommandLine cl;
         HelpFormatter help = new HelpFormatter();
-        
+
         try {
 
             // parse options
             cl = parser.parse(opts, args);
-            
+
             fileName = cl.getOptionValue(fileNameOption.getOpt());
             if (fileName == null) {
                 throw new ParseException("ファイル名が指定されていません。");
             }
-            
+
             Long xl = null;
             try {
                 xl = Long.parseUnsignedLong(cl.getOptionValue(limitOption.getOpt()));
@@ -138,23 +138,23 @@ public class Main {
 
             //SDTのみを取得。
             final PROGRAM_ID pids = PROGRAM_ID.SDT_OR_BAT;
-            
+
             LOG.info("Starting application...");
             LOG.info("filename   : " + fileName);
-            
+
             TsReader reader;
-            if (limit == null) {
-                LOG.info("limit : " + limit);
+            if (limit != null) {
+                LOG.info("limit : EOF");
                 reader = new TsReader(new File(fileName), pids.getPids());
             } else {
-                LOG.info("limit : EOF");
+                LOG.info("limit : " + limit);
                 reader = new TsReader(new File(fileName), pids.getPids(), limit);
             }
-            
+
             Map<Integer, List<TsPacketParcel>> ret = reader.getPackets();
-            
+
             final Map<MultiKey<Integer>, Channel> channels = new ConcurrentHashMap<>();
-            
+
             for (Integer pid : ret.keySet()) {
                 SectionReconstructor sr = new SectionReconstructor(ret.get(pid), pid);
                 Map<MultiKey<Integer>, Channel> channels_temp = null;
@@ -163,12 +163,12 @@ public class Main {
                 }
                 channels.putAll(channels_temp);
             }
-            
+
             Set<MultiKey<Integer>> ks = channels.keySet();
             for (MultiKey<Integer> k : ks) {
                 LOG.info(channels.get(k));
             }
-            
+
         } catch (ParseException e) {
             // print usage.
             help.printHelp("My Java Application", opts);
