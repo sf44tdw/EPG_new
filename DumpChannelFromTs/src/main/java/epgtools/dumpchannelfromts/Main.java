@@ -38,7 +38,7 @@ import org.apache.commons.logging.Log;
  * transport_stream_id
  * original_network_id
  * service_id
- * display-name
+ * display-name(service_name)
  * @author normal
  */
 public class Main {
