@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 normal
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package libepg.epg.section.descriptor.extendedeventdescriptor;
 
 import libepg.util.bytearray.ByteConverter;
@@ -48,6 +64,7 @@ public class ExtendedEventDescriptorItem {
 
     /**
      * item_description_length(項目名長):これは8 ビットのフィールドで、項目名のバイト長を示す。
+     * @return 上記の値
      */
     public final synchronized int getItem_description_length() {
         int temp;
@@ -59,7 +76,7 @@ public class ExtendedEventDescriptorItem {
      * item_description_char(項目名(文字符号)):これは8ビットのフィールドで、<br>
      * 一連の項目名のフィールドは、項目名の文字記述を規定する。 文字情報の符号化に関しては、付録A を参照。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized byte[] getiItem_description() {
         byte[] t = new byte[this.getItem_description_length()];
@@ -72,7 +89,7 @@ public class ExtendedEventDescriptorItem {
     /**
      * item_description_char(項目名(文字符号))を変換した文字列。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized String getiItem_description_String() {
         return Aribstr.AribToString(this.getiItem_description());
@@ -81,7 +98,7 @@ public class ExtendedEventDescriptorItem {
     /**
      * item_length(項目記述長):これは8 ビットのフィールドで、項目記述のバイト長を示す。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized int getItem_length() {
         int temp;
@@ -93,7 +110,7 @@ public class ExtendedEventDescriptorItem {
      * item_char(項目記述(文字符号)):これは8 ビットのフィールドで、一連の項目記述のフィールドは、項目の文字記述を規定する。
      * 文字情報の符号化に関しては、付録A を参照。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized byte[] getItem() {
         byte[] t = new byte[this.getItem_length()];
@@ -106,7 +123,7 @@ public class ExtendedEventDescriptorItem {
     /**
      * item_char(項目記述(文字符号))を変換した文字列。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized String getItem_String() {
         return Aribstr.AribToString(this.getItem());

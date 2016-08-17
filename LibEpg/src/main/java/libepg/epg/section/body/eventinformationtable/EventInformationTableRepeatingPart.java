@@ -63,6 +63,8 @@ public final class EventInformationTableRepeatingPart {
     /**
      * event_id（イベント識別）：この16 ビットのフィールドは、記載されているイベントの識別番号 （1
      * サービス内で一意的に割り当てられる）を示す。
+     *
+     * @return 上記の値
      */
     public synchronized int getEvent_id() {
         byte[] t = new byte[2];
@@ -76,7 +78,7 @@ public final class EventInformationTableRepeatingPart {
      * （BCD）で符号化する。開始時間が定義されない場合（例えばNVOD 基準サービスなど） には、このフィールドの全てのビットは「1」に設定する。
      * 例１：93/10/13 12:45:00 は「0xC079124500」と符号化される。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized byte[] getStart_time() {
         byte[] t = new byte[5];
@@ -86,6 +88,7 @@ public final class EventInformationTableRepeatingPart {
 
     /**
      * start_time（開始時間）
+     *
      * @return タイムスタンプに変換された開始時間
      * @throws java.text.ParseException 変換できなかったか、未定義の場合。
      */
@@ -104,7 +107,7 @@ public final class EventInformationTableRepeatingPart {
      * す。継続時間が定義されない場合（例えば緊急ニュースで終了時刻が未定など）には、こ のフィールドのすべてのビットを「1」に設定する。 形式：6個の4
      * ビットBCD 符号 = 24 ビット 例2：01:45:30 は「0x014530」と符号化される。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized byte[] getDuration() {
         byte[] t = new byte[3];
@@ -139,7 +142,7 @@ public final class EventInformationTableRepeatingPart {
      * 4__=_実行中<br>
      * 5-7=_将来の使用のためにリザーブ<br>
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getRunning_status() {
         int t = ByteConverter.byteToInt(this.getData()[10]);
@@ -152,7 +155,7 @@ public final class EventInformationTableRepeatingPart {
      * それが「0」の場合はそのサービス内の全てのコンポーネントストリームがスクランブルされていないことを示す。
      * 「1」の場合は、一つ以上のストリームへのアクセスがCAシステムにより制御されていることを示す。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getFree_CA_mode() {
         int temp;
@@ -165,7 +168,7 @@ public final class EventInformationTableRepeatingPart {
     /**
      * descriptors_loop_length(記述子ループ長):これは、12ビットのフィールドで、 後続の記述子の全バイト長を規定する
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getDescriptors_loop_length() {
         byte[] t = new byte[2];
@@ -178,7 +181,7 @@ public final class EventInformationTableRepeatingPart {
     /**
      * 記述子ループを取得する。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized DescriptorsLoop getDescriptors_loop() {
         byte[] t = new byte[this.getDescriptors_loop_length()];

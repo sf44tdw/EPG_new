@@ -71,9 +71,9 @@ public class Descriptor {
             throw new IllegalArgumentException(msg1.format(parameters1));
         }
 
-        int tag=ByteConverter.byteToInt(this.data.getData()[0]);
+        int tag = ByteConverter.byteToInt(this.data.getData()[0]);
         this.descriptorTag = DESCRIPTOR_TAG.reverseLookUp(tag);
-        if (this.descriptorTag==null) {
+        if (this.descriptorTag == null) {
             MessageFormat msg = new MessageFormat("記述子タグが見つかりません。タグの値={0} データ={1}");
             Object[] parameters = {Integer.toHexString(tag), Hex.encodeHexString(this.data.getData())};
             throw new IllegalArgumentException(msg.format(parameters));
@@ -122,7 +122,7 @@ public class Descriptor {
     /**
      * 記述子のデータ部分(このクラスが管理するバイト配列の3バイト目から最後まで)を取得する。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized byte[] getDescriptor_Body() {
         int length;

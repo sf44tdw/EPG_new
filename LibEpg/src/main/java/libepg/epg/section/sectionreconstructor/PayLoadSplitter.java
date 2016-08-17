@@ -134,7 +134,7 @@ public final class PayLoadSplitter {
         /**
          * ペイロードにポインタフィールドが存在していたか
          *
-         * @return
+         * @return 上記の値
          */
         public POINTER_FIELD_EXISTENCE getPointer_field_existence() {
             return pointer_field_existence;

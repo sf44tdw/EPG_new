@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 normal
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package libepg.ts.packet;
 
@@ -125,7 +136,7 @@ public class TsPacket {
     /**
      * sync_byte(同期ワード)
      *
-     * @return
+     * @return 上記の値
      * @throws IllegalStateException ありえない値(0x47以外)を取得した場合。
      */
     public synchronized int getSync_byte() throws IllegalStateException {
@@ -217,7 +228,7 @@ public class TsPacket {
     /**
      * transport_priority(トランスポート優先度) 同一のPIDを持つパケットの中での優先度を示すフラグで、‘1’が優先を示す
      *
-     * @return
+     * @return 上記の値
      * @throws IllegalStateException ありえない値(0,1以外)を取得した場合。
      */
     public synchronized int getTransport_priority() throws IllegalStateException {
@@ -237,7 +248,7 @@ public class TsPacket {
     /**
      * PID(プログラムID)
      *
-     * @return
+     * @return 上記の値
      * @throws IllegalStateException ありえない値(0x0000以上0x1FFF以下の値以外)を取得した場合。
      */
     public synchronized int getPid() throws IllegalStateException {
@@ -292,7 +303,7 @@ public class TsPacket {
     /**
      * transport_scrambling_control(トランスポートスクランブルコントロール)
      *
-     * @return
+     * @return  上記の値
      * @throws IllegalStateException ありえない値(0以上3以下の整数)のとき
      */
     public synchronized TRANSPORT_SCRAMBLING_CONTROL getTransport_scrambling_control() throws IllegalStateException {

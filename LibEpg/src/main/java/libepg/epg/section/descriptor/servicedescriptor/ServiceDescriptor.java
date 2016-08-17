@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 normal
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package libepg.epg.section.descriptor.servicedescriptor;
 
@@ -45,7 +56,7 @@ public final class ServiceDescriptor extends Descriptor {
     /**
      * service_provider_name_length(事業者名長):この8 ビットのフィールドは、後続の事業者名のバイト長を表す。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getService_provider_name_length() {
         return ByteConverter.byteToInt(this.getDescriptor_Body()[1]);
@@ -54,7 +65,7 @@ public final class ServiceDescriptor extends Descriptor {
     /**
      * 事業者名(記述子のデータ部分の3バイト目から記述子長バイト分)
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized byte[] getService_provider_name() {
         byte[] t = new byte[this.getService_provider_name_length()];
@@ -77,7 +88,7 @@ public final class ServiceDescriptor extends Descriptor {
     /**
      * service_name_length(サービス名長):この8 ビットのフィールドは、後続のサービス名のバイト長を表す。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getService_name_length() {
         //このフィールドの位置=サービス形式種別長+事業者名長フィールドの長さ+事業者名長
@@ -87,7 +98,7 @@ public final class ServiceDescriptor extends Descriptor {
     /**
      * サービス名
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized byte[] getService_name() {
         int l = this.getService_name_length();

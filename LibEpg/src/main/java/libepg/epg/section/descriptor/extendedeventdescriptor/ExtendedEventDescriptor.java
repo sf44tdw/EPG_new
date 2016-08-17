@@ -1,6 +1,5 @@
 package libepg.epg.section.descriptor.extendedeventdescriptor;
 
-
 import libepg.util.bytearray.ByteConverter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import libepg.epg.section.descriptor.Descriptor;
+import libepg.epg.util.Aribstr;
 import libepg.util.bytearray.ByteArraySplitter;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,7 +30,7 @@ public class ExtendedEventDescriptor extends Descriptor {
      * ひとつの記述子には入りきらない情報を関係づける為に使われる。関係づけられている拡張形式イベント記述子セットの一番目の記述子番号は、「0x0」とする。
      * このセクション内で拡張形式イベント記述子が加わるごとに記述子番号は1 加算される。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized int getDescriptor_number() {
         int temp = ByteConverter.byteToInt(this.getDescriptor_Body()[0]);
@@ -43,7 +43,7 @@ public class ExtendedEventDescriptor extends Descriptor {
      * last_descriptor_number(最終記述子番号)：この4 ビットのフィールドは、この記述子がその一部分となっている、
      * 関係づけられた記述子セットの最終拡張形式イベント記述子(最大の記述子番号を持つ記述子)の番号を示す。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized int getLast_descriptor_number() {
         int temp = ByteConverter.byteToInt(this.getDescriptor_Body()[0]);
@@ -58,7 +58,7 @@ public class ExtendedEventDescriptor extends Descriptor {
      * その順で24 ビットフィールドに挿入される。 例： 日本語はアルファベット3 文字コードで「jpn」であり、次のように符号化される。 「0110
      * 1010 0111 0000 0110 1110」
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized String getISO_639_language_code() {
         byte[] t = new byte[3];
@@ -69,7 +69,7 @@ public class ExtendedEventDescriptor extends Descriptor {
     /**
      * length_of_items(項目長)：これは8 ビットのフィールドで、後続の項目のバイト長を示す。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized int getLength_of_items() {
         int temp;
@@ -80,7 +80,7 @@ public class ExtendedEventDescriptor extends Descriptor {
     /**
      * 項目を取得する。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized byte[] getItems() {
         byte[] t = new byte[this.getLength_of_items()];
@@ -93,7 +93,7 @@ public class ExtendedEventDescriptor extends Descriptor {
     /**
      * 項目オブジェクトを取得する。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized List<ExtendedEventDescriptorItem> getItemsList() {
         List<ExtendedEventDescriptorItem> ret = new ArrayList<>();
@@ -125,7 +125,7 @@ public class ExtendedEventDescriptor extends Descriptor {
     /**
      * text_length（拡張記述長）：これは8 ビットのフィールドで、項目無しの拡張記述のバイト長を示す。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized int getText_length() {
         int temp;
@@ -136,6 +136,8 @@ public class ExtendedEventDescriptor extends Descriptor {
     /**
      * text_char(拡張記述(文字符号)):これは8 ビットのフィールドで、一連の拡張記述のフィールドは、項目無しの文字記述を規定する。
      * 文字情報の符号化に関しては、付録A を参照。
+     *
+     * @return 上記の値
      */
     public final synchronized byte[] getText_char() {
         byte[] t = new byte[this.getText_length()];
@@ -143,6 +145,13 @@ public class ExtendedEventDescriptor extends Descriptor {
             System.arraycopy(this.getDescriptor_Body(), 5 + this.getLength_of_items() + 1, t, 0, t.length);
         }
         return t;
+    }
+
+    /**
+     * @return text_charを文字列化したもの。
+     */
+    public final synchronized String getText_String() {
+        return Aribstr.AribToString(this.getText_char());
     }
 
     private static final MessageFormat DESC = new MessageFormat("{0}"
@@ -154,6 +163,7 @@ public class ExtendedEventDescriptor extends Descriptor {
             + "項目内容 = {6}"
             + "拡張記述長 = {7}\n"
             + "拡張記述 = {8}\n"
+            + "下記長記述文字列 = {9}\n"
     );
 
     @Override
@@ -172,7 +182,8 @@ public class ExtendedEventDescriptor extends Descriptor {
             s.toString(),
             Hex.encodeHexString(this.getItems()),
             this.getText_length(),
-            Hex.encodeHexString(this.getText_char())};
+            Hex.encodeHexString(this.getText_char()),
+            this.getText_String()};
         return DESC.format(parameters);
     }
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 normal
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package libepg.epg.section.descriptor.seriesdescriptor;
 
 import libepg.util.bytearray.ByteConverter;
@@ -9,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.descriptor.Descriptor;
 import libepg.epg.util.Aribstr;
 import libepg.epg.util.datetime.DateTimeFieldConverter;
-
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * シリーズ記述子 シリーズ記述子は、シリーズ番組を識別するために用いる。
@@ -23,7 +39,7 @@ public class SeriesDescriptor extends Descriptor {
     /**
      * series_id(シリーズ識別):これは16 ビットのフィールドで、シリーズをユニークに識別するための識別子である。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getSeries_id() {
         byte[] t = new byte[2];
@@ -35,6 +51,8 @@ public class SeriesDescriptor extends Descriptor {
      * repeat_label(再放送ラベル)：この4 ビットのフィールドは、
      * シリーズの放送期間とシリーズの再放送の放送期間が重なる場合に、編成を区別するラベルとして用いる。
      * オリジナルのシリーズの放送には「0x0」を与える。
+     *
+     * @return 上記の値
      */
     public synchronized int getRepeat_label() {
         int temp = ByteConverter.byteToInt(this.getDescriptor_Body()[2]);
@@ -99,7 +117,7 @@ public class SeriesDescriptor extends Descriptor {
         ;
            
     /**
-     * ジャンルコードから定義済みの定数を逆引きする。
+     * 編成パターンコードから定義済みの定数を逆引きする。
      *
      * @param value 編成パターンコード
      * @return コードを含む定数。なければnull。
@@ -134,13 +152,21 @@ public class SeriesDescriptor extends Descriptor {
      * program_pattern(編成パターン):この3 ビットのフィールドは、シリーズ番組の編成のパターンを表す。<br>
      * これによりシリーズに属するイベントが次にいつ現れるかの目安がわかる。<br>
      *
-     * @return 編成パターンの定数。
+     * @return 編成パターン
      */
-    public synchronized PROGRAM_PATTERN getProgram_pattern() {
+    public synchronized int getProgram_pattern() {
         int temp = ByteConverter.byteToInt(this.getDescriptor_Body()[2]);
         temp = temp & 0xe;
         temp = temp >>> 1;
-        PROGRAM_PATTERN pp = PROGRAM_PATTERN.reverseLookUp(temp);
+        return temp;
+    }
+
+    /**
+     *
+     * @return 編成パターンの定数。
+     */
+    public synchronized PROGRAM_PATTERN getProgram_pattern_const() {
+        PROGRAM_PATTERN pp = PROGRAM_PATTERN.reverseLookUp(getProgram_pattern());
         if (pp == null) {
             throw new IllegalStateException("編成パターンの数値が登録されているものと一致しません。");
         }
@@ -150,6 +176,8 @@ public class SeriesDescriptor extends Descriptor {
     /**
      * expire_date_valid_flag(有効期限フラグ)：この1
      * ビットのフラグは、次に続くexpire_dateの値が有効であることを示す。 シリーズの終了予定日の値が有効な場合、この値を「1」とする。
+     *
+     * @return 上記の値
      */
     public synchronized int getExpire_date_valid_flag() {
         int temp = ByteConverter.byteToInt(this.getDescriptor_Body()[2]);
@@ -173,9 +201,10 @@ public class SeriesDescriptor extends Descriptor {
      * expire_date(有効期限)
      *
      * @return タイムスタンプに変換された有効期限。l
-     * @throws java.text.ParseException
+     * @throws java.text.ParseException 生成失敗
+     * @throws IllegalStateException 有効期限フラグが無効に設定されている。
      */
-    public synchronized Timestamp getExpire_date_Object() throws ParseException {
+    public synchronized Timestamp getExpire_date_Object() throws ParseException, IllegalStateException {
         if (this.getExpire_date_valid_flag() != 1) {
             throw new IllegalStateException("有効期限が無効になっています。");
         }
@@ -193,7 +222,7 @@ public class SeriesDescriptor extends Descriptor {
      * episode_number(話数):この12 ビットのフィールドは、この記述子が示す番組の、シリーズ内の話数を示す。第1 回から第4095
      * 回まで記載できる。 話数がこれを超える場合はシリーズを別に定義する。 連続番組の場合で番組回数が定義できない場合は、「0x000」とする。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getEpisode_number() {
         byte[] t = new byte[3];
@@ -205,7 +234,7 @@ public class SeriesDescriptor extends Descriptor {
      * last_episode_number(番組総数):この12 ビットのフィールドは、当該シリーズ番組の番組総数を示す。 第1 回から第4095
      * 回まで記載できる。番組総数がこれを超える場合は、シリーズを別に定義する。 最終回が未定の場合、「0x000」とする。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getLast_episode_number() {
         byte[] t = new byte[3];
@@ -216,7 +245,7 @@ public class SeriesDescriptor extends Descriptor {
     /**
      * series_name_char(シリーズ名):この文字符号フィールドでは、シリーズ名が伝送される。文字情報の符号化については、付録A 参照。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized byte[] getSeries_name_char() {
         byte[] t = new byte[this.getDescriptor_Body().length - 8];
@@ -225,13 +254,48 @@ public class SeriesDescriptor extends Descriptor {
     }
 
     /**
-     * series_name_char(シリーズ名):この文字符号フィールドでは、シリーズ名が伝送される。文字情報の符号化については、付録A 参照。
-     *
-     * @return
+     * @return 上記の値
      */
     public synchronized String getSeries_name_String() {
         return Aribstr.AribToString(this.getSeries_name_char());
 
     }
+    private static final MessageFormat SL_DESC = new MessageFormat(
+            "{0}\n"
+            + "シリーズ識別 = {1}\n"
+            + "再放送ラベル = {2}\n"
+            + "編成パターン = {3}\n"
+            + "編成パターン(定数) = {4}\n"
+            + "有効期限フラグ = {5}\n"
+            + "有効期限 = {6}\n"
+            + "有効期限(タイムスタンプ) = {7}\n"
+            + "話数 = {8}\n"
+            + "番組総数 = {9}\n"
+            + "シリーズ名 = {10}\n"
+            + "シリーズ名(文字列) = {11}\n"
+    );
 
+    @Override
+    public String toString() {
+        Timestamp ts;
+        try {
+            ts = this.getExpire_date_Object();
+        } catch (ParseException ex) {
+            ts = null;
+        }
+
+        Object[] parameters = {super.toString(),
+            Integer.toHexString(this.getSeries_id()),
+            Integer.toHexString(this.getRepeat_label()),
+            Integer.toHexString(this.getProgram_pattern()),
+            this.getProgram_pattern_const(),
+            Integer.toHexString(this.getExpire_date_valid_flag()),
+            Hex.encodeHexString(this.getExpire_date()),
+            ts,
+            this.getEpisode_number(),
+            this.getLast_episode_number(),
+            Hex.encodeHexString(this.getSeries_name_char()),
+            this.getSeries_name_String()};
+        return SL_DESC.format(parameters);
+    }
 }

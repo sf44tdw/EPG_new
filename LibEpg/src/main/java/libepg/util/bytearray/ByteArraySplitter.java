@@ -171,7 +171,10 @@ public final class ByteArraySplitter {
     /**
      * 長さフィールドの大きさがちょうどnバイトの場合、こちらを使用できる。
      *
-     * @see ByteArraySplitter.splitByLengthField
+     * @param src 別のsplitByLengthField()に同じ。
+     * @param lengthFieldPosition 別のsplitByLengthField()に同じ。
+     * @param lengthFieldLength 別のsplitByLengthField()に同じ。
+     * @return 別のsplitByLengthField()に同じ。
      */
     public static synchronized List<byte[]> splitByLengthField(byte[] src, int lengthFieldPosition, int lengthFieldLength) {
         return splitByLengthField(src, lengthFieldPosition, lengthFieldLength, (x) -> x);

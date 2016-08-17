@@ -18,7 +18,7 @@ public class ContentDescriptor extends Descriptor {
     /**
      * ジャンルリストを取得する。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized List<Nibble> getNibbles() {
         List<byte[]> t = ByteArraySplitter.split(this.getDescriptor_Body(), 2);
@@ -36,7 +36,7 @@ public class ContentDescriptor extends Descriptor {
         for (Nibble nb : tn) {
             s.append(nb);
         }
-        return "ジャンルコード = " +s.toString()+"\n";
+        return "ジャンルコード = " + s.toString() + "\n";
     }
 
 }

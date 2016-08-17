@@ -151,7 +151,7 @@ public enum SERVICE_TYPE {
     /**
      * サービスIDから定義済みの定数を逆引きする。
      *
-     * @param serviceId
+     * @param serviceId サービスID
      * @return サービスIDを含む定数。なければnull。
      */
     public static synchronized SERVICE_TYPE reverseLookUp(int serviceId) {

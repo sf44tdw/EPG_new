@@ -40,7 +40,7 @@ public final class Nibble {
      * content_nibble_level_1（ジャンル1）：この4 ビットのフィールドは、コンテント識別の
      * 第一段階分類を表す。符号化については別途規定する。（付録H 参照）
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized NIBBLE_LEVEL_1 getContent_nibble_level_1() {
         int temp;
@@ -53,7 +53,7 @@ public final class Nibble {
      * content_nibble_level_2（ジャンル2）：この4 ビットのフィールドは、コンテント識別の
      * 第二段階分類を表す。符号化については別途規定する。（付録H 参照）
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized NIBBLE_LEVEL_2 getContent_nibble_level_2() {
         int temp;
@@ -65,7 +65,7 @@ public final class Nibble {
     /**
      * user_nibble（ユーザジャンル）：この4 ビットのフィールドは、放送事業者により定義される。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getUser_nibble1() {
         int temp;
@@ -77,7 +77,7 @@ public final class Nibble {
     /**
      * user_nibble（ユーザジャンル）：この4 ビットのフィールドは、放送事業者により定義される。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getUser_nibble2() {
         int temp;

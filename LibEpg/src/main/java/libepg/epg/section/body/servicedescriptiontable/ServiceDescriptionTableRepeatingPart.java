@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 normal
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package libepg.epg.section.body.servicedescriptiontable;
 
@@ -49,7 +60,7 @@ public final class ServiceDescriptionTableRepeatingPart {
      * そのトランスポートストリーム内の他のサービスからこのサービスを識別するためのラベルの役割をする。<br>
      * サービス識別は、対応するプログラムマップセクション内の放送番組番号識別(program_number)に等しい<br>
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getService_id() {
         byte[] t = new byte[2];
@@ -61,7 +72,7 @@ public final class ServiceDescriptionTableRepeatingPart {
      * 符号化ビットストリームを定義する項の中で使用する場合、 <br>
      * その値が将来、ARIBSTD-B10が定義する拡張子として使用されるかもしれないことを表す。 3bit。<br>
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getReserved_future_use1() {
         int temp;
@@ -75,7 +86,7 @@ public final class ServiceDescriptionTableRepeatingPart {
      * EITの送出有無を示す拡張として、放送事業者が独自に定義することができる。 <br>
      * 使用しない場合は、「111」とする。<br>
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getEIT_user_defined_flags() {
         int temp;
@@ -91,7 +102,7 @@ public final class ServiceDescriptionTableRepeatingPart {
      * (EIT[スケジュール]サブテーブルの最大送出間隔については「ガイドライン」を参照。）<br>
      * このフラグが「0」の場合は、そのサービスのEIT[スケジュール]情報が現在のトランスポートストリーム内には存在しないことを表す。<br>
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getEIT_schedule_flag() {
         int temp;
@@ -107,7 +118,7 @@ public final class ServiceDescriptionTableRepeatingPart {
      * (EIT[現在/次]サブテーブルの最大送出間隔については「ガイドライン」を参照。)<br>
      * このフラグが「0」の場合は、そのサービスのEIT[現在/次]情報が現在のトランスポートストリーム内には存在しないことを表す。<br>
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getEIT_present_following_flag() {
         int temp;
@@ -125,7 +136,7 @@ public final class ServiceDescriptionTableRepeatingPart {
      * 4__=_実行中<br>
      * 5-7=_将来の使用のためにリザーブ<br>
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getRunning_status() {
         int temp;
@@ -139,7 +150,7 @@ public final class ServiceDescriptionTableRepeatingPart {
      * それが「0」の場合はそのサービス内の全てのコンポーネントストリームがスクランブルされていないことを示す。
      * 「1」の場合は、一つ以上のストリームへのアクセスがCAシステムにより制御されていることを示す。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getFree_CA_mode() {
         int temp;
@@ -152,7 +163,7 @@ public final class ServiceDescriptionTableRepeatingPart {
     /**
      * descriptors_loop_length(記述子ループ長):これは、12ビットのフィールドで、 後続の記述子の全バイト長を規定する
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized int getDescriptors_loop_length() {
         byte[] t = new byte[2];
@@ -165,7 +176,7 @@ public final class ServiceDescriptionTableRepeatingPart {
     /**
      * 記述子ループを取得する。
      *
-     * @return
+     * @return 上記の値
      */
     public synchronized DescriptorsLoop getDescriptors_loop() {
         byte[] t = new byte[this.getDescriptors_loop_length()];

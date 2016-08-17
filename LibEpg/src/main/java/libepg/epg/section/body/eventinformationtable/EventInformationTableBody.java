@@ -25,6 +25,7 @@ public final class EventInformationTableBody extends SectionBody {
      * service_id(サービス識別):これは16ビットのフィールドで、
      * そのトランスポートストリーム内の他のサービスからこのサービスを識別するためのラベルの役割をする。
      * サービス識別は、対応するプログラムマップセクション内の放送番組番号識別（program_number）に等しい。
+     * @return 上記の値
      */
     public final synchronized int getService_id() {
         byte[] t = new byte[2];
@@ -50,6 +51,7 @@ public final class EventInformationTableBody extends SectionBody {
      * バージョン番号はサブテーブル内の情報に変化があった場合に1 加算される。 その値が31 になった場合は、その次は0 に戻る。
      * カレントネクスト指示が「1」の場合は、バージョン番号はテーブル識別とサービス識別で定義される現在有効なサブテーブルのバージョン番号になる。
      * カレントネクスト指示が「0」の場合は、バージョン番号はテーブル識別とサービス識別で定義される次に有効なサブテーブルのバージョン番号になる。
+     * @return 上記の値
      */
     public final synchronized int getVersion_number() {
         int temp;
@@ -63,6 +65,7 @@ public final class EventInformationTableBody extends SectionBody {
      * current_next_indicator(カレントネクスト指示):この1ビットの指示は、
      * それが「1」の場合はサブテーブルが現在のサブテーブルであることを示す。
      * 「0」の場合は、送られるサブテーブルはまだ適用されず、次のサブテーブルとして使用されることを示す。
+     * @return 上記の値
      */
     public final synchronized int getCurrent_next_indicator() {
         int temp;
@@ -77,6 +80,7 @@ public final class EventInformationTableBody extends SectionBody {
      * セクション番号は、同一のテーブル識別、サービス識別、トランスポートストリーム識別、オリジナルネットワーク識別を持つセクションの追加ごとに1
      * 加算される。 この場合、サブテーブルはいくつかのセグメントとして構築してもよい。 各セグメント内では、セクションの追加ごとにセクション番号を1
      * 加算させるが、セグメントの最終セクションと隣接するセグメントの最初のセクションとの間では、番号の隙間があってもよい。
+     * @return 上記の値
      */
     public final synchronized int getSection_number() {
         int temp;
@@ -87,6 +91,7 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * last_section_number(最終セクション番号):この8ビットのフィールドは、 そのセクションが属するサブテーブルの最後のセクション
      * (すなわち、最大のセクション番号を持つセクション)の番号を規定する。
+     * @return 上記の値
      */
     public final synchronized int getLast_section_number() {
         int temp;
@@ -97,7 +102,7 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * transport_stream_id(トランスポートストリーム識別): これは16 ビットのフィールドで、 EIT
      * が示すこのトランスポートストリームをその分配システム内の他の多重から識別するラベルの役割をする。
-     * @return 
+     * @return 上記の値
      * @throws  IllegalStateException 0x0000もしくは0xffffのとき。
      */
     public final synchronized int getTransport_stream_id() throws IllegalStateException{
@@ -113,6 +118,7 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * original_network_id(オリジナルネットワーク識別): この16
      * ビットのフィールドは、元の分配システムのネットワーク識別を規定するラベルの役割をする。
+     * @return 上記の値
      */
     public final synchronized int getOriginal_network_id() {
         byte[] t = new byte[2];
@@ -125,6 +131,7 @@ public final class EventInformationTableBody extends SectionBody {
      * segment_last_section_number(セグメント最終セクション番号)この8 ビットのフィールドは、
      * サブテーブルのこのセグメントの最後のセクションの番号を規定する。
      * 分割されないサブテーブルでは、このフィールドは最終セクション番号(last_section_number)フィールドと同一の値に設定しなければならない。
+     * @return 上記の値
      */
     public final synchronized int getSegment_last_section_number() {
         int temp;
@@ -135,6 +142,7 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * last_table_id(最終テーブル識別):この8 ビットのフィールドは、使用されている最終のテーブル識別を示す。 使用されるテーブルが1
      * 個のみの場合は、このフィールドにはこのテーブルのテーブル識別を設定する。 連続したテーブル識別値に渡って情報は時系列順でなければならない。。
+     * @return 上記の値
      */
     public final synchronized int getLast_table_id() {
         int temp;
@@ -145,7 +153,7 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * 繰り返し項目のバイト列
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized byte[] getRepeatingPart() {
         byte[] t = new byte[this.getData().length - 11];
@@ -156,14 +164,14 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * 分割済みの繰り返し項目。
      *
-     * @return
+     * @return 上記の値
      */
     public final synchronized List<EventInformationTableRepeatingPart> getEITRepeatingPartList() {
         List<byte[]> t = ByteArraySplitter.splitByLengthField(this.getRepeatingPart(), 11, 2, (x) -> x & 0x0FFF);
         List<EventInformationTableRepeatingPart> dest = new ArrayList<>();
-        for (byte[] temp : t) {
+        t.stream().forEach((temp) -> {
             dest.add(new EventInformationTableRepeatingPart(temp));
-        }
+        });
         return Collections.unmodifiableList(dest);
     }
     private static final MessageFormat TABLE_DESC = new MessageFormat(
