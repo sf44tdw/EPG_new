@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package channellistmaker.dataextractor;
 
+import static channellistmaker.dataextractor.SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE;
 import java.util.Objects;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -56,12 +56,13 @@ public final class KeyFields {
 
     /**
      * @param channelId チャンネルID
-     * @param transportStreamId トランスポートストリーム識別
-     * @param originalNetworkId オリジナルネットワーク識別
-     * @param serviceId サービス識別
-     * @throws IllegalArgumentException チャンネルIDが設定されていないか、チャンネルID以外のフィールドのいずれかに16ビット符号なし2進数で表記可能な範囲外の値が設定された場合。
+     * @param transportStreamId トランスポートストリーム識別 (16bit符号なし ただし、0x0000と0xffffは使用禁止。)
+     * @param originalNetworkId オリジナルネットワーク識別 (16bit符号なし)
+     * @param serviceId サービス識別 (16bit符号なし)
+     * @throws IllegalArgumentException
+     * チャンネルIDが設定されていないか、チャンネルID以外のフィールドのいずれかに16ビット符号なし2進数で表記可能な範囲外の値が設定された場合。
      */
-    public KeyFields(String channelId, int transportStreamId, int originalNetworkId, int serviceId) throws IllegalArgumentException{
+    public KeyFields(String channelId, int transportStreamId, int originalNetworkId, int serviceId) throws IllegalArgumentException {
         this.channelId = channelId;
         this.transportStreamId = transportStreamId;
         this.originalNetworkId = originalNetworkId;
@@ -72,21 +73,21 @@ public final class KeyFields {
         String errorFieldName = null;
         ID_CHECK:
         {
-            if (!ID_RANGE.containsInteger(this.transportStreamId)) {
+            if (!TRANSPORT_STREAM_ID_RANGE.contains(this.transportStreamId)) {
                 errorFieldName = "トランスポートストリーム識別";
                 break ID_CHECK;
             }
-            if (!ID_RANGE.containsInteger(this.originalNetworkId)) {
+            if (!TRANSPORT_STREAM_ID_RANGE.contains(this.originalNetworkId)) {
                 errorFieldName = "オリジナルネットワーク識別";
                 break ID_CHECK;
             }
-            if (!ID_RANGE.containsInteger(this.serviceId)) {
+            if (!TRANSPORT_STREAM_ID_RANGE.contains(this.serviceId)) {
                 errorFieldName = "サービス識別";
                 break ID_CHECK;
             }
         }
         if (errorFieldName != null) {
-            throw new IllegalArgumentException("0x0以上0xffff以下の範囲外の値がセットされました。フィールド = " + errorFieldName);
+            throw new IllegalArgumentException("範囲外の値がセットされました。フィールド = " + errorFieldName);
         }
     }
 
@@ -120,6 +121,7 @@ public final class KeyFields {
 
     /**
      * トランスポートストリーム識別、オリジナルネットワーク識別、サービス識別から、Map用の複合キーを生成する。
+     *
      * @see java.util.Map
      * @return 複合キー
      */
