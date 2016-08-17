@@ -111,7 +111,7 @@ public class TsReader {
         if (!this.isReadEOF()) {
             return readLimit;
         }
-        throw new NullPointerException("EOFまで読み込む設定になっています。");
+        throw new IllegalStateException("EOFまで読み込む設定になっています。");
     }
 
     public synchronized Map<Integer, List<TsPacketParcel>> getPackets() {
