@@ -16,7 +16,7 @@ import libepg.util.bytearray.ByteDataBlock;
  * @author normal
  */
 public class SectionBody {
-    
+
     private final TABLE_ID tableID;
     private final ByteDataBlock data;
 
@@ -63,7 +63,7 @@ public class SectionBody {
     public final synchronized byte[] getData() {
         return this.data.getData();
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -71,7 +71,7 @@ public class SectionBody {
         hash = 73 * hash + Objects.hashCode(this.data);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -92,17 +92,18 @@ public class SectionBody {
         }
         return true;
     }
-    
+
     private static final MessageFormat SECTION_BODY_DESC = new MessageFormat(
-            "テーブル識別値 = {0}\n"
+            "\n"
+            + "テーブル識別値 = {0}\n"
             + "バイト列 = {1}\n"
     );
-    
+
     @Override
     public String toString() {
         Object[] parameters = {this.getTableID(),
             this.data.toString()};
         return SECTION_BODY_DESC.format(parameters);
     }
-    
+
 }

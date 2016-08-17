@@ -27,7 +27,7 @@ import epgtools.loggerfactory.LoggerFactory;
  *
  * @author normal
  */
-public class ClassGetter {
+ class ClassGetter {
 
     private static final Log LOG;
 

@@ -29,6 +29,7 @@ import org.apache.commons.lang3.Range;
 
 /**
  * サービスID
+ * 用があるのはデジタルTVサービスだけ。
  * @author normal
  */
 public enum SERVICE_ID {
