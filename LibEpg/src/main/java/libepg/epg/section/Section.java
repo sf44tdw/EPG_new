@@ -36,7 +36,7 @@ import libepg.util.bytearray.ByteDataBlock;
  *
  * @author normal
  */
-public class Section {
+public final class Section {
 
     /**
      * falseのとき、このクラスはログを出さなくなる

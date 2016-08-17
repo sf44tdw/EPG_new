@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import libepg.epg.section.SectionBody;
-import libepg.epg.section.transportstreamid.TransportStreamIdRangeChecker;
+import libepg.epg.section.ranges.SectionValueRangeChecker;
 import libepg.util.bytearray.ByteArraySplitter;
 import org.apache.commons.codec.binary.Hex;
 
@@ -36,7 +36,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
         byte[] t = new byte[2];
         System.arraycopy(this.getData(), 0, t, 0, t.length);
         int x = ByteConverter.bytesToInt(t);
-        if (!TransportStreamIdRangeChecker.TRANSPORT_STREAM_ID_RANGE.contains(x)) {
+        if (!SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE.contains(x)) {
             throw new IllegalStateException("トランスポートストリーム識別が範囲外です。 値 = " + Integer.toHexString(x));
         }
         return x;

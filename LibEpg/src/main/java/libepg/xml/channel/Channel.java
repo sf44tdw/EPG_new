@@ -5,7 +5,7 @@
  */
 package libepg.xml.channel;
 
-import libepg.epg.section.descriptor.servicedescriptor.SERVICE_ID;
+import libepg.epg.section.descriptor.servicedescriptor.SERVICE_TYPE;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,7 +18,7 @@ import org.w3c.dom.Text;
  */
 public final class Channel {
 //    //サービス種別
-//    private final SERVICE_ID serviceType;
+//    private final SERVICE_TYPE serviceType;
 //    //チャンネルID(オリジナルネットワーク識別、トランスポートストリーム識別、サービス識別からハッシュ関数で自動生成)
 //    private final String id;
 //    //物理チャンネル番号(設定ファイルからロード)

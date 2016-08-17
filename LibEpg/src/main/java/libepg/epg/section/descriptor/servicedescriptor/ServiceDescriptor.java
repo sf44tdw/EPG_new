@@ -38,8 +38,8 @@ public final class ServiceDescriptor extends Descriptor {
      *
      * @return サービス形式種別。 <br>
      */
-    public synchronized SERVICE_ID getService_type_Enum() {
-        return SERVICE_ID.reverseLookUp(this.getService_type());
+    public synchronized SERVICE_TYPE getService_type_Enum() {
+        return SERVICE_TYPE.reverseLookUp(this.getService_type());
     }
 
     /**

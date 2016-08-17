@@ -32,7 +32,7 @@ import org.apache.commons.lang3.Range;
  * 用があるのはデジタルTVサービスだけ。
  * @author normal
  */
-public enum SERVICE_ID {
+public enum SERVICE_TYPE {
     /**
      * 0x00:未定義<br>
      * 0x03_-_0x7F:未定義<br>
@@ -128,11 +128,11 @@ public enum SERVICE_ID {
     STORAGE_TYPE_SERVICES_USING_TLV("TLVを用いた蓄積型サービス", 0xC1);
 
     //逆引きリスト
-    private static final Map<Integer, SERVICE_ID> rev = new ConcurrentHashMap<>();
+    private static final Map<Integer, SERVICE_TYPE> rev = new ConcurrentHashMap<>();
 
     static {
         {
-            for (SERVICE_ID sid : SERVICE_ID.values()) {
+            for (SERVICE_TYPE sid : SERVICE_TYPE.values()) {
                 for (int i : sid.serviceIds) {
                     if (!rev.containsKey(i)) {
                         rev.put(i, sid);
@@ -154,14 +154,14 @@ public enum SERVICE_ID {
      * @param serviceId
      * @return サービスIDを含む定数。なければnull。
      */
-    public static synchronized SERVICE_ID reverseLookUp(int serviceId) {
+    public static synchronized SERVICE_TYPE reverseLookUp(int serviceId) {
         return rev.get(serviceId);
     }
 
     private final String serviceType;
     private final Set<Integer> serviceIds;
 
-    private SERVICE_ID(String serviceType, Integer serviceId, Integer... serviceIds) {
+    private SERVICE_TYPE(String serviceType, Integer serviceId, Integer... serviceIds) {
         this.serviceType = serviceType;
         if ((this.serviceType == null) || (this.serviceType.equals(""))) {
             throw new IllegalArgumentException("サービス種が指定されていません。");
