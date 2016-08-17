@@ -33,3 +33,5 @@ category lang="en"=NIBBLE_LEVEL_2.getNibble_en
 transport_stream_id=EventInformationTableBody.getTransport_stream_id
 original_network_id=EventInformationTableBody.getOriginal_network_id
 service_id=EventInformationTableBody.getService_id
+
+暗号化された放送でも、EPGは平文。
