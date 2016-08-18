@@ -44,7 +44,7 @@ public final class Programme extends DataObject {
     private final String description;
     private final String additional_description;
     private final List<Nibble> nibbles;
-
+    private final boolean this_or_other;
     /**
      *
      * @param event_id 番組ID
@@ -57,11 +57,12 @@ public final class Programme extends DataObject {
      * @param transport_stream_id 補足参照
      * @param original_network_id 補足参照
      * @param service_id 補足参照
+     * @param this_or_other 自局、他局フラグ
      *
      * @see DataObject {
      *
      */
-    public Programme(int event_id, Timestamp start_Time, Timestamp stop_Time, String event_name, String description, String additional_description, List<Nibble> nibbles, int transport_stream_id, int original_network_id, int service_id) {
+    public Programme(int event_id, Timestamp start_Time, Timestamp stop_Time, String event_name, String description, String additional_description, List<Nibble> nibbles, int transport_stream_id, int original_network_id, int service_id,boolean this_or_other) {
         super(transport_stream_id, original_network_id, service_id);
         this.event_id = event_id;
         this.start_Time = start_Time.getTime();
@@ -70,6 +71,8 @@ public final class Programme extends DataObject {
         this.description = replaceNull(description);
         this.additional_description = replaceNull(additional_description);
         this.nibbles = nibbles;
+        this.this_or_other=this_or_other;
+        
     }
 
     /**
@@ -112,6 +115,13 @@ public final class Programme extends DataObject {
      */
     public String getAdditional_description() {
         return additional_description;
+    }
+
+    /**
+     * @return 自局の番組ならtrue そうでないならfalse
+     */
+    public boolean isThis_or_other() {
+        return this_or_other;
     }
 
     /**

@@ -17,8 +17,6 @@
 package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,25 +61,18 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
     public Map<MultiKey<Integer>, Channel> getDataList() throws IllegalStateException {
 
         final boolean isPutMaeesgage = false;
+        
+        this.checkSectionBodyType();
 
-        final SectionBody b = this.getSource().getSectionBody();
-
-        if (b.getClass() != this.getSource().getTable_id_const().getDataType()) {
-            //まずありえないのでテストケースにはしない。
-            throw new IllegalStateException("セクションとセクション本体のデータ型が異なっています。セクション = " + this.getSource().getClass() + " 本体 = " + b.getClass() + " セクションのデータ = " + Hex.encodeHexString(this.getSource().getData()));
-        }
-
-        final ServiceDescriptionTableBody body = (ServiceDescriptionTableBody) b;
+        final ServiceDescriptionTableBody body = (ServiceDescriptionTableBody)  this.getSource().getSectionBody();
 
         final int transport_stream_id = body.getTransport_stream_id();
         final int original_network_id = body.getOriginal_network_id();
         int service_id = -1;
         String service_name_String;
 
-        final Set<Channel> ret = Collections.synchronizedSet(new HashSet<>());
-        if (LOG.isInfoEnabled() && isPutMaeesgage) {
-            LOG.info("重複排除用セット作製");
-        }
+        final Set<Channel> ret = this.initiarizeSet();
+
 
         final List<ServiceDescriptionTableRepeatingPart> rep = body.getSDTRepeatingPartList();
 
