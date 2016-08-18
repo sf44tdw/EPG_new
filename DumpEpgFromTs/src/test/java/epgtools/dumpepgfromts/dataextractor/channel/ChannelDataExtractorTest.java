@@ -18,7 +18,9 @@ package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.test.common.TestSection;
 import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import libepg.epg.section.Section;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.collections4.keyvalue.MultiKey;
@@ -92,10 +94,10 @@ public class ChannelDataExtractorTest {
         LOG.info("");
         Section sec = TestSection.getSdt1();
         ChannelDataExtractor instance = new ChannelDataExtractor(sec);
-      Map<MultiKey<Integer>, Channel> map =  instance.getDataList();
-      assertTrue(map.size()==1);
-      Channel ch=map.get( new MultiKey<>(0x4750,0x4,0xfc));
-      assertEquals(ch.getDisplay_name(),"イマジカＢＳ・映画");
+        Map<MultiKey<Integer>, Channel> map = instance.getDataList();
+        assertTrue(map.size() == 1);
+        Channel ch = map.get(new MultiKey<>(0x4750, 0x4, 0xfc));
+        assertEquals(ch.getDisplay_name(), "イマジカＢＳ・映画");
     }
 
     /**

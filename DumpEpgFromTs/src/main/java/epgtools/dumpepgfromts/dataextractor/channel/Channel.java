@@ -17,9 +17,6 @@
 package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.dataextractor.DataObject;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * チャンネル情報を保持するクラス。 保持する情報は以下の通り。<br>
@@ -30,7 +27,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  *
  * @author normal
  */
-public final class Channel extends DataObject{
+public final class Channel extends DataObject {
 
     private final String display_name;
 
@@ -43,41 +40,15 @@ public final class Channel extends DataObject{
      * @throws IllegalArgumentException 各フィールドに不正な値がセットされたとき。
      */
     public Channel(int transport_stream_id, int original_network_id, int service_id, String display_name) throws IllegalArgumentException {
-        
-        super(transport_stream_id, original_network_id, service_id);
-        
-        this.display_name = display_name;
 
-        String errorMessage = null;
-        CHECK:
-        {
-            if (this.display_name == null || "".equals(this.display_name)) {
-                errorMessage = "サービス名がnullもしくは空文字列です。";
-                break CHECK;
-            }
-        }
-        if (errorMessage != null) {
-            throw new IllegalArgumentException(errorMessage);
-        }
+        super(transport_stream_id, original_network_id, service_id);
+
+        this.display_name = Channel.replaceNull(display_name);
+
     }
 
     public String getDisplay_name() {
         return display_name;
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(7, 31, this);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, true);
-    }
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
     }
 
 }

@@ -18,9 +18,10 @@ package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 import libepg.epg.section.Section;
 import libepg.epg.section.SectionBody;
 import libepg.epg.section.TABLE_ID;
@@ -35,10 +36,10 @@ import org.apache.commons.collections4.keyvalue.MultiKey;
 
 /**
  * SDTからチャンネル情報を抽出し、重複を除去してリスト化する。 取り出す情報は以下の通り。
- * transport_stream_id=ServiceDescriptionTableBody.getTransport_stream_id
- * original_network_id=ServiceDescriptionTableBody.getOriginal_network_id
- * service_id=ServiceDescriptionTableRepeatingPart.getService_id
- * ServiceDescriptor.getService_name_String
+ * transport_stream_id=ServiceDescriptionTableBody.getTransport_stream_id<br>
+ * original_network_id=ServiceDescriptionTableBody.getOriginal_network_id<br>
+ * service_id=ServiceDescriptionTableRepeatingPart.getService_id<br>
+ * ServiceDescriptor.getService_name_String<br>
  *
  * @author normal
  */
@@ -55,7 +56,7 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
     }
 
     /**
-     * @return チャンネル情報をまとめたマップ。
+     * @return チャンネル情報をまとめたオブジェクト
      * @throws IllegalStateException セクションのデータ部分の型がテーブルIdの指定と異なる場合。
      */
     @Override
@@ -76,12 +77,12 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
         final int original_network_id = body.getOriginal_network_id();
         int service_id = -1;
         String service_name_String;
-        
-        final Map<MultiKey<Integer>, Channel> ret = new ConcurrentHashMap<>();
+
+        final Set<Channel> ret = Collections.synchronizedSet(new HashSet<>());
         if (LOG.isInfoEnabled() && isPutMaeesgage) {
-            LOG.info("マップ作製");
+            LOG.info("重複排除用セット作製");
         }
-        
+
         final List<ServiceDescriptionTableRepeatingPart> rep = body.getSDTRepeatingPartList();
 
         if (LOG.isInfoEnabled() && isPutMaeesgage) {
@@ -142,12 +143,15 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
 
             LOG.debug("サービス名 = " + service_name_String);
             final Channel ch = new Channel(transport_stream_id, original_network_id, service_id, service_name_String);
-            this.putToMap(ret, ch);
+            boolean addret = ret.add(ch);
+            if (addret = false) {
+                LOG.info("重複しました。 データ = " + ch);
+            }
         }
         if (LOG.isInfoEnabled() && isPutMaeesgage) {
             LOG.info("サービス情報の件数 = " + ret.size());
         }
-        return Collections.unmodifiableMap(ret);
+        return this.SetToMap(ret);
 
     }
 

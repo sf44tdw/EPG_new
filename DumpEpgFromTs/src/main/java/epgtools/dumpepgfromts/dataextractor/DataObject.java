@@ -29,14 +29,22 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  */
 public class DataObject {
 
+    protected static String replaceNull(String src) {
+        if (src == null) {
+            return "";
+        } else {
+            return src;
+        }
+    }
+
     private final KeyFields kf;
 
-    public DataObject(int transport_stream_id, int original_network_id, int service_id) {
+    public DataObject(int transport_stream_id, int original_network_id, int service_id) throws IllegalArgumentException {
         this.kf = new KeyFields(transport_stream_id, original_network_id, service_id);
     }
 
     /**
-     * @return  トランスポートストリーム識別
+     * @return トランスポートストリーム識別
      */
     public int getTransport_stream_id() {
         return this.kf.getTransport_stream_id();

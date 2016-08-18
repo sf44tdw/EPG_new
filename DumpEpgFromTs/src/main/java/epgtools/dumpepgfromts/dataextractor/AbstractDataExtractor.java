@@ -17,7 +17,10 @@
 package epgtools.dumpepgfromts.dataextractor;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
 import libepg.epg.section.TABLE_ID;
 import org.apache.commons.codec.binary.Hex;
@@ -72,26 +75,14 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
     }
 
     /**
-     * マップに対し、T型オブジェクトのキー生成メソッドを使用してデータを追加する。<br>
-     * これと同じ振る舞いをする。<br> {@literal Map.put(data.getMuiltiKey(), data)} <br>
-     *
-     * @param targetMap データを追加するマップ
-     * @param putData 追加したいデータ
-     * @return Mapのput()に同じ。
-     * @see Map#put(java.lang.Object, java.lang.Object)
+     * キー生成メソッドを持つT型オブジェクトが入ったSetの中身を、そのキー生成メソッドを使用してマップに移し替える。
      */
-    protected final T putToMap(Map<MultiKey<Integer>, T> targetMap, T putData) {
-        final boolean isPutMessage = false;
-        if (LOG.isInfoEnabled()&& isPutMessage) {
-            LOG.info("データを追加します。 データ = " + putData);
-            LOG.info("マップサイズ前 = " + targetMap.size());
+    protected final Map<MultiKey<Integer>, T> SetToMap(Set<T> src) {
+        Map<MultiKey<Integer>, T> ret = new ConcurrentHashMap<>();
+        for (T value : src) {
+            ret.put(value.getMuiltiKey(), value);
         }
-        T ret = targetMap.put(putData.getMuiltiKey(), putData);
-        if (LOG.isInfoEnabled() && isPutMessage) {
-            LOG.info("マップサイズ後 = " + targetMap.size());
-            LOG.info("putの戻り値。 データ = " + putData);
-        }
-        return ret;
+        return Collections.unmodifiableMap(ret);
     }
 
     /**

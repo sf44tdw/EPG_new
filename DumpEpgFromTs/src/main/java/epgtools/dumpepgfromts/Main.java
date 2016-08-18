@@ -153,12 +153,12 @@ public class Main {
             pids.addAll(RESERVED_PROGRAM_ID.SDT_OR_BAT.getPids());
             pids.addAll(RESERVED_PROGRAM_ID.EIT_GR_ST.getPids());
 
-            //全部のファイルからパケットを抽出してから一気にセクションを再構成しようとするとメモリ不足になるので、ファイルを1こずつ処理する。
+            //全部のファイルからパケットを抽出してから一気にセクションを再構成しようとするとメモリ不足になるので、ファイルを1個ずつ処理する。
             LOG.info("読み込み対象ファイル = " + tsFile.getAbsolutePath());
             final TsReader reader = new TsReader(tsFile, pids, limit);
-            final Map<Integer, List<TsPacketParcel>> pid_packets = reader.getPackets();
+            Map<Integer, List<TsPacketParcel>> pid_packets = reader.getPackets();
 
-            final Map<Integer, Set<Section>> pids_sections_temp = new ConcurrentHashMap<>();
+            Map<Integer, Set<Section>> pids_sections_temp = new ConcurrentHashMap<>();
             for (Integer pidKey : pid_packets.keySet()) {
                 LOG.info("処理対象pid = " + Integer.toHexString(pidKey) + " pid定数 = " + RESERVED_PROGRAM_ID.reverseLookUp(pidKey));
                 SectionReconstructor sectionMaker = new SectionReconstructor(pid_packets.get(pidKey), pidKey);
@@ -168,7 +168,10 @@ public class Main {
                     pids_sections_temp.put(pidKey, sections);
                 }
             }
-            final Map<Integer, Set<Section>> pids_sections = Collections.unmodifiableMap(pids_sections_temp);
+            Map<Integer, Set<Section>> pids_sections = Collections.unmodifiableMap(pids_sections_temp);
+            
+            pid_packets=null;
+            pids_sections_temp = null;
 
             final Map<MultiKey<Integer>, Channel> multiKey_channels_temp = new ConcurrentHashMap<>();
             for (Integer pid : pids_sections.keySet()) {
@@ -179,13 +182,16 @@ public class Main {
                     } else if (RESERVED_PROGRAM_ID.reverseLookUp(pid) == RESERVED_PROGRAM_ID.EIT_GR_ST) {
                         LOG.info("EIT処理。未実装");
                     }
-
                 }
             }
+            pids_sections = null;
+
             //仮処理。チャンネル情報をダンプ。
             for (MultiKey<Integer> k : multiKey_channels_temp.keySet()) {
                 LOG.info(multiKey_channels_temp.get(k));
             }
+
+            System.gc();
 
         } catch (ParseException e) {
             // print usage.
