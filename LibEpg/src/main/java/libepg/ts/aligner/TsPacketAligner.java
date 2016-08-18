@@ -41,6 +41,12 @@ import epgtools.loggerfactory.LoggerFactory;
 public final class TsPacketAligner {
 
     /**
+     * チェック関連のログを抑止するか。trueなら抑止しない。
+     * チェック関連のログを抑止しないでログレベルをtraceに設定した場合、ログの量が読み込み元のtsファイルの容量を超える(1GBを超えることもある)ため、このクラスのデバッグ時以外は抑止しておく。
+     */
+    public static final boolean NOT_DETERRENT_CHECK_TRACE_LOG = false;
+
+    /**
      * falseのとき、このクラスはログを出さなくなる
      */
     public static final boolean CLASS_LOG_OUTPUT_MODE = true;
@@ -50,6 +56,9 @@ public final class TsPacketAligner {
     static {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, TsPacketAligner.CLASS_LOG_OUTPUT_MODE).getLOG();
+        if (NOT_DETERRENT_CHECK_TRACE_LOG == false) {
+            LOG.info("チェックログ抑止中。");
+        }
     }
 
     private final int pid;
@@ -159,7 +168,7 @@ public final class TsPacketAligner {
             CHECK:
             {
                 if (t.getAdaptation_field_control() == ADAPTATION_FIELD_CONTROL.ONLY_ADAPTATION_FIELD) {
-                    if (LOG.isTraceEnabled()) {
+                    if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                         LOG.trace("アダプテーションフィールドのみ。巡回カウンタは常に0");
                     }
                     if (t.getContinuity_counter() == 0) {
@@ -173,7 +182,7 @@ public final class TsPacketAligner {
                 }
 
                 if ((this.previousPacket == null)) {
-                    if (LOG.isTraceEnabled()) {
+                    if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                         LOG.trace("前回パケットなし");
                     }
                     if (t.getContinuity_counter() == 0) {
@@ -187,7 +196,7 @@ public final class TsPacketAligner {
 
                 if ((this.previousPacket.getAdaptation_field_control() == t.getAdaptation_field_control()) && (t.getAdaptation_field_control() == ADAPTATION_FIELD_CONTROL.ONLY_ADAPTATION_FIELD)) {
                 } else {
-                    if (LOG.isTraceEnabled()) {
+                    if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                         LOG.trace("ペイロード有り");
                         LOG.trace("ペイロード有り(15の次は0)");
                     }
@@ -198,7 +207,7 @@ public final class TsPacketAligner {
                         ret = false;
                     }
 
-                    if (LOG.isTraceEnabled()) {
+                    if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                         LOG.trace("ペイロード有り(通常のカウントアップ。)");
                     }
                     if ((this.previousPacket.getContinuity_counter() == (t.getContinuity_counter() - 1))) {
@@ -210,7 +219,7 @@ public final class TsPacketAligner {
                 }
 
             }
-            if (LOG.isTraceEnabled()) {
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                 String s;
                 if (this.previousPacket == null) {
                     s = "null";
@@ -237,49 +246,51 @@ public final class TsPacketAligner {
      */
     public final synchronized ADD_RESULT add(TsPacket o) {
 
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("パケット = \n" + o);
         }
-        
-        if (LOG.isTraceEnabled()) {
+
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("引数nullチェック");
         }
-        if (o == null) {        if (LOG.isTraceEnabled()) {
-            LOG.trace("引数nullチェック");
-        }
+        if (o == null) {
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
+                LOG.trace("引数nullチェック");
+            }
             NullPointerException e = new NullPointerException("渡されたパケットがnullです。");
-            LOG.trace("ぬるぽ", e);
             throw e;
         }
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("トランスポートエラーインジケータチェック");
         }
         if (o.getTransport_error_indicator() == 1) {
-            LOG.trace("エラーパケット扱い。");
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
+                LOG.trace("エラーパケット扱い。");
+            }
             return ADD_RESULT.ERROR_PACKET;
         }
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("pidチェック");
         }
         if (o.getPid() != this.getPid()) {
             return ADD_RESULT.DEFFERENT_PID;
         }
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("パケット重複チェック");
         }
         if ((this.packetDic == null)) {
-            if (LOG.isTraceEnabled()) {
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                 LOG.trace("初回なので重複チェックオブジェクトを初期化");
             }
             this.clearDic();
         }
         if ((this.packetDic.size() > 0) && (((this.packetDic.last().getContinuity_counter() == 15) && (o.getContinuity_counter() == 0)) || ((this.packetDic.last().getContinuity_counter() == 0) && (o.getContinuity_counter() == 0)))) {
-            if (LOG.isTraceEnabled()) {
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                 LOG.trace("カウントが1めぐりしたので重複チェックオブジェクトを初期化");
             }
             this.clearDic();
         }
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("重複チェック");
         }
         if (!this.packetDic.contains(o)) {
@@ -288,29 +299,29 @@ public final class TsPacketAligner {
             return ADD_RESULT.DUPLICATION;
         }
 
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("巡回カウンタチェックと追加");
         }
         TsPacketParcel tempParcel;
         if (this.checker.isNotMissing(o)) {
-            if (LOG.isTraceEnabled()) {
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                 LOG.trace("直前欠落なし");
             }
             tempParcel = new TsPacketParcel(o, MISSING_PACKET_FLAG.NOT_MISSING);
         } else {
-            if (LOG.isTraceEnabled()) {
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                 LOG.trace("直前欠落あり");
             }
             tempParcel = new TsPacketParcel(o, MISSING_PACKET_FLAG.MISSING_JUST_BEFORE);
         }
         if ((this.temp.size() > 0) && ((this.temp.getLast().getPacket().getContinuity_counter() == 15) || (o.getContinuity_counter() == 0))) {
-            if (LOG.isTraceEnabled()) {
+            if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
                 LOG.trace("カウントが1めぐりしたので一時保管オブジェクトから最終保管オブジェクトへ移動");
             }
             this.tempToResult();
         }
         this.temp.add(tempParcel);
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("最終保管オブジェクト要素数=" + this.result.size());
             LOG.trace("保管中の最終カウンタ値=" + this.temp.getLast().getPacket().getContinuity_counter());
         }
@@ -324,7 +335,7 @@ public final class TsPacketAligner {
      */
     public final synchronized List<TsPacketParcel> getPackets() {
         result.addAll(temp);
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled() && NOT_DETERRENT_CHECK_TRACE_LOG) {
             LOG.trace("最終保管オブジェクト要素数=" + this.result.size());
         }
         temp.clear();

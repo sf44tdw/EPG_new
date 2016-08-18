@@ -26,7 +26,7 @@ import libepg.common.packet.TestPacket_SDT;
 import libepg.epg.section.Section;
 import libepg.epg.section.Section.CRC_STATUS;
 import libepg.ts.aligner.TsPacketAligner;
-import libepg.ts.packet.PROGRAM_ID;
+import libepg.ts.packet.RESERVED_PROGRAM_ID;
 import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
@@ -52,7 +52,7 @@ public class SectionReconstructorTest {
 
     private final TestPacket_EIT eits;
 
-    private final PROGRAM_ID pids = PROGRAM_ID.EIT_GR_ST;
+    private final RESERVED_PROGRAM_ID pids = RESERVED_PROGRAM_ID.EIT_GR_ST;
 
     private final List<TsPacketAligner> als = new ArrayList<>();
 

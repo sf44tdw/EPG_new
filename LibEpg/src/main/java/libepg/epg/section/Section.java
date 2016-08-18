@@ -84,7 +84,9 @@ public final class Section {
         if (tableId == null) {
             MessageFormat msg2 = new MessageFormat("テーブル識別値が見つかりません。 渡された配列={0}");
             Object[] parameters2 = {hexValue};
-            LOG.trace(msg2.format(parameters2));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(msg2.format(parameters2));
+            }
             throw new IllegalArgumentException(msg2.format(parameters2));
         }
 
@@ -106,7 +108,9 @@ public final class Section {
         if (sectionLength > tableId.getMaxSectionLength().getMaxSectionBodyLength()) {
             MessageFormat msg3 = new MessageFormat("セクション長フィールドの値が大きすぎます。セクション長フィールドの最大値={0} セクション長フィールドの値={1} 渡された配列={2}");
             Object[] parameters3 = {tableId.getMaxSectionLength().getMaxSectionBodyLength(), sectionLength, hexValue};
-            LOG.trace(msg3.format(parameters3));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(msg3.format(parameters3));
+            }
             throw new IllegalArgumentException(msg3.format(parameters3));
         }
 
@@ -118,7 +122,9 @@ public final class Section {
         if (LOG.isTraceEnabled()) {
             MessageFormat msg1 = new MessageFormat("\n切り詰め前={0}\n切り詰め後={1}");
             Object[] parameters1 = {Hex.encodeHexString(temp), Hex.encodeHexString(sectionByteArray)};
-            LOG.trace(msg1.format(parameters1));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(msg1.format(parameters1));
+            }
         }
 
         this.data = new ByteDataBlock(sectionByteArray);

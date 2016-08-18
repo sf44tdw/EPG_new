@@ -9,7 +9,6 @@ import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,8 +72,18 @@ public class TsReader {
         }
         Set<Integer> s = new HashSet<>();
         if (pids != null) {
-            for (Iterator<Integer> ite = pids.iterator(); ite.hasNext();) {
-                s.add(ite.next());
+            for (Integer pid : pids) {
+                if (pid != null) {
+                    s.add(pid);
+                } else if (LOG.isWarnEnabled()) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("\npidの一覧にnullが含まれています。nullの項目は無視します。\n");
+                    sb.append("一覧の内容:\n");
+                    for (Integer pid_ : pids) {
+                        sb.append("項目 = ").append(Integer.toHexString(pid_)).append("\n");
+                    }
+                    LOG.warn(sb.toString());
+                }
             }
         }
         this.pids = Collections.unmodifiableSet(s);
@@ -165,7 +174,7 @@ public class TsReader {
                     if ((tsp.checkHeader()) && (this.pids.contains(tsp.getPid()))) {
                         TsPacketAligner tspa = temp_ret.get(tsp.getPid());
                         TsPacketAligner.ADD_RESULT resp = tspa.add(tsp);
-                        if (LOG.isTraceEnabled()) {
+                        if (LOG.isTraceEnabled() && NOT_DETERRENT_READ_TRACE_LOG) {
                             LOG.trace("追加結果 = " + resp);
                         }
                     }

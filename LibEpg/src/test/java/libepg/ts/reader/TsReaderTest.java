@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import libepg.common.tsfile.TsFile;
-import libepg.ts.packet.PROGRAM_ID;
+import libepg.ts.packet.RESERVED_PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
 import org.apache.commons.logging.Log;
@@ -61,8 +61,8 @@ public class TsReaderTest {
 
     public TsReaderTest() {
         pids = new HashSet<>();
-        pids.addAll(PROGRAM_ID.SDT_OR_BAT.getPids());
-        pids.addAll(PROGRAM_ID.EIT_GR_ST.getPids());
+        pids.addAll(RESERVED_PROGRAM_ID.SDT_OR_BAT.getPids());
+        pids.addAll(RESERVED_PROGRAM_ID.EIT_GR_ST.getPids());
 
     }
 
