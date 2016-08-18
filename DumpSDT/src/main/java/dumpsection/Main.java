@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import libepg.epg.section.Section;
 import libepg.epg.section.sectionreconstructor.SectionReconstructor;
-import libepg.ts.packet.PROGRAM_ID;
+import libepg.ts.packet.RESERVED_PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
 import libepg.ts.reader.TsReader;
 import org.apache.commons.cli.CommandLine;
@@ -136,7 +136,7 @@ public class Main {
                 limit = xl;
             }
 
-            final PROGRAM_ID pids = PROGRAM_ID.SDT_OR_BAT;
+            final RESERVED_PROGRAM_ID pids = RESERVED_PROGRAM_ID.SDT_OR_BAT;
 
             System.out.println("Starting application...");
             System.out.println("filename   : " + fileName);
