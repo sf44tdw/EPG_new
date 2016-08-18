@@ -18,6 +18,7 @@ package epgtools.dumpepgfromts.dataextractor;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * セクションを1つ受け取り、そこから必要な情報を集めて、T型のオブジェクトのリストとして返す。
+ * 1個以上のテーブルIDとセクションを1つ受け取り、そこから必要な情報を集めて、T型のオブジェクトのリストとして返す。
  *
  * @author normal
  * @param <T> s最終的に生成するデータの型
@@ -43,27 +44,52 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
         LOG = LogFactory.getLog(myClass);
     }
     private final Section source;
-    private final TABLE_ID tableId;
+    private final Set<TABLE_ID> tableIds;
 
     /**
      * サブクラス用コンストラクタ。<br>
      * サブクラス側で独自にセクションのみをとるpublicコンストラクタを実装することが望ましい。<br>
      *
      * @param source 処理対象のセクション
-     * @param tableId 処理対象のセクションを規定するテーブルID]
+     * @param tableId 処理対象のセクションを規定するテーブルID
+     * @param tablsIds 処理対象のセクションを規定するテーブルID
      * @throws IllegalArgumentException　<br>
      * 1:テーブル識別値がセクションから取得した値と相違している。場合<br>
      * 2:テーブルでCRCエラーが起きている場合。<br>
      */
-    protected AbstractDataExtractor(Section source, TABLE_ID tableId) throws IllegalArgumentException {
+    protected AbstractDataExtractor(Section source, TABLE_ID tableId, TABLE_ID... tablsIds) throws IllegalArgumentException {
         this.source = source;
-        this.tableId = tableId;
+
+        Set<TABLE_ID> tidset = Collections.synchronizedSet(new HashSet<>());
+        if (tableId == null) {
+            throw new IllegalArgumentException("テーブルIDの指定がありません。");
+        }
+        tidset.add(tableId);
+
+        int l = tablsIds.length;
+        for (int x = 0; x < l; x++) {
+            TABLE_ID y = tablsIds[x];
+            if (y != null) {
+                tidset.add(y);
+            } else {
+                LOG.error("テーブルIDの指定にnullが含まれています。nullの項目は無視されます。");
+            }
+        }
+        this.tableIds = Collections.unmodifiableSet(tidset);
         final String hexDump = Hex.encodeHexString(this.source.getData());
         if (this.source.checkCRC() != Section.CRC_STATUS.NO_CRC_ERROR) {
             throw new IllegalArgumentException("CRCエラーです。 セクション = " + hexDump);
         }
-        if (this.source.getTable_id_const() != TABLE_ID.SDT) {
-            throw new IllegalArgumentException("テーブル識別が想定と違います。　想定値 = " + this.tableId + " 実測値 = " + this.source.getTable_id_const() + " セクション = " + hexDump);
+        if (!this.tableIds.contains(this.source.getTable_id_const())) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("処理対象のテーブルIDではありません。\n");
+            sb.append("処理対象のテーブルID\n");
+            for (TABLE_ID id : this.tableIds) {
+                sb.append(id).append("\n");
+            }
+            sb.append("セクションのテーブルID = ").append(this.source.getTable_id_const()).append("\n");
+            sb.append("セクション = ").append(hexDump).append("\n");
+            throw new IllegalArgumentException(sb.toString());
         }
     }
 
@@ -75,7 +101,16 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
     }
 
     /**
+     * @return 処理対象にするテーブルIDの一覧。
+     */
+    public Set<TABLE_ID> getTableIds() {
+        return tableIds;
+    }
+
+    /**
      * キー生成メソッドを持つT型オブジェクトが入ったSetの中身を、そのキー生成メソッドを使用してマップに移し替える。
+     * @param src 変換元
+     * @return 変換元の中身を移したマップ。キーについては自動生成される。
      */
     protected final Map<MultiKey<Integer>, T> SetToMap(Set<T> src) {
         Map<MultiKey<Integer>, T> ret = new ConcurrentHashMap<>();

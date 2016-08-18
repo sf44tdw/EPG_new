@@ -18,9 +18,7 @@ package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.test.common.TestSection;
 import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import libepg.epg.section.Section;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.collections4.keyvalue.MultiKey;
@@ -33,9 +31,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Rule;
-import testtool.testrule.regexmessagerule.ExpectedExceptionMessage;
-import testtool.testrule.regexmessagerule.ExpectedExceptionRule;
 
 /**
  *
@@ -50,8 +45,6 @@ public class ChannelDataExtractorTest {
         LOG = LogFactory.getLog(myClass);
     }
 
-    @Rule
-    public ExpectedExceptionRule rule = new ExpectedExceptionRule();
 
     public ChannelDataExtractorTest() {
     }
@@ -70,20 +63,6 @@ public class ChannelDataExtractorTest {
 
     @After
     public void tearDown() {
-    }
-
-    @Test
-    @ExpectedExceptionMessage("^.*CRCエラーです.*$")
-    public void testConstructor_CRC_Error() throws DecoderException {
-        LOG.info("");
-        final ChannelDataExtractor instance = new ChannelDataExtractor(TestSection.getSdt3_CRCERROR());
-    }
-
-    @Test
-    @ExpectedExceptionMessage("^.*テーブル識別が想定と違います.*$")
-    public void testConstructor_Not_SDT() throws DecoderException {
-        LOG.info("");
-        final ChannelDataExtractor instance = new ChannelDataExtractor(TestSection.getEit1());
     }
 
     /**

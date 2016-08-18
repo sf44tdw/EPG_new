@@ -19,7 +19,6 @@ package epgtools.dumpepgfromts.dataextractor.programme;
 import epgtools.dumpepgfromts.dataextractor.DataObject;
 import java.sql.Timestamp;
 import java.util.List;
-import libepg.epg.section.descriptor.contentdescriptor.NIBBLE_LEVEL_2;
 import libepg.epg.section.descriptor.contentdescriptor.Nibble;
 
 /**

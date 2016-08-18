@@ -17,7 +17,10 @@
 package epgtools.dumpepgfromts.dataextractor.programme;
 
 import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
-import epgtools.dumpepgfromts.dataextractor.channel.Channel;
+import java.util.Map;
+import libepg.epg.section.Section;
+import libepg.epg.section.TABLE_ID;
+import org.apache.commons.collections4.keyvalue.MultiKey;
 
 /**
  * EITから番組情報を取り出し、重複を除去してリスト化する。取り出す情報は以下の通り。
@@ -34,6 +37,15 @@ import epgtools.dumpepgfromts.dataextractor.channel.Channel;
  *
  * @author normal
  */
-public class ProgrammeDataExtractor extends AbstractDataExtractor<Channel> {
+public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
+
+    public ProgrammeDataExtractor(Section source, TABLE_ID tableId) throws IllegalArgumentException {
+        super(source, tableId);
+    }
+
+    @Override
+    public Map<MultiKey<Integer>, Programme> getDataList() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
