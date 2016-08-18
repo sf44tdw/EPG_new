@@ -19,13 +19,14 @@ package libepg.epg.section.descriptor.extendedeventdescriptor;
 import libepg.util.bytearray.ByteConverter;
 import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
-import java.util.Objects;
 import libepg.epg.section.Section;
 import libepg.epg.util.Aribstr;
 import epgtools.loggerfactory.LoggerFactory;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * 拡張形式イベント記述子の項目
@@ -138,29 +139,13 @@ public class ExtendedEventDescriptorItem {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.data);
-        return hash;
+        return HashCodeBuilder.reflectionHashCode(7, 41, this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ExtendedEventDescriptorItem other = (ExtendedEventDescriptorItem) obj;
-        if (!Objects.equals(this.data, other.data)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
-
     private static final MessageFormat ITEM_DESC = new MessageFormat(
             "拡張形式イベント記述子の項目 バイト列 = {0}\n"
             + "拡張形式イベント記述子の項目 項目名長 = {1}\n"

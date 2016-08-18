@@ -23,11 +23,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import org.apache.commons.logging.Log;
 import epgtools.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteArraySplitter;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * 記述子ループを保管するクラス。
@@ -110,27 +111,12 @@ public class DescriptorsLoop {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.data);
-        return hash;
+        return HashCodeBuilder.reflectionHashCode(7, 41, this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DescriptorsLoop other = (DescriptorsLoop) obj;
-        if (!Objects.equals(this.data, other.data)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
 }

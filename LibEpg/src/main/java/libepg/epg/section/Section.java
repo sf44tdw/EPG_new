@@ -22,11 +22,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Objects;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import epgtools.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 //sub_table［サブテーブル］：同一のテーブル識別（table_id）および下記を持つセクショ
 //ンの集まり。
 //NITの場合 ： 同一のテーブル識別拡張（network_id）とバージョン番号
@@ -367,11 +368,8 @@ public final class Section {
      * @return 保管している内容に基づくコード
      */
     @Override
-    public final int hashCode() {
-        int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.data.hashCode());
-        hash = 73 * hash + Objects.hashCode(this.tableId);
-        return hash;
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(7, 73, this);
     }
 
     /**
@@ -381,24 +379,8 @@ public final class Section {
      * 3.比較対象のオブジェクトが受け取るセクションのテーブルID定数と、このオブジェクトが受け取るセクションのテーブルID定数が同じ内容である。<br>
      */
     @Override
-    public final boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Section other = (Section) obj;
-        if (!Objects.equals(this.getData(), other.getData())) {
-            return false;
-        }
-        if (this.tableId != other.tableId) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
 }

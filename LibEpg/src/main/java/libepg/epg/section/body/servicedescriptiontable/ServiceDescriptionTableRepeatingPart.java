@@ -19,11 +19,12 @@ package libepg.epg.section.body.servicedescriptiontable;
 import libepg.util.bytearray.ByteConverter;
 import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
-import java.util.Objects;
 import org.apache.commons.logging.Log;
 import libepg.epg.section.descriptor.DescriptorsLoop;
 import epgtools.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * サービス記述テーブルの繰り返し項目
@@ -216,27 +217,13 @@ public final class ServiceDescriptionTableRepeatingPart {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.data);
-        return hash;
+        return HashCodeBuilder.reflectionHashCode(7, 47, this);
     }
+
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ServiceDescriptionTableRepeatingPart other = (ServiceDescriptionTableRepeatingPart) obj;
-        if (!Objects.equals(this.data, other.data)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
 }

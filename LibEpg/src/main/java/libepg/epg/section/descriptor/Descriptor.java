@@ -19,11 +19,12 @@ package libepg.epg.section.descriptor;
 import libepg.util.bytearray.ByteConverter;
 import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
-import java.util.Objects;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import epgtools.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * 記述子(descriptor()の部分)の共通フィールド <br>
@@ -167,13 +168,9 @@ public class Descriptor {
      * @return 保管している内容に基づくコード
      */
     @Override
-    public final int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.data);
-        hash = 83 * hash + Objects.hashCode(this.descriptorTag);
-        return hash;
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(7, 83, this);
     }
-
     /**
      * @return 下記3つのすべてに当てはまればtrue<br>
      * 1.比較対象のオブジェクトがこのオブジェクトと同じクラスのインスタンスである。<br>
@@ -181,24 +178,8 @@ public class Descriptor {
      * 3.比較対象のオブジェクトの記述子タグ定数と、このオブジェクトの記述子タグ定数が同じ内容である。<br>
      */
     @Override
-    public final boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Descriptor other = (Descriptor) obj;
-        if (!Objects.equals(this.data, other.data)) {
-            return false;
-        }
-        if (this.descriptorTag != other.descriptorTag) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
 }

@@ -24,6 +24,8 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import epgtools.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * TSパケットのバイト列からパケットの内容を取得するクラス。
@@ -565,23 +567,12 @@ public class TsPacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TsPacket other = (TsPacket) obj;
-        return this.data.equals(other.data);
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        return 79 * hash + this.data.hashCode();
+        return HashCodeBuilder.reflectionHashCode(7, 79, this);
     }
 
 }

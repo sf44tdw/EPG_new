@@ -17,9 +17,10 @@
 package libepg.epg.section;
 
 import java.text.MessageFormat;
-import java.util.Objects;
 import org.apache.commons.codec.binary.Hex;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * セクション本体部分のバイト列を保管する。
@@ -77,31 +78,12 @@ public class SectionBody {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 73 * hash + Objects.hashCode(this.tableID);
-        hash = 73 * hash + Objects.hashCode(this.data);
-        return hash;
+        return HashCodeBuilder.reflectionHashCode(3, 73, this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SectionBody other = (SectionBody) obj;
-        if (this.tableID != other.tableID) {
-            return false;
-        }
-        if (!Objects.equals(this.data, other.data)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
     private static final MessageFormat SECTION_BODY_DESC = new MessageFormat(

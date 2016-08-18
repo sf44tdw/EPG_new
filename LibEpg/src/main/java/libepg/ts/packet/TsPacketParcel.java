@@ -5,6 +5,10 @@
  */
 package libepg.ts.packet;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 /**
  * TSパケットへの参照と、直前のパケットの欠落を示すフラグを保管する。
  *
@@ -55,10 +59,7 @@ public final class TsPacketParcel {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + (this.MissingJustBefore.getFlag() ? 1 : 0);
-        hash = 97 * hash + this.packet.hashCode();
-        return hash;
+        return HashCodeBuilder.reflectionHashCode(3, 97, this);
     }
 
     public TsPacket getPacket() {
@@ -71,28 +72,12 @@ public final class TsPacketParcel {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TsPacketParcel other = (TsPacketParcel) obj;
-        if (this.MissingJustBefore.getFlag() != other.MissingJustBefore.getFlag()) {
-            return false;
-        }
-        if (!this.packet.equals(other.packet)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
     @Override
     public String toString() {
-        return "\nTsPacketParcel{" + "MissingJustBefore=" + MissingJustBefore + " TsPacket={" + this.packet.toString() + "}" + "}\n";
+        return ReflectionToStringBuilder.toString(this);
     }
 
 }
