@@ -75,14 +75,16 @@ public class DateTimeFieldConverter {
      *
      * @param mjd mjd形式の年月日(16ビット)
      * @return yyyymmdd形式の年月日
+     * @throws IndexOutOfBoundsException 配列長が2バイト以外。
+     * @throws IllegalArgumentException 与えられた値が定義なし(0xffff)の時。
      */
-    public static synchronized String mjdToString(byte[] mjd) {
+    public static synchronized String mjdToString(byte[] mjd) throws IndexOutOfBoundsException, IllegalArgumentException {
         if (mjd.length != 2) {
-            throw new IndexOutOfBoundsException("配列が想定外のサイズです。2バイト以外には対応していません。");
+            throw new IndexOutOfBoundsException("配列が想定外のサイズです。2バイト以外には対応していません。" + " 配列=" + Hex.encodeHexString(mjd));
         }
 
         if (Arrays.equals(mjd, UNDEFINED_MJD_DATE_BLOCK.getData())) {
-            throw new IllegalArgumentException("日付が定義なしです。変換できません。");
+            throw new IllegalArgumentException("日付が定義なしです。変換できません。" + " 配列=" + Hex.encodeHexString(mjd));
         }
         int tnum = ByteConverter.bytesToInt(mjd);
         int yy = (int) ((tnum - 15078.2) / 365.25);
@@ -111,7 +113,7 @@ public class DateTimeFieldConverter {
         HOUR, MINUTE, SECOND;
     }
 
-    private static Map<HMS_KEY, Integer> BcdDateTimeToMap(byte[] hms) throws ParseException {
+    private static Map<HMS_KEY, Integer> BcdDateTimeToMap(byte[] hms) {
         Map<HMS_KEY, Integer> ret = new HashMap<>();
         if (hms.length != 3) {
             throw new IndexOutOfBoundsException("配列が想定外のサイズです。3バイト以外には対応していません。" + " 配列=" + Hex.encodeHexString(hms));
@@ -119,7 +121,7 @@ public class DateTimeFieldConverter {
 
         //ARIBの仕様で時刻の定義がないときはこうなっている。
         if (Arrays.equals(hms, UNDEFINED_BCD_TIME_BLOCK.getData())) {
-            throw new ParseException("時刻が定義なしです。変換できません。" + " 配列=" + Hex.encodeHexString(hms), 0);
+            throw new IllegalArgumentException("時刻が定義なしです。変換できません。" + " 配列=" + Hex.encodeHexString(hms));
         }
 
         final int hour = new BCD(hms[0]).getDecimal();
@@ -139,9 +141,10 @@ public class DateTimeFieldConverter {
      *
      * @param hms 時分秒
      * @return 与えられた値を秒数に変換したもの。
-     * @throws java.text.ParseException BCDの内容が未定義か、その他の理由で変換できない場合。
+     * @throws IndexOutOfBoundsException 配列長が3バイト以外。
+     * @throws IllegalArgumentException 与えられた値が定義なし(0xffffff)の時。
      */
-    public static synchronized long BcdTimeToSecond(byte[] hms) throws ParseException {
+    public static synchronized long BcdTimeToSecond(byte[] hms) throws IndexOutOfBoundsException, IllegalArgumentException {
         Map<HMS_KEY, Integer> m = BcdDateTimeToMap(hms);
         long ret = m.get(HMS_KEY.HOUR) * 60;
         ret = (ret + m.get(HMS_KEY.MINUTE)) * 60;
@@ -149,7 +152,7 @@ public class DateTimeFieldConverter {
         return ret;
     }
 
-    private static String BcdTimeToString(Map<HMS_KEY, Integer> hms) throws ParseException {
+    private static String BcdTimeToString(Map<HMS_KEY, Integer> hms) {
         StringBuilder sb = new StringBuilder();
         sb.append(ZERO_FILL_FORMAT.format(hms.get(HMS_KEY.HOUR)));
         sb.append(ZERO_FILL_FORMAT.format(hms.get(HMS_KEY.MINUTE)));
@@ -158,11 +161,11 @@ public class DateTimeFieldConverter {
     }
 
     /**
-     * BCDが24時間表示の時刻表示の範囲かどうかを判別する。時0から23 分0から59 秒0から59
-     * 範囲外の場合例外を投げる。
+     * BCDが24時間表示の時刻表示の範囲かどうかを判別する。時0から23 分0から59 秒0から59 範囲外の場合例外を投げる。
+     *
      * @throws IllegalArgumentException BCDが時刻表示で使用できる範囲外の場合。
      */
-    private static void dateTimeRangeChecker(Map<HMS_KEY, Integer> hms) throws IllegalArgumentException{
+    private static void dateTimeRangeChecker(Map<HMS_KEY, Integer> hms) throws IllegalArgumentException {
         final int hour = hms.get(HMS_KEY.HOUR);
         final int minute = hms.get(HMS_KEY.MINUTE);
         final int second = hms.get(HMS_KEY.SECOND);
@@ -205,18 +208,19 @@ public class DateTimeFieldConverter {
      *
      * @param source 日付
      * @return 日時の入ったTimestampオブジェクト。
-     * @throws IllegalArgumentException 後半24ビットが24時間表示の時刻表示(000000から235959)の範囲で使われる値の範囲外の時。
      * @throws IndexOutOfBoundsException 与えられた配列のサイズが5バイト以外の場合。
-     * @throws java.text.ParseException フィールドのすべてのビットが｢1｣の場合か、他の理由で変換できなかった場合。
-     *
+     * @throws IllegalArgumentException フィールドのすべてのビットが｢1｣の場合か、他の理由で変換できなかった場合。
+     * @throws ParseException  下記参照
+     * @see java.text.SimpleDateFormat#parse(java.lang.String,
+     * java.text.ParsePosition)
      */
-    public static synchronized java.sql.Timestamp BytesToSqlDateTime(byte[] source) throws IllegalArgumentException,IndexOutOfBoundsException,ParseException {
+    public static synchronized java.sql.Timestamp BytesToSqlDateTime(byte[] source) throws IllegalArgumentException, IndexOutOfBoundsException, ParseException {
         if (source.length != 5) {
             throw new IndexOutOfBoundsException("配列が想定外のサイズです。5バイト以外には対応していません。" + " 配列=" + Hex.encodeHexString(source));
         }
 
         if (Arrays.equals(source, UNDEFINED_DATETIME_BLOCK.getData())) {
-            throw new ParseException("与えられたフィールドは未定義になっています。 配列 = " + Hex.encodeHexString(source), 0);
+            throw new IllegalArgumentException("与えられたフィールドは未定義になっています。 配列 = " + Hex.encodeHexString(source));
         }
 
         StringBuilder sb = new StringBuilder();
