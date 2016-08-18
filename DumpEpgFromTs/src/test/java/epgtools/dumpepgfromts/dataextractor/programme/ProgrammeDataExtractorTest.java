@@ -69,9 +69,11 @@ public class ProgrammeDataExtractorTest {
         LOG.info("getDataList");
         ProgrammeDataExtractor instance = new ProgrammeDataExtractor(TestSection.getEit1());
         Map<MultiKey<Integer>, Programme> result = instance.getDataList();
+        LOG.info("***********************************************************************************************************************************************************************************************************");
         for (MultiKey<Integer> k : result.keySet()) {
             LOG.info(result);
         }
+        LOG.info("***********************************************************************************************************************************************************************************************************");
     }
 
 }

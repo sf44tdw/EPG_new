@@ -27,7 +27,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  *
  * @author dosdiaopfhj
  */
-public final class KeyFields {
+public final class KeyFields implements Id{
 
     /**
      * トランスポートストリーム識別

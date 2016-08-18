@@ -16,7 +16,6 @@
  */
 package epgtools.dumpepgfromts.dataextractor;
 
-import epgtools.dumpepgfromts.dataextractor.channel.Channel;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
 import libepg.epg.section.SectionBody;
 import libepg.epg.section.TABLE_ID;
-import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableBody;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
@@ -129,13 +127,14 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
      * @return 変換元の中身を移したマップ。キーについては自動生成される。
      */
     protected final Map<MultiKey<Integer>, T> SetToMap(Set<T> src) {
+        final boolean isPutLog = true;
         Map<MultiKey<Integer>, T> ret = new ConcurrentHashMap<>();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("セットの要素数 = " + src.size());
+        if (LOG.isInfoEnabled() && isPutLog) {
+            LOG.info("セットの要素数 = " + src.size());
         }
         for (T value : src) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("セットからマップへ移動したオブジェクト " + value);
+            if (LOG.isInfoEnabled() && isPutLog) {
+                LOG.info("セットからマップへ移動したオブジェクト " + value);
             }
             ret.put(value.getMuiltiKey(), value);
         }
