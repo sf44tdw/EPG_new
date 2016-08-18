@@ -29,6 +29,12 @@ import epgtools.loggerfactory.LoggerFactory;
 public class TsReader {
 
     /**
+     * 読み込み関連のログを抑止するか。trueなら抑止しない。
+     * 読み込み関連のログを抑止しないでログレベルをtraceに設定した場合、ログの量が読み込み元のtsファイルの容量を超える(1GBを超えることもある)ため、このクラスのデバッグ時以外は抑止しておく。
+     */
+    public static final boolean NOT_DETERRENT_READ_TRACE_LOG = false;
+
+    /**
      * falseのとき、このクラスはログを出さなくなる
      */
     public static final boolean CLASS_LOG_OUTPUT_MODE = true;
@@ -38,6 +44,9 @@ public class TsReader {
     static {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, TsReader.CLASS_LOG_OUTPUT_MODE).getLOG();
+        if (NOT_DETERRENT_READ_TRACE_LOG == false) {
+            LOG.info("読み込みログ抑止中。");
+        }
     }
 
     private static final int EOF = -1;
@@ -145,7 +154,7 @@ public class TsReader {
                     System.arraycopy(BeforeCutDown, 0, AfterCutDown, 0, AfterCutDown.length);
                     TsPacket tsp = new TsPacket(AfterCutDown);
 
-                    if (LOG.isTraceEnabled()) {
+                    if (LOG.isTraceEnabled() && NOT_DETERRENT_READ_TRACE_LOG) {
                         LOG.trace("1パケット分読み込んだら、内容を専用オブジェクトにコピーしてパケットバッファを初期化 ");
                         LOG.trace(tsp.toString());
                     }
@@ -172,7 +181,7 @@ public class TsReader {
                 //最初にパケットの開始を示す値が来るまで、読み込んだ値を保存しない。
                 if ((byteData[0] == TsPacket.TS_SYNC_BYTE) && (tipOfPacket == false)) {
                     tipOfPacket = true;
-                    if (LOG.isTraceEnabled()) {
+                    if (LOG.isTraceEnabled() && NOT_DETERRENT_READ_TRACE_LOG) {
                         LOG.trace("パケットの頭を読み取ったので、ストリームの読み込みを1バイト前に戻す。");
                     }
                     pis.unread(byteData);
@@ -181,7 +190,7 @@ public class TsReader {
                 if (tipOfPacket == true) {
                     byte[] tsPacketData = new byte[TsPacket.TS_PACKET_BYTE_LENGTH.PACKET_LENGTH.getByteLength()];
                     if (pis.read(tsPacketData) != EOF) {
-                        if (LOG.isTraceEnabled()) {
+                        if (LOG.isTraceEnabled() && NOT_DETERRENT_READ_TRACE_LOG) {
                             LOG.trace("パケットの頭を発見済みの場合、パケットバッファに、現在の位置からパケット長分の値を読み込む。");
                         }
                         packetBuffer.put(tsPacketData);
@@ -208,8 +217,12 @@ public class TsReader {
             Integer key = entry.getKey();
             // 値を取得
             List<TsPacketParcel> val = entry.getValue().getPackets();
+
+            LOG.trace("返却マップに追加 pid = " + key + " そのpidのパケット数 = " + val.size());
+
             ret.put(key, Collections.unmodifiableList(val));
         });
+        LOG.trace("返却マップサイズ = " + ret.size());
         return Collections.unmodifiableMap(ret);
     }
 

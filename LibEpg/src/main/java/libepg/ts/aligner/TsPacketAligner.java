@@ -238,15 +238,24 @@ public final class TsPacketAligner {
     public final synchronized ADD_RESULT add(TsPacket o) {
 
         if (LOG.isTraceEnabled()) {
+            LOG.trace("パケット = \n" + o);
+        }
+        
+        if (LOG.isTraceEnabled()) {
             LOG.trace("引数nullチェック");
         }
-        if (o == null) {
-            throw new NullPointerException("渡されたパケットがnullです。");
+        if (o == null) {        if (LOG.isTraceEnabled()) {
+            LOG.trace("引数nullチェック");
+        }
+            NullPointerException e = new NullPointerException("渡されたパケットがnullです。");
+            LOG.trace("ぬるぽ", e);
+            throw e;
         }
         if (LOG.isTraceEnabled()) {
             LOG.trace("トランスポートエラーインジケータチェック");
         }
         if (o.getTransport_error_indicator() == 1) {
+            LOG.trace("エラーパケット扱い。");
             return ADD_RESULT.ERROR_PACKET;
         }
         if (LOG.isTraceEnabled()) {
