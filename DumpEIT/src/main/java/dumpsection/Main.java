@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import libepg.epg.section.Section;
 import libepg.epg.section.sectionreconstructor.SectionReconstructor;
-import libepg.ts.packet.PROGRAM_ID;
+import libepg.ts.packet.RESERVED_PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
 import libepg.ts.reader.TsReader;
 import org.apache.commons.cli.CommandLine;
@@ -147,7 +147,7 @@ public class Main {
                 limit = xl;
             }
 
-            final PROGRAM_ID pids = PROGRAM_ID.EIT_GR_ST;
+            final RESERVED_PROGRAM_ID pids = RESERVED_PROGRAM_ID.EIT_GR_ST;
 
             System.out.println("Starting application...");
             System.out.println("filename   : " + fileName);
@@ -162,15 +162,21 @@ public class Main {
             }
 
             Map<Integer, List<TsPacketParcel>> ret = reader.getPackets();
-
+            StringBuilder sb = new StringBuilder();
             for (Integer pid : ret.keySet()) {
                 try (FileWriter writer = new FileWriter(fileName + "_" + Integer.toHexString(pid) + "_EIT.txt")) {
                     SectionReconstructor sr = new SectionReconstructor(ret.get(pid), pid);
                     for (Section s : sr.getSections()) {
                         String text = Hex.encodeHexString(s.getData());
                         writer.write(text + "\n");
+
+                        sb.append("\n*****************************************************************************************************************************************************************************\n");
+                        sb.append(s);
+                        sb.append("*****************************************************************************************************************************************************************************\n");
                     }
+
                     writer.flush();
+                 LOG.info(sb);
                 } catch (IOException ex) {
                     LOG.fatal("ファイル入出力エラー", ex);
                 }
