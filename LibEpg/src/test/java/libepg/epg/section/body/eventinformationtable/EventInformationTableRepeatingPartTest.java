@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package libepg.epg.section.eventinformationtable;
+package libepg.epg.section.body.eventinformationtable;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -30,7 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import libepg.epg.section.descriptor.DescriptorsLoop;
-import libepg.epg.section.body.eventinformationtable.EventInformationTableRepeatingPart;
 import epgtools.loggerfactory.LoggerFactory;
 
 /**

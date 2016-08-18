@@ -205,11 +205,12 @@ public class DateTimeFieldConverter {
      *
      * @param source 日付
      * @return 日時の入ったTimestampオブジェクト。
+     * @throws IllegalArgumentException 後半24ビットが24時間表示の時刻表示(000000から235959)の範囲で使われる値の範囲外の時。
      * @throws IndexOutOfBoundsException 与えられた配列のサイズが5バイト以外の場合。
      * @throws java.text.ParseException フィールドのすべてのビットが｢1｣の場合か、他の理由で変換できなかった場合。
      *
      */
-    public static synchronized java.sql.Timestamp BytesToSqlDateTime(byte[] source) throws ParseException {
+    public static synchronized java.sql.Timestamp BytesToSqlDateTime(byte[] source) throws IllegalArgumentException,IndexOutOfBoundsException,ParseException {
         if (source.length != 5) {
             throw new IndexOutOfBoundsException("配列が想定外のサイズです。5バイト以外には対応していません。" + " 配列=" + Hex.encodeHexString(source));
         }

@@ -96,7 +96,7 @@ public final class EventInformationTableRepeatingPart {
         try {
             byte[] t = this.getStart_time();
             return (DateTimeFieldConverter.BytesToSqlDateTime(t));
-        } catch (ParseException ex) {
+        } catch (IllegalArgumentException | IndexOutOfBoundsException | ParseException ex) {
             LOG.warn("開始時間を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
             throw ex;
         }
@@ -107,6 +107,7 @@ public final class EventInformationTableRepeatingPart {
      * す。継続時間が定義されない場合（例えば緊急ニュースで終了時刻が未定など）には、こ のフィールドのすべてのビットを「1」に設定する。 形式：6個の4
      * ビットBCD 符号 = 24 ビット 例2：01:45:30 は「0x014530」と符号化される。
      * ※"何時間何分何秒後"を意味するので、最大99時間99分99秒あたりまでゆける(はず)。BSジャパンのstock777は240000と設定していた。
+     *
      * @return 上記の値
      */
     public synchronized byte[] getDuration() {
