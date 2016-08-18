@@ -14,12 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package epgtools.dumpchannelfromts.dataextractor.channel;
+package epgtools.dumpepgfromts.dataextractor.channel;
 
-import static common.TestChannel.*;
-import static common.TestKeyFields.a;
-import static common.TestKeyFields.b;
-import static common.TestKeyFields.c;
+import static epgtools.dumpepgfromts.test.common.TestChannel.CH_1;
+import static epgtools.dumpepgfromts.test.common.TestChannel.CH_2_EQUALS_CH_1;
+import static epgtools.dumpepgfromts.test.common.TestChannel.CH_3;
+import static epgtools.dumpepgfromts.test.common.TestChannel.CH_4;
+import static epgtools.dumpepgfromts.test.common.TestChannel.s;
+import static epgtools.dumpepgfromts.test.common.TestKeyFields.a;
+import static epgtools.dumpepgfromts.test.common.TestKeyFields.b;
+import static epgtools.dumpepgfromts.test.common.TestKeyFields.c;
 import java.lang.invoke.MethodHandles;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

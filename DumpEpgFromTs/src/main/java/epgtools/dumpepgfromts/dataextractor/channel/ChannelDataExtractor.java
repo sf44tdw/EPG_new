@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package epgtools.dumpchannelfromts.dataextractor.channel;
+package epgtools.dumpepgfromts.dataextractor.channel;
 
-import java.lang.invoke.MethodHandles;
+import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
-import libepg.epg.section.Section.CRC_STATUS;
 import libepg.epg.section.SectionBody;
 import libepg.epg.section.TABLE_ID;
 import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableBody;
@@ -33,8 +32,6 @@ import libepg.epg.section.descriptor.servicedescriptor.SERVICE_TYPE;
 import libepg.epg.section.descriptor.servicedescriptor.ServiceDescriptor;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections4.keyvalue.MultiKey;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * SDTからチャンネル情報を抽出し、重複を除去してリスト化する。 取り出す情報は以下の通り。
@@ -45,48 +42,32 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author normal
  */
-public final class ChannelDataExtractor {
-
-    private static final Log LOG;
-
-    static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass();
-        LOG = LogFactory.getLog(myClass);
-    }
-    private final Section source;
+public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
 
     /**
+     * @param source 処理対象のセクション
      * @throws IllegalArgumentException　<br>
      * 1:テーブル識別値がSDTのそれではない<br>
      * 2:CRCエラーが起きている場合。<br>
      */
-    public ChannelDataExtractor(Section source) throws IllegalArgumentException {
-        this.source = source;
-        final String hexDump = Hex.encodeHexString(this.source.getData());
-        if (this.source.checkCRC() != CRC_STATUS.NO_CRC_ERROR) {
-            throw new IllegalArgumentException("CRCエラーです。 セクション = " + hexDump);
-        }
-        if (this.source.getTable_id_const() != TABLE_ID.SDT) {
-            throw new IllegalArgumentException("テーブル識別がSDTではありません。 値 = " + Integer.toHexString(this.source.getTable_id()) + " 定数 = " + this.source.getTable_id_const() + " セクション = " + hexDump);
-        }
-
-    }
-
-    public Section getSource() {
-        return source;
+    public ChannelDataExtractor(Section source) {
+        super(source, TABLE_ID.SDT);
     }
 
     /**
      * @return チャンネル情報をまとめたマップ。
      * @throws IllegalStateException セクションのデータ部分の型がテーブルIdの指定と異なる場合。
      */
-    public Map<MultiKey<Integer>, Channel> getChannels() throws IllegalStateException {
+    @Override
+    public Map<MultiKey<Integer>, Channel> getDataList() throws IllegalStateException {
+
+        final boolean isPutMaeesgage = false;
 
         final SectionBody b = this.getSource().getSectionBody();
 
-        if (b.getClass() != this.source.getTable_id_const().getDataType()) {
+        if (b.getClass() != this.getSource().getTable_id_const().getDataType()) {
             //まずありえないのでテストケースにはしない。
-            throw new IllegalStateException("セクションとセクション本体のデータ型が異なっています。セクション = " + this.source.getClass() + " 本体 = " + b.getClass() + " セクションのデータ = " + Hex.encodeHexString(this.source.getData()));
+            throw new IllegalStateException("セクションとセクション本体のデータ型が異なっています。セクション = " + this.getSource().getClass() + " 本体 = " + b.getClass() + " セクションのデータ = " + Hex.encodeHexString(this.getSource().getData()));
         }
 
         final ServiceDescriptionTableBody body = (ServiceDescriptionTableBody) b;
@@ -95,12 +76,16 @@ public final class ChannelDataExtractor {
         final int original_network_id = body.getOriginal_network_id();
         int service_id = -1;
         String service_name_String;
+        
         final Map<MultiKey<Integer>, Channel> ret = new ConcurrentHashMap<>();
-
+        if (LOG.isInfoEnabled() && isPutMaeesgage) {
+            LOG.info("マップ作製");
+        }
+        
         final List<ServiceDescriptionTableRepeatingPart> rep = body.getSDTRepeatingPartList();
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("繰り返し項目数 = " + rep.size());
+        if (LOG.isInfoEnabled() && isPutMaeesgage) {
+            LOG.info("繰り返し項目数 = " + rep.size());
         }
 
         ServiceDescriptor d = null;
@@ -109,30 +94,60 @@ public final class ChannelDataExtractor {
             //とりあえず、TV用の局情報があるサービス記述子は1個だけだと思うことにする。
             final List<Descriptor> ld = rp.getDescriptors_loop().getDescriptors_loopList();
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("記述子数 = " + ld.size());
+            if (LOG.isInfoEnabled() && isPutMaeesgage) {
+                LOG.info("記述子数 = " + ld.size());
+                for (Descriptor desc : ld) {
+                    LOG.info("\n*********************************************************************************************************************************************************\n"
+                            + "記述子 = " + desc
+                            + "*********************************************************************************************************************************************************");
+                }
             }
 
             for (Descriptor desc : ld) {
                 if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.SERVICE_DESCRIPTOR) {
                     d = (ServiceDescriptor) desc;
                     if (d.getService_type_Enum() == SERVICE_TYPE.DIGITAL_TV_SERVICE) {
-                        if (LOG.isTraceEnabled()) {
-                            LOG.trace("TV用の記述子を発見。内容 = " + d.toString());
+                        if (LOG.isInfoEnabled() && isPutMaeesgage) {
+                            LOG.info("TV用の記述子を発見。内容 = " + d.toString());
                         }
                         break;
                     }
                 }
             }
-            if ((d == null) || (d.getService_name_String() == null || "".equals(d.getService_provider_name_String()))) {
+            //たまにサービス名を書いていない記述子があるので、その場合は事業者名を入れる。それもなければダミーを入れる。空白が入っていたりした場合はそのまま。
+            POST_PROCESS:
+            {
+                //まずないとは思うが記述子が無いケース
+                if (d == null) {
+                    LOG.warn("サービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
+                    service_name_String = "unknown-display-name";
+                    break POST_PROCESS;
+                }
+                //正常系
+                if ((d.getService_name_String() != null) && !("".equals(d.getService_name_String()))) {
+                    LOG.debug("サービス名を設定します。");
+                    service_name_String = d.getService_name_String();
+                    break POST_PROCESS;
+                }
+                //サービス事業者名があるならそれで代用する。
+                if ((d.getService_provider_name_String() != null) && !("".equals(d.getService_provider_name_String()))) {
+                    LOG.warn("事業者名で代用します。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
+                    service_name_String = d.getService_provider_name_String();
+                    break POST_PROCESS;
+                }
+                //どれもないならダミーで代用。
+                LOG.warn("サービス名、サービス事業差名が記載されたサービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
                 service_name_String = "unknown-display-name";
-            } else {
-                service_name_String = d.getService_name_String();
             }
+
+            LOG.debug("サービス名 = " + service_name_String);
             final Channel ch = new Channel(transport_stream_id, original_network_id, service_id, service_name_String);
-            ret.put(ch.getMuiltiKey(), ch);
+            this.putToMap(ret, ch);
         }
-       return  Collections.unmodifiableMap(ret);
+        if (LOG.isInfoEnabled() && isPutMaeesgage) {
+            LOG.info("サービス情報の件数 = " + ret.size());
+        }
+        return Collections.unmodifiableMap(ret);
 
     }
 

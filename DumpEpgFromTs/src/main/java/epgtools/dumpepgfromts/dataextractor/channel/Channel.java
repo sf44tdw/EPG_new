@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package epgtools.dumpchannelfromts.dataextractor.channel;
+package epgtools.dumpepgfromts.dataextractor.channel;
 
-import org.apache.commons.collections4.keyvalue.MultiKey;
+import epgtools.dumpepgfromts.dataextractor.DataObject;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -30,9 +30,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  *
  * @author normal
  */
-public final class Channel {
+public final class Channel extends DataObject{
 
-    private final KeyFields kf;
     private final String display_name;
 
     /**
@@ -44,7 +43,9 @@ public final class Channel {
      * @throws IllegalArgumentException 各フィールドに不正な値がセットされたとき。
      */
     public Channel(int transport_stream_id, int original_network_id, int service_id, String display_name) throws IllegalArgumentException {
-        this.kf = new KeyFields(transport_stream_id, original_network_id, service_id);
+        
+        super(transport_stream_id, original_network_id, service_id);
+        
         this.display_name = display_name;
 
         String errorMessage = null;
@@ -60,24 +61,8 @@ public final class Channel {
         }
     }
 
-    public int getTransport_stream_id() {
-        return this.kf.getTransport_stream_id();
-    }
-
-    public int getOriginal_network_id() {
-        return this.kf.getOriginal_network_id();
-    }
-
-    public int getService_id() {
-        return this.kf.getService_id();
-    }
-
     public String getDisplay_name() {
         return display_name;
-    }
-
-    public MultiKey<Integer> getMuiltiKey() {
-        return kf.getMuiltiKey();
     }
 
     @Override

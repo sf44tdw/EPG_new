@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package epgtools.dumpchannelfromts.dataextractor.channel;
+package epgtools.dumpepgfromts.dataextractor.channel;
 
-import common.TestSection;
+import epgtools.dumpepgfromts.test.common.TestSection;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import libepg.epg.section.Section;
@@ -78,7 +78,7 @@ public class ChannelDataExtractorTest {
     }
 
     @Test
-    @ExpectedExceptionMessage("^.*テーブル識別がSDTではありません.*$")
+    @ExpectedExceptionMessage("^.*テーブル識別が想定と違います.*$")
     public void testConstructor_Not_SDT() throws DecoderException {
         LOG.info("");
         final ChannelDataExtractor instance = new ChannelDataExtractor(TestSection.getEit1());
@@ -92,7 +92,7 @@ public class ChannelDataExtractorTest {
         LOG.info("");
         Section sec = TestSection.getSdt1();
         ChannelDataExtractor instance = new ChannelDataExtractor(sec);
-      Map<MultiKey<Integer>, Channel> map =  instance.getChannels();
+      Map<MultiKey<Integer>, Channel> map =  instance.getDataList();
       assertTrue(map.size()==1);
       Channel ch=map.get( new MultiKey<>(0x4750,0x4,0xfc));
       assertEquals(ch.getDisplay_name(),"イマジカＢＳ・映画");

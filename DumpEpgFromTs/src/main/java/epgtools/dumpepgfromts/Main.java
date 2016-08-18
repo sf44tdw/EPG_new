@@ -3,23 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package epgtools.dumpchannelfromts;
+package epgtools.dumpepgfromts;
 
-import epgtools.dumpchannelfromts.dataextractor.channel.Channel;
-import epgtools.dumpchannelfromts.dataextractor.channel.ChannelDataExtractor;
+import epgtools.dumpepgfromts.filelistmaker.FileSeeker;
+import epgtools.dumpepgfromts.filelistmaker.Suffix;
 import epgtools.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import libepg.epg.section.Section;
-import libepg.epg.section.sectionreconstructor.SectionReconstructor;
-import libepg.ts.packet.PROGRAM_ID;
+import libepg.ts.packet.RESERVED_PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
 import libepg.ts.reader.TsReader;
 import org.apache.commons.cli.CommandLine;
@@ -29,7 +28,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 
 /**
@@ -89,15 +87,15 @@ public class Main {
     }
 
     public void start(String[] args) throws org.apache.commons.cli.ParseException {
-        final String fileName;
+        final String directoryName;
         final Long limit;
 
         System.out.println("args   : " + dumpArgs(args));
 
-        final Option fileNameOption = Option.builder("f")
+        final Option directoryNameOption = Option.builder("d")
                 .required()
-                .longOpt("filename")
-                .desc("tsファイル名")
+                .longOpt("directory")
+                .desc("tsファイルが置いてあるディレクトリ")
                 .hasArg()
                 .type(String.class)
                 .build();
@@ -111,7 +109,7 @@ public class Main {
                 .build();
 
         Options opts = new Options();
-        opts.addOption(fileNameOption);
+        opts.addOption(directoryNameOption);
         opts.addOption(limitOption);
         CommandLineParser parser = new DefaultParser();
         CommandLine cl;
@@ -122,9 +120,9 @@ public class Main {
             // parse options
             cl = parser.parse(opts, args);
 
-            fileName = cl.getOptionValue(fileNameOption.getOpt());
-            if (fileName == null) {
-                throw new ParseException("ファイル名が指定されていません。");
+            directoryName = cl.getOptionValue(directoryNameOption.getOpt());
+            if (directoryName == null) {
+                throw new ParseException("ディレクトリ名が指定されていません。");
             }
 
             Long xl = null;
@@ -136,39 +134,57 @@ public class Main {
                 limit = xl;
             }
 
-            //SDTのみを取得。
-            final PROGRAM_ID pids = PROGRAM_ID.SDT_OR_BAT;
-
             LOG.info("Starting application...");
-            LOG.info("filename   : " + fileName);
-
-            TsReader reader;
+            LOG.info("filename   : " + directoryName);
             if (limit != null) {
                 LOG.info("limit : EOF");
-                reader = new TsReader(new File(fileName), pids.getPids());
             } else {
                 LOG.info("limit : " + limit);
-                reader = new TsReader(new File(fileName), pids.getPids(), limit);
             }
 
-            Map<Integer, List<TsPacketParcel>> ret = reader.getPackets();
+            //ファイルリストを作成。
+            FileSeeker fs = new FileSeeker(new File(directoryName), Suffix.TS_SUFFIX);
+            //サブディレクトリは探さない
+            fs.setRecursive(false);
+            List<File> flist = fs.seek();
 
-            final Map<MultiKey<Integer>, Channel> channels = new ConcurrentHashMap<>();
+            //SDTとEITを取得。
+            final Set<Integer> pids = new HashSet<>();
+            pids.addAll(RESERVED_PROGRAM_ID.SDT_OR_BAT.getPids());
+            pids.addAll(RESERVED_PROGRAM_ID.EIT_GR_ST.getPids());
 
-            for (Integer pid : ret.keySet()) {
-                SectionReconstructor sr = new SectionReconstructor(ret.get(pid), pid);
-                Map<MultiKey<Integer>, Channel> channels_temp = null;
-                for (Section s : sr.getSections()) {
-                    channels_temp = new ChannelDataExtractor(s).getChannels();
+            //ファイルごとのパケットリスト
+            final Map<File, Map<Integer, List<TsPacketParcel>>> SectionSource = new ConcurrentHashMap<>();
+            for (File f : flist) {
+                final Map<Integer, List<TsPacketParcel>> packets;
+                LOG.info("読み込み対象ファイル = " + f.getAbsolutePath());
+                TsReader reader;
+                if (limit != null) {
+                    reader = new TsReader(f, pids);
+                } else {
+                    reader = new TsReader(f, pids, limit);
                 }
-                channels.putAll(channels_temp);
+                packets = reader.getPackets();
+                SectionSource.put(f, packets);
             }
 
-            Set<MultiKey<Integer>> ks = channels.keySet();
-            for (MultiKey<Integer> k : ks) {
-                LOG.info(channels.get(k));
-            }
+            StringBuilder sb = new StringBuilder();
 
+            sb.append("読み込みファイル数 = ").append(SectionSource.size()).append("\n");
+            Set<File> fileKeys = SectionSource.keySet();
+            for (File fileKey : fileKeys) {
+                sb.append("\n**********************************************************************************************************************************************************************\n");
+                sb.append("ファイル = ").append(fileKey.getAbsolutePath()).append("\n");
+                final Map<Integer, List<TsPacketParcel>> packets_and_pids = SectionSource.get(fileKey);
+                Set<Integer> pidKeys = packets_and_pids.keySet();
+                for (Integer pidKey : pidKeys) {
+                    sb.append("pid定数 = ").append(RESERVED_PROGRAM_ID.reverseLookUp(pidKey)).append(" pid = ").append(Integer.toHexString(pidKey)).append("\n");
+                    final List<TsPacketParcel> packets = packets_and_pids.get(pidKey);
+                    sb.append("パケット数 = ").append(packets.size()).append("\n");
+                }
+                sb.append("\n**********************************************************************************************************************************************************************\n");
+            }
+            LOG.info(sb.toString());
         } catch (ParseException e) {
             // print usage.
             help.printHelp("My Java Application", opts);
