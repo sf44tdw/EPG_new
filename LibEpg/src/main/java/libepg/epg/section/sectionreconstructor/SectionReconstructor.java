@@ -32,6 +32,7 @@ import libepg.epg.section.TABLE_ID;
 import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
+import java.nio.BufferOverflowException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 
@@ -134,108 +135,111 @@ public final class SectionReconstructor {
      *
      */
     public synchronized Set<byte[]> getSectionByteArrays() {
-
-        Set<byte[]> ret = new TreeSet<>((byte[] left, byte[] right) -> {
-            for (int i = 0, j = 0; i < left.length && j < right.length; i++, j++) {
-                int a = (left[i] & 0xff);
-                int b = (right[j] & 0xff);
-                if (a != b) {
-                    return a - b;
-                }
-            }
-            return left.length - right.length;
-        });
-
-        boolean first_start_indicator_found = false;
-
-        ByteBuffer buf = null;
-
-        PayLoadSplitter splitter = new PayLoadSplitter();
-
-        for (TsPacketParcel parcel : parcels) {
-
-            splitter.setPacket(parcel.getPacket());
-            Map<PayLoadSplitter.PAYLOAD_PART_KEY, byte[]> t_map = splitter.getSplittedPayLoad();
-
-            if ((buf == null) || (parcel.isMissingJustBefore() == TsPacketParcel.MISSING_PACKET_FLAG.MISSING_JUST_BEFORE)) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("直前のパケットが欠落していたか、バッファの初期化がなされていない場合、バッファを初期化する。");
-                }
-                if (buf == null) {
-                    buf = ByteBuffer.allocate(TABLE_ID.MAX_SECTION_LENGTH.BYTE_4093.getMaxSectionLength());
-                } else {
-                    buf.clear();
-                }
-            }
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("バッファ=" + Hex.encodeHexString(buf.array()));
-            }
-            if ((first_start_indicator_found == false) && (parcel.getPacket().getPayload_unit_start_indicator() == TsPacket.PAYLOAD_UNIT_START_INDICATOR.START_PES_OR_START_SECTION)) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("最初のセクション開始パケットを発見。");
-                }
-                first_start_indicator_found = true;
-            }
-
-            if (first_start_indicator_found == false) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("最初のセクション開始パケットを発見するまでは読み飛ばす。");
-                }
-            } else if (parcel.getPacket().getPayload_unit_start_indicator() == TsPacket.PAYLOAD_UNIT_START_INDICATOR.START_PES_OR_START_SECTION) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("セクションの先頭パケットの場合、ペイロードの必要な部分をバッファに格納");
-                }
-                if (buf.position() == 0) {
-                    if (LOG.isTraceEnabled()) {
-                        LOG.trace("バッファサイズが0=前のセクションの一部は残っていない。->ペイロードの、2バイト目から最後まで、もしくは、ポインタフィールドの値バイト+1から最後までをバッファにコピー");
+        try {
+            Set<byte[]> ret = new TreeSet<>((byte[] left, byte[] right) -> {
+                for (int i = 0, j = 0; i < left.length && j < right.length; i++, j++) {
+                    int a = (left[i] & 0xff);
+                    int b = (right[j] & 0xff);
+                    if (a != b) {
+                        return a - b;
                     }
-                    byte[] temp_array = null;
-                    if (t_map.size() == 1) {
-                        temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.PAYLOAD_AFTER_2_BYTE);
+                }
+                return left.length - right.length;
+            });
+
+            boolean first_start_indicator_found = false;
+
+            ByteBuffer buf = null;
+
+            PayLoadSplitter splitter = new PayLoadSplitter();
+
+            for (TsPacketParcel parcel : parcels) {
+
+                splitter.setPacket(parcel.getPacket());
+                Map<PayLoadSplitter.PAYLOAD_PART_KEY, byte[]> t_map = splitter.getSplittedPayLoad();
+
+                if ((buf == null) || (parcel.isMissingJustBefore() == TsPacketParcel.MISSING_PACKET_FLAG.MISSING_JUST_BEFORE)) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("直前のパケットが欠落していたか、バッファの初期化がなされていない場合、バッファを初期化する。");
+                    }
+                    if (buf == null) {
+                        buf = ByteBuffer.allocate(TABLE_ID.MAX_SECTION_LENGTH.BYTE_4093.getMaxSectionLength());
                     } else {
-                        temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.NEXT_POINTER);
-                    }
-                    buf.put(temp_array);
-                } else {
-                    if (LOG.isTraceEnabled()) {
-                        LOG.trace("バッファサイズが0ではない=前のセクションの一部は残っている。->ペイロードの、2バイト目からポインタフィールドの値バイトまでをバッファにコピーし、セクションを構築。\n完成したセクションを取り出してバッファをクリアした後、存在すればポインタフィールドの値バイト+1から最後までをバッファにコピー");
-                    }
-                    byte[] temp_array = null;
-                    if (t_map.containsKey(PayLoadSplitter.PAYLOAD_PART_KEY.PAYLOAD_AFTER_2_BYTE)) {
-                        if (LOG.isTraceEnabled()) {
-                            LOG.trace("前のパケットのペイロードのちょうど最後でセクションが終わっていた場合。");
-                        }
-
-                        this.addToReturnObject(buf, ret);
-
                         buf.clear();
+                    }
+                }
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("バッファ=" + Hex.encodeHexString(buf.array()));
+                }
+                if ((first_start_indicator_found == false) && (parcel.getPacket().getPayload_unit_start_indicator() == TsPacket.PAYLOAD_UNIT_START_INDICATOR.START_PES_OR_START_SECTION)) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("最初のセクション開始パケットを発見。");
+                    }
+                    first_start_indicator_found = true;
+                }
 
-                        temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.PAYLOAD_AFTER_2_BYTE);
+                if (first_start_indicator_found == false) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("最初のセクション開始パケットを発見するまでは読み飛ばす。");
+                    }
+                } else if (parcel.getPacket().getPayload_unit_start_indicator() == TsPacket.PAYLOAD_UNIT_START_INDICATOR.START_PES_OR_START_SECTION) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("セクションの先頭パケットの場合、ペイロードの必要な部分をバッファに格納");
+                    }
+                    if (buf.position() == 0) {
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("バッファサイズが0=前のセクションの一部は残っていない。->ペイロードの、2バイト目から最後まで、もしくは、ポインタフィールドの値バイト+1から最後までをバッファにコピー");
+                        }
+                        byte[] temp_array = null;
+                        if (t_map.size() == 1) {
+                            temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.PAYLOAD_AFTER_2_BYTE);
+                        } else {
+                            temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.NEXT_POINTER);
+                        }
                         buf.put(temp_array);
                     } else {
                         if (LOG.isTraceEnabled()) {
-                            LOG.trace("前のパケットのペイロードのちょうど最後でセクションが終わっていなかった場合。");
+                            LOG.trace("バッファサイズが0ではない=前のセクションの一部は残っている。->ペイロードの、2バイト目からポインタフィールドの値バイトまでをバッファにコピーし、セクションを構築。\n完成したセクションを取り出してバッファをクリアした後、存在すればポインタフィールドの値バイト+1から最後までをバッファにコピー");
                         }
-                        temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.PREV_POINTER);
-                        buf.put(temp_array);
+                        byte[] temp_array = null;
+                        if (t_map.containsKey(PayLoadSplitter.PAYLOAD_PART_KEY.PAYLOAD_AFTER_2_BYTE)) {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("前のパケットのペイロードのちょうど最後でセクションが終わっていた場合。");
+                            }
 
-                        this.addToReturnObject(buf, ret);
+                            this.addToReturnObject(buf, ret);
 
-                        buf.clear();
+                            buf.clear();
 
-                        temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.NEXT_POINTER);
-                        buf.put(temp_array);
+                            temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.PAYLOAD_AFTER_2_BYTE);
+                            buf.put(temp_array);
+                        } else {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("前のパケットのペイロードのちょうど最後でセクションが終わっていなかった場合。");
+                            }
+                            temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.PREV_POINTER);
+                            buf.put(temp_array);
+
+                            this.addToReturnObject(buf, ret);
+
+                            buf.clear();
+
+                            temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.NEXT_POINTER);
+                            buf.put(temp_array);
+                        }
                     }
+                } else {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("セクションの先頭パケットではない。->ポインタフィールドがない->ペイロードの内容すべてをバッファにコピー。");
+                    }
+                    buf.put(t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.ALL_PAYLOAD));
                 }
-            } else {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("セクションの先頭パケットではない。->ポインタフィールドがない->ペイロードの内容すべてをバッファにコピー。");
-                }
-                buf.put(t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.ALL_PAYLOAD));
             }
+            return Collections.unmodifiableSet(ret);
+        } catch (BufferOverflowException ex) {
+            LOG.fatal(ex);
+            throw ex;
         }
-
-        return Collections.unmodifiableSet(ret);
     }
 
     /**
