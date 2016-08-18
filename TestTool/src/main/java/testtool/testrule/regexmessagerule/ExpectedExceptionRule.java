@@ -20,7 +20,8 @@ import static org.junit.Assert.*;
  * public ExpectedExceptionRule rule = new ExpectedExceptionRule();<br>
  * 例外メッセージのテストメソッドのTestアノテーションの下に、ExpectedExceptionMessageアノテーションを正規表現と共に付けると、<br>
  * そのメソッドで発生した例外のメッセージが正規表現にマッチするか、あるいは渡された文字列と完全に一致した時点でテスト成功と判定する。<br>
- * ※ExpectedExceptionMessageアノテーションを指定した場合、例外はTestアノテーションに取られてしまうので、Testアノテーションに例外を指定しないこと。
+ * ※ExpectedExceptionMessageアノテーションを指定した場合、例外はTestアノテーションに取られてしまうので、Testアノテーションに例外を指定しないこと。<br>
+ * ※例外メッセージや正規表現が長いと、評価されないことがある。
  */
 public class ExpectedExceptionRule implements TestRule {
 
