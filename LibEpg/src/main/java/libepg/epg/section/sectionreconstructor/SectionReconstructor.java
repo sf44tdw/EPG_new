@@ -134,7 +134,7 @@ public final class SectionReconstructor {
 
     private void put(ByteBuffer buf, byte[] putData) {
         buf.put(putData);
-        if (LOG.isDebugEnabled()) {
+        if (LOG.isTraceEnabled()) {
             bufferDump = Hex.encodeHexString(buf.array());
             putDataDump = Hex.encodeHexString(putData);
             remaining = buf.remaining();

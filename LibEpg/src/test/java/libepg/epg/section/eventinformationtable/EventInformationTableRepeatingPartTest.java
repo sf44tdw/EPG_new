@@ -163,7 +163,7 @@ public class EventInformationTableRepeatingPartTest {
         LOG.debug("getStopTime_Object");
         EventInformationTableRepeatingPart instance = target;
         Timestamp expResult = Timestamp.valueOf("2016-03-21 18:25:00.0");;
-        Timestamp result = instance.getStopTime_Object();
+        Timestamp result = instance.getStop_Time_Object();
         assertEquals(expResult, result);
     }
 

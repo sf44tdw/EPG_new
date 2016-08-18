@@ -111,7 +111,7 @@ public class DateTimeFieldConverter {
         HOUR, MINUTE, SECOND;
     }
 
-    private static Map<HMS_KEY, Integer> BcdTimeToMap(byte[] hms) throws ParseException {
+    private static Map<HMS_KEY, Integer> BcdDateTimeToMap(byte[] hms) throws ParseException {
         Map<HMS_KEY, Integer> ret = new HashMap<>();
         if (hms.length != 3) {
             throw new IndexOutOfBoundsException("配列が想定外のサイズです。3バイト以外には対応していません。" + " 配列=" + Hex.encodeHexString(hms));
@@ -121,41 +121,10 @@ public class DateTimeFieldConverter {
         if (Arrays.equals(hms, UNDEFINED_BCD_TIME_BLOCK.getData())) {
             throw new ParseException("時刻が定義なしです。変換できません。" + " 配列=" + Hex.encodeHexString(hms), 0);
         }
-        Object[] parameters = null;
 
         final int hour = new BCD(hms[0]).getDecimal();
         final int minute = new BCD(hms[1]).getDecimal();
         final int second = new BCD(hms[2]).getDecimal();
-        CHECK:
-        {
-            final Range<Integer> HOUR_RANGE = Range.between(0, 23);
-
-            if (!HOUR_RANGE.contains(hour)) {
-                parameters = new Object[]{Hex.encodeHexString(hms), "時", hour};
-                break CHECK;
-            }
-
-            final Range<Integer> MINUTE_AND_SECOND_RANGE = Range.between(0, 59);
-
-            if (!MINUTE_AND_SECOND_RANGE.contains(minute)) {
-                parameters = new Object[]{Hex.encodeHexString(hms), "分", minute};
-                break CHECK;
-            }
-
-            if (!MINUTE_AND_SECOND_RANGE.contains(second)) {
-                parameters = new Object[]{Hex.encodeHexString(hms), "秒", second};
-                break CHECK;
-            }
-        }
-
-        if (parameters != null) {
-            MessageFormat msg = new MessageFormat("時刻表示の範囲外になっている部分があります。与えられた値={0} 時分秒={1} 値={2}");
-            throw new ParseException(msg.format(parameters), 0);
-        }
-
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("hour=" + hour + " minute=" + minute + " second=" + second);
-        }
 
         ret.put(HMS_KEY.HOUR, hour);
         ret.put(HMS_KEY.MINUTE, minute);
@@ -164,18 +133,8 @@ public class DateTimeFieldConverter {
         return ret;
     }
 
-    private static String BcdTimeToString(byte[] hms) throws ParseException {
-        Map<HMS_KEY, Integer> m = BcdTimeToMap(hms);
-        StringBuilder sb = new StringBuilder();
-        sb.append(ZERO_FILL_FORMAT.format(m.get(HMS_KEY.HOUR)));
-        sb.append(ZERO_FILL_FORMAT.format(m.get(HMS_KEY.MINUTE)));
-        sb.append(ZERO_FILL_FORMAT.format(m.get(HMS_KEY.SECOND)));
-
-        return sb.toString();
-    }
-
     /**
-     * 時分秒(24時間表示)を6個の4ビット2進化10進数(BCD)で符号化したbyte配列(01:45:30は「0x014530」と符号化される。)を、それに対応する秒数に変換する。<br>
+     * 時分秒で表示された時間(最大99時間99分99秒)を6個の4ビット2進化10進数(BCD)で符号化したbyte配列(01:45:30は「0x014530」と符号化される。)を、それに対応する秒数に変換する。<br>
      * ((h*60)+m)*60+s<br>
      *
      * @param hms 時分秒
@@ -183,11 +142,59 @@ public class DateTimeFieldConverter {
      * @throws java.text.ParseException BCDの内容が未定義か、その他の理由で変換できない場合。
      */
     public static synchronized long BcdTimeToSecond(byte[] hms) throws ParseException {
-        Map<HMS_KEY, Integer> m = BcdTimeToMap(hms);
+        Map<HMS_KEY, Integer> m = BcdDateTimeToMap(hms);
         long ret = m.get(HMS_KEY.HOUR) * 60;
         ret = (ret + m.get(HMS_KEY.MINUTE)) * 60;
         ret = ret + m.get(HMS_KEY.SECOND);
         return ret;
+    }
+
+    private static String BcdTimeToString(Map<HMS_KEY, Integer> hms) throws ParseException {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ZERO_FILL_FORMAT.format(hms.get(HMS_KEY.HOUR)));
+        sb.append(ZERO_FILL_FORMAT.format(hms.get(HMS_KEY.MINUTE)));
+        sb.append(ZERO_FILL_FORMAT.format(hms.get(HMS_KEY.SECOND)));
+        return sb.toString();
+    }
+
+    /**
+     * BCDが24時間表示の時刻表示の範囲かどうかを判別する。時0から23 分0から59 秒0から59
+     * 範囲外の場合例外を投げる。
+     * @throws IllegalArgumentException BCDが時刻表示で使用できる範囲外の場合。
+     */
+    private static void dateTimeRangeChecker(Map<HMS_KEY, Integer> hms) throws IllegalArgumentException{
+        final int hour = hms.get(HMS_KEY.HOUR);
+        final int minute = hms.get(HMS_KEY.MINUTE);
+        final int second = hms.get(HMS_KEY.SECOND);
+        Object[] parameters = null;
+        CHECK:
+        {
+            final Range<Integer> HOUR_RANGE = Range.between(0, 23);
+
+            if (!HOUR_RANGE.contains(hour)) {
+                parameters = new Object[]{Integer.toHexString(hour), "時", hour};
+                break CHECK;
+            }
+
+            final Range<Integer> MINUTE_AND_SECOND_RANGE = Range.between(0, 59);
+
+            if (!MINUTE_AND_SECOND_RANGE.contains(minute)) {
+                parameters = new Object[]{Integer.toHexString(minute), "分", minute};
+                break CHECK;
+            }
+
+            if (!MINUTE_AND_SECOND_RANGE.contains(second)) {
+                parameters = new Object[]{Integer.toHexString(second), "秒", second};
+                break CHECK;
+            }
+        }
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("hour=" + hour + " minute=" + minute + " second=" + second);
+        }
+        if (parameters != null) {
+            MessageFormat msg = new MessageFormat("時刻表示の範囲外になっている部分があります。与えられた値={0} 時分秒={1} 値={2}");
+            throw new IllegalArgumentException(msg.format(parameters));
+        }
     }
 
     /**
@@ -219,7 +226,9 @@ public class DateTimeFieldConverter {
 
         byte[] hms = new byte[3];
         System.arraycopy(source, 2, hms, 0, hms.length);
-        sb.append(BcdTimeToString(hms));
+        Map<HMS_KEY, Integer> hmsMap = BcdDateTimeToMap(hms);
+        dateTimeRangeChecker(hmsMap);
+        sb.append(BcdTimeToString(hmsMap));
 
         String dateStr = sb.toString();
 

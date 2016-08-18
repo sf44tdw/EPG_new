@@ -179,9 +179,10 @@ public class TsReader {
                         }
                     }
                     count++;
+
                     if (!this.isReadEOF() && count >= this.getReadLimit()) {
                         if (LOG.isInfoEnabled()) {
-                            LOG.info("指定された数のパケットを読み込みました。読み込みを中断します。 指定されたパケット数 = " + this.getReadLimit() + " 読み込みパケット数 = " + count);
+                            LOG.info("指定された数のパケットを読み込みました。読み込みを中断します。 指定されたパケット数 = " + this.getReadLimit());
                         }
                         break;
                     }
@@ -211,7 +212,8 @@ public class TsReader {
             }
             pis.close();
             fis.close();
-
+            LOG.info("合計読み込みパケット数 = " + count);
+            
         } catch (FileNotFoundException e) {
             LOG.fatal("ファイルが見つかりません。", e);
         } catch (IOException e) {

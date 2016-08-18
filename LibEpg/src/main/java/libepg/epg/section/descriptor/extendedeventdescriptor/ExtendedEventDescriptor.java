@@ -154,6 +154,18 @@ public class ExtendedEventDescriptor extends Descriptor {
         return Aribstr.AribToString(this.getText_char());
     }
 
+    /**
+     * @return 全ての項目と拡張記述を連結した文字列
+     */
+    public final synchronized String getStoredText() {
+        StringBuilder sb = new StringBuilder();
+        for (ExtendedEventDescriptorItem i : this.getItemsList()) {
+            sb.append(i.getStoredString()).append("\n");
+        }
+        sb.append(this.getText_String()).append("\n");
+        return sb.toString();
+    }
+
     private static final MessageFormat DESC = new MessageFormat(""
             + "拡張形式イベント記述子 {0}"
             + "拡張形式イベント記述子 記述子番号 = {1}\n"

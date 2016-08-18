@@ -27,9 +27,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import libepg.util.bytearray.ByteDataBlock;
 
-
-
-
 /**
  * 拡張形式イベント記述子の項目
  */
@@ -64,6 +61,7 @@ public class ExtendedEventDescriptorItem {
 
     /**
      * item_description_length(項目名長):これは8 ビットのフィールドで、項目名のバイト長を示す。
+     *
      * @return 上記の値
      */
     public final synchronized int getItem_description_length() {
@@ -127,6 +125,15 @@ public class ExtendedEventDescriptorItem {
      */
     public final synchronized String getItem_String() {
         return Aribstr.AribToString(this.getItem());
+    }
+
+    /**
+     * 項目名と項目を文字列に連結して返す。
+     *
+     * @return 項目名 項目の内容。
+     */
+    public final synchronized String getStoredString() {
+        return this.getItem_description_length() + "  " + this.getItem_String();
     }
 
     @Override

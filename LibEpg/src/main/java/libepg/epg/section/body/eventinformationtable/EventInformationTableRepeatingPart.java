@@ -97,7 +97,7 @@ public final class EventInformationTableRepeatingPart {
             byte[] t = this.getStart_time();
             return (DateTimeFieldConverter.BytesToSqlDateTime(t));
         } catch (ParseException ex) {
-            LOG.warn("開始時間を示すタイムスタンプの生成に失敗しました。");
+            LOG.warn("開始時間を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
             throw ex;
         }
     }
@@ -106,7 +106,7 @@ public final class EventInformationTableRepeatingPart {
      * duration（継続時間）：24 ビットのフィールドで、イベントの継続時間を時、分、秒で表
      * す。継続時間が定義されない場合（例えば緊急ニュースで終了時刻が未定など）には、こ のフィールドのすべてのビットを「1」に設定する。 形式：6個の4
      * ビットBCD 符号 = 24 ビット 例2：01:45:30 は「0x014530」と符号化される。
-     *
+     * ※"何時間何分何秒後"を意味するので、最大99時間99分99秒あたりまでゆける(はず)。BSジャパンのstock777は240000と設定していた。
      * @return 上記の値
      */
     public synchronized byte[] getDuration() {
@@ -121,14 +121,14 @@ public final class EventInformationTableRepeatingPart {
      * @return タイムスタンプに変換された 終了日時
      * @throws java.text.ParseException 変換できなかったか、未定義の場合。
      */
-    public synchronized Timestamp getStopTime_Object() throws ParseException {
+    public synchronized Timestamp getStop_Time_Object() throws ParseException {
         try {
             byte[] t = this.getDuration();
             long x = DateTimeFieldConverter.BcdTimeToSecond(t) * 1000;
             x = x + this.getStart_time_Object().getTime();
             return new Timestamp(x);
         } catch (ParseException ex) {
-            LOG.warn("終了日時を示すタイムスタンプの生成に失敗しました。");
+            LOG.warn("終了日時を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
             throw ex;
         }
     }
@@ -211,7 +211,7 @@ public final class EventInformationTableRepeatingPart {
 
         try {
             start = this.getStart_time_Object().toString();
-            stop = this.getStopTime_Object().toString();
+            stop = this.getStop_Time_Object().toString();
         } catch (ParseException ex) {
             Logger.getLogger(EventInformationTableRepeatingPart.class.getName()).log(Level.SEVERE, null, ex);
         }
