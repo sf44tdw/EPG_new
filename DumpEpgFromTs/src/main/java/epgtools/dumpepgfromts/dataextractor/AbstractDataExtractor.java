@@ -19,14 +19,11 @@ package epgtools.dumpepgfromts.dataextractor;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
 import libepg.epg.section.SectionBody;
 import libepg.epg.section.TABLE_ID;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,22 +41,21 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = LogFactory.getLog(myClass);
     }
-    private final Section source;
+
     private final Set<TABLE_ID> tableIds;
+
+    private final Set<T> opjectStore = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * サブクラス用コンストラクタ。<br>
-     * サブクラス側で独自にセクションのみをとるpublicコンストラクタを実装することが望ましい。<br>
+     * サブクラス側でテーブルIDを指定するとよい<br>
      *
-     * @param source 処理対象のセクション
      * @param tableId 処理対象のセクションを規定するテーブルID
      * @param tablsIds 処理対象のセクションを規定するテーブルID
      * @throws IllegalArgumentException　<br>
-     * 1:テーブル識別値がセクションから取得した値と相違している。場合<br>
-     * 2:テーブルでCRCエラーが起きている場合。<br>
+     * 1:テーブル識別値がない。
      */
-    protected AbstractDataExtractor(Section source, TABLE_ID tableId, TABLE_ID... tablsIds) throws IllegalArgumentException {
-        this.source = source;
+    protected AbstractDataExtractor(TABLE_ID tableId, TABLE_ID... tablsIds) throws IllegalArgumentException {
 
         Set<TABLE_ID> tidset = Collections.synchronizedSet(new HashSet<>());
         if (tableId == null) {
@@ -77,28 +73,7 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
             }
         }
         this.tableIds = Collections.unmodifiableSet(tidset);
-        final String hexDump = Hex.encodeHexString(this.source.getData());
-        if (this.source.checkCRC() != Section.CRC_STATUS.NO_CRC_ERROR) {
-            throw new IllegalArgumentException("CRCエラーです。 セクション = " + hexDump);
-        }
-        if (!this.tableIds.contains(this.source.getTable_id_const())) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("処理対象のテーブルIDではありません。\n");
-            sb.append("処理対象のテーブルID\n");
-            for (TABLE_ID id : this.tableIds) {
-                sb.append(id).append("\n");
-            }
-            sb.append("セクションのテーブルID = ").append(this.source.getTable_id_const()).append("\n");
-            sb.append("セクション = ").append(hexDump).append("\n");
-            throw new IllegalArgumentException(sb.toString());
-        }
-    }
 
-    /**
-     * @return セクション
-     */
-    public Section getSource() {
-        return source;
     }
 
     /**
@@ -108,17 +83,42 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
         return tableIds;
     }
 
+    protected final Set<T> getOpjectStore() {
+        return opjectStore;
+    }
+
+    public final Set<T> getUnmodifiableObjetStore() {
+        return Collections.unmodifiableSet(this.getOpjectStore());
+    }
+
+    protected final void clearObjectStore() {
+        this.opjectStore.clear();
+    }
+
     /**
-     * 一時格納用セットの初期化
+     * セクションに対するチェックを行う。
      *
-     * @return セット
+     * @param s セクション
+     * @throws IllegalArgumentException　<br>
+     * 1:事前に設定されたテーブル識別値がセクションから取得した値と相違している。場合<br>
+     * 2:セクションでCRCエラーが起きている場合。<br>
      */
-    protected final Set<T> initiarizeSet() {
-        final boolean isPutMessage = false;
-        if (LOG.isInfoEnabled() && isPutMessage) {
-            LOG.info("重複排除用セット作製");
+    protected final void checkSection(Section s) throws IllegalArgumentException {
+        final String hexDump = Hex.encodeHexString(s.getData());
+        if (s.checkCRC() != Section.CRC_STATUS.NO_CRC_ERROR) {
+            throw new IllegalArgumentException("CRCエラーです。 セクション = " + hexDump);
         }
-        return Collections.synchronizedSet(new HashSet<T>());
+        if (!this.tableIds.contains(s.getTable_id_const())) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("処理対象のテーブルIDではありません。\n");
+            sb.append("処理対象のテーブルID\n");
+            for (TABLE_ID id : this.tableIds) {
+                sb.append(id).append("\n");
+            }
+            sb.append("セクションのテーブルID = ").append(s.getTable_id_const()).append("\n");
+            sb.append("セクション = ").append(hexDump).append("\n");
+            throw new IllegalArgumentException(sb.toString());
+        }
     }
 
     /**
@@ -126,19 +126,18 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
      *
      * @throws IllegalStateException テーブルIDのデータ型指定とセクション本体のデータ型が異なっている場合。
      */
-    protected final void checkSectionBodyType() throws IllegalStateException {
-        final SectionBody b = this.getSource().getSectionBody();
-        if (b.getClass() != this.getSource().getTable_id_const().getDataType()) {
+    protected final void checkSectionBodyType(Section s) throws IllegalStateException {
+        SectionBody b = s.getSectionBody();
+        if (b.getClass() != s.getTable_id_const().getDataType()) {
             //まずありえないのでテストケースにはしない。
-            throw new IllegalStateException("テーブルIDのデータ型指定とセクション本体のデータ型がが異なっています。テーブルID = " + this.getSource().getClass() + " セクション本体 = " + b.getClass() + " セクションのデータ = " + Hex.encodeHexString(this.getSource().getData()));
+            throw new IllegalStateException("テーブルIDのデータ型指定とセクション本体のデータ型が異なっています。テーブルID = " + s.getClass() + " セクション本体 = " + b.getClass() + " セクションのデータ = " + Hex.encodeHexString(s.getData()));
         }
     }
 
     /**
      * セクションから必要な情報を集めて専用オブジェクトに格納し、そのリストを作って返す
      *
-     * @return
-     * 作成されたすべてのオブジェクトについて。トランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を複合キーとして格納したマップ。
+     * @param s
      */
-    public abstract Map<MultiKey<Integer>, T> getDataList() throws IllegalStateException;
+    public abstract void getDataList(Section s) throws IllegalStateException;
 }
