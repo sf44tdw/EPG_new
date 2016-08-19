@@ -67,7 +67,7 @@ public class DescriptorTest {
     @ExpectedExceptionMessage("^渡されたデータの長さが想定と異なりま.*$")
     public void testConstructor_1() throws Throwable {
         try {
-            LOG.debug("異常系_データ長相違");
+            LOG.info("異常系_データ長相違");
             byte[] tail = {0x00, 0x00};
             byte[] wrongX1 = ArrayUtils.addAll(this.descs.getSERVICE_DESCRIPTOR_BYTE(), tail);
             Descriptor instance = Descriptors.init(wrongX1);
@@ -81,7 +81,7 @@ public class DescriptorTest {
 //    @ExpectedExceptionMessage("^記述子タグが異なります.*$")
 //    public void testConstructor_2() throws Throwable {
 //        try {
-//            LOG.debug("異常系_記述子タグ相違");
+//            LOG.info("異常系_記述子タグ相違");
 //            Descriptor instance = Descriptors.init(this.descs.getSERVICE_DESCRIPTOR_BYTE());
 //        } catch (InvocationTargetException ex) {
 //            throw ex.getCause();
@@ -93,7 +93,7 @@ public class DescriptorTest {
      */
     @Test
     public void testGetData() {
-        LOG.debug("getData");
+        LOG.info("getData");
         Descriptor instance = this.descs.getSERVICE_DESCRIPTOR();
         byte[] expResult = this.descs.getSERVICE_DESCRIPTOR_BYTE();
         byte[] result = instance.getData();
@@ -105,7 +105,7 @@ public class DescriptorTest {
      */
     @Test
     public void testGetDescriptor_tag() {
-        LOG.debug("getDescriptor_tag");
+        LOG.info("getDescriptor_tag");
         Descriptor instance = this.descs.getSERVICE_DESCRIPTOR();
         int expResult = 0x48;
         int result = instance.getDescriptor_tag();
@@ -117,7 +117,7 @@ public class DescriptorTest {
      */
     @Test
     public void testGetDescriptor_length() {
-        LOG.debug("getDescriptor_length");
+        LOG.info("getDescriptor_length");
         Descriptor instance = this.descs.getSERVICE_DESCRIPTOR();
         int expResult = 0x12;
         int result = instance.getDescriptor_length();
@@ -129,7 +129,7 @@ public class DescriptorTest {
      */
     @Test
     public void testGetDescriptor_Body() throws DecoderException {
-        LOG.debug("getDescriptor_Body");
+        LOG.info("getDescriptor_Body");
         Descriptor instance = this.descs.getSERVICE_DESCRIPTOR();
         byte[] expResult = Hex.decodeHex("01000f0e4e484b451d461d6c310f456c357e".toCharArray());
         byte[] result = instance.getDescriptor_Body();
@@ -141,10 +141,10 @@ public class DescriptorTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         Descriptor instance = this.descs.getSERVICE_DESCRIPTOR();
         String result = instance.toString();
-        LOG.debug(result);
+        LOG.info(result);
     }
 
     /**
@@ -152,7 +152,7 @@ public class DescriptorTest {
      */
     @Test
     public void testHashCode() {
-        LOG.debug("hashCode");
+        LOG.info("hashCode");
         Descriptor instance1 = this.descs.getSERVICE_DESCRIPTOR();
         Descriptor instance2 = this.descs.getSERVICE_DESCRIPTOR();
         int expResult1 = instance2.hashCode();
@@ -167,7 +167,7 @@ public class DescriptorTest {
      */
     @Test
     public void testEquals() {
-        LOG.debug("equals_ok");
+        LOG.info("equals_ok");
         EqualsChecker<Descriptor> ec = new EqualsChecker<>();
         Descriptor instance1 = this.descs.getSERVICE_DESCRIPTOR();
         Descriptor instance2 = this.descs.getSERVICE_DESCRIPTOR();
@@ -182,7 +182,7 @@ public class DescriptorTest {
      */
     @Test
     public void testEquals_ng() {
-        LOG.debug("equals_ng");
+        LOG.info("equals_ng");
         Descriptor instance1 = this.descs.getSERVICE_DESCRIPTOR();
         Descriptor instance2 = this.descs.getDIGITAL_COPY_CONTROL_DESCRIPTOR();
         boolean result = instance1.equals(instance2);
@@ -195,7 +195,7 @@ public class DescriptorTest {
      */
     @Test
     public void testGetDescriptor_tag_const() {
-        LOG.debug("getDescriptor_tag_const");
+        LOG.info("getDescriptor_tag_const");
         Descriptor instance = this.descs.getLOGO_TRANSMISSION_DESCRIPTOR();
         DESCRIPTOR_TAG expResult = LOGO_TRANSMISSION_DESCRIPTOR;
         DESCRIPTOR_TAG result = instance.getDescriptor_tag_const();

@@ -115,7 +115,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetTransport_stream_id() {
-        LOG.debug("getTransport_stream_id");
+        LOG.info("getTransport_stream_id");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 0x7fe1;
         int result = instance.getTransport_stream_id();
@@ -127,7 +127,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetReserved2() {
-        LOG.debug("getReserved2");
+        LOG.info("getReserved2");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 3;
         int result = instance.getReserved2();
@@ -139,7 +139,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetVersion_number() {
-        LOG.debug("getVersion_number");
+        LOG.info("getVersion_number");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 8;
         int result = instance.getVersion_number();
@@ -152,7 +152,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetCurrent_next_indicator() {
-        LOG.debug("getCurrent_next_indicator");
+        LOG.info("getCurrent_next_indicator");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 1;
         int result = instance.getCurrent_next_indicator();
@@ -164,7 +164,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetSection_number() {
-        LOG.debug("getSection_number");
+        LOG.info("getSection_number");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 0;
         int result = instance.getSection_number();
@@ -177,7 +177,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetLast_section_number() {
-        LOG.debug("getLast_section_number");
+        LOG.info("getLast_section_number");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 0;
         int result = instance.getLast_section_number();
@@ -190,7 +190,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetOriginal_network_id() {
-        LOG.debug("getOriginal_network_id");
+        LOG.info("getOriginal_network_id");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 0x7fe1;
         int result = instance.getOriginal_network_id();
@@ -203,7 +203,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetReserved_future_use2() {
-        LOG.debug("getReserved_future_use2");
+        LOG.info("getReserved_future_use2");
         ServiceDescriptionTableBody instance = this.sdth;
         int expResult = 0xff;
         int result = instance.getReserved_future_use2();
@@ -215,7 +215,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetSDTBody() throws DecoderException {
-        LOG.debug("getSDTBody");
+        LOG.info("getSDTBody");
         ServiceDescriptionTableBody instance = this.sdth;
         byte[] expResult = Hex.decodeHex("0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32".toCharArray());
         byte[] result = instance.getRepeatingPart();
@@ -228,7 +228,7 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testGetSDTBodyList() throws DecoderException, Throwable {
-        LOG.debug("getSDTBodyList");
+        LOG.info("getSDTBodyList");
 
         ServiceDescriptionTableRepeatingPart expResult1 = ClassGetter.init(Hex.decodeHex("0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f0010408".toCharArray()));
         ServiceDescriptionTableRepeatingPart expResult2 = ClassGetter.init(Hex.decodeHex("0409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08".toCharArray()));
@@ -249,9 +249,9 @@ public class ServiceDescriptionTableBodyTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         ServiceDescriptionTableBody instance = this.sdth;
-        LOG.debug(instance.toString());
+        LOG.info(instance.toString());
 
     }
 }

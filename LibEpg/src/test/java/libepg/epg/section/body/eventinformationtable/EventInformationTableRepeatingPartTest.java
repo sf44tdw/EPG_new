@@ -96,7 +96,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetData() throws DecoderException {
-        LOG.debug("getData");
+        LOG.info("getData");
         EventInformationTableRepeatingPart instance = target;
         byte[] expResult = Hex.decodeHex(data);
         byte[] result = instance.getData();
@@ -108,7 +108,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetEvent_id() {
-        LOG.debug("getEvent_id");
+        LOG.info("getEvent_id");
         EventInformationTableRepeatingPart instance = target;
         int expResult = 0x7361;
         int result = instance.getEvent_id();
@@ -121,7 +121,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetStart_time() throws DecoderException {
-        LOG.debug("getStart_time");
+        LOG.info("getStart_time");
         EventInformationTableRepeatingPart instance = target;
         byte[] expResult = Hex.decodeHex("e07c180000".toCharArray());
         byte[] result = instance.getStart_time();
@@ -134,7 +134,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetStart_time_Object() throws Exception {
-        LOG.debug("getStart_time_Object");
+        LOG.info("getStart_time_Object");
         EventInformationTableRepeatingPart instance = target;
         Timestamp expResult = Timestamp.valueOf("2016-03-21 18:00:00.0");
         Timestamp result = instance.getStart_time_Object();
@@ -146,7 +146,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetDuration() throws DecoderException {
-        LOG.debug("getDuration");
+        LOG.info("getDuration");
         EventInformationTableRepeatingPart instance = target;
         byte[] expResult = Hex.decodeHex("002500".toCharArray());
         byte[] result = instance.getDuration();
@@ -158,8 +158,8 @@ public class EventInformationTableRepeatingPartTest {
      * EventInformationTableRepeatingPart.
      */
     @Test
-    public void testGetStopTime_Object() throws Exception {
-        LOG.debug("getStopTime_Object");
+    public void testGetStopTime_Object() {
+        LOG.info("getStopTime_Object");
         EventInformationTableRepeatingPart instance = target;
         Timestamp expResult = Timestamp.valueOf("2016-03-21 18:25:00.0");;
         Timestamp result = instance.getStop_Time_Object();
@@ -172,7 +172,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetRunning_status() {
-        LOG.debug("getRunning_status");
+        LOG.info("getRunning_status");
         EventInformationTableRepeatingPart instance = target;
         int expResult = 0;
         int result = instance.getRunning_status();
@@ -185,7 +185,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetFree_CA_mode() {
-        LOG.debug("getFree_CA_mode");
+        LOG.info("getFree_CA_mode");
         EventInformationTableRepeatingPart instance = target;
         int expResult = 0;
         int result = instance.getFree_CA_mode();
@@ -198,7 +198,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetDescriptors_loop_length() {
-        LOG.debug("getDescriptors_loop_length");
+        LOG.info("getDescriptors_loop_length");
         EventInformationTableRepeatingPart instance = target;
         int expResult = 0x0f6;
         int result = instance.getDescriptors_loop_length();
@@ -211,7 +211,7 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testGetDescriptors_loop() throws DecoderException {
-        LOG.debug("getDescriptors_loop");
+        LOG.info("getDescriptors_loop");
         EventInformationTableRepeatingPart instance = target;
         DescriptorsLoop expResult = new DescriptorsLoop(Hex.decodeHex("4dbb6a706e3d1b7ceff3eff3d1c3b3ed1b7ea11b7cade3e91b7dc8e21b7cef213cebc9212148741b7dd33d50bb1b7ea13f4d35241b7cbdf3b01b242a3b1b7dfad6faea791b7ceff3eff31b7dbfc1ac2122b3c9e248564148c73f4d3524ce324ef2335ab7af3e5232702123364acf2156e6adc0ebdece1b7ce6ad1b7dc1e3f3c821572156a4c3b7e7cae9d8a4adc0e82157cac9212321561b7cc9ecdfd5a121261b7dc9213ccac3c41b7ea121571b7dceecc3b7213cac45503e6c1b7ea15006f1b3006a706ec409f203100f0f6f6a706ec70e0008300501136a706e006a706e005406a8ff54ff49ffc10184d609120067736100687361".toCharArray()));
         DescriptorsLoop result = instance.getDescriptors_loop();
@@ -223,9 +223,20 @@ public class EventInformationTableRepeatingPartTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         EventInformationTableRepeatingPart instance = target;
-        LOG.debug(target);
+        LOG.info(target);
+    }
+
+    @Test
+    public void fail_tomestamp_ffff() throws DecoderException, InvocationTargetException {
+        LOG.info("時刻の取得でnullが返ることがある。");
+        String data = "7f61e111115400ffffff00164d0d6a706e0835243e5d3e704a7300540201ffc10188";
+        EventInformationTableRepeatingPart instance = init(Hex.decodeHex(data.toCharArray()));
+        Timestamp st = instance.getStart_time_Object();
+        assertEquals(1471402440000L, st.getTime());
+        Timestamp en = instance.getStop_Time_Object();
+        assertEquals(en, null);
     }
 
 //    /**

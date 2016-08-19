@@ -112,14 +112,14 @@ public class SectionTest {
 //    @Test
 //    @ExpectedExceptionMessage("^テーブル識別値が見つかりません.*")
 //    public void testConstructor_2() {
-//        LOG.debug("異常系_記述子タグ相違");
+//        LOG.info("異常系_記述子タグ相違");
 //        
 //        Section instance = new Section(TABLE_ID.OTHER_TABLE_IDS, this.testSection_OK.getData());
 //    }
     @Test
     @ExpectedExceptionMessage("^セクション長フィールドの値が大きすぎます.*")
     public void testConstructor_3() {
-        LOG.debug("異常系_セクション長フィールド値最大値超過");
+        LOG.info("異常系_セクション長フィールド値最大値超過");
         byte[] wrong02 = this.testSection_OK1.getData();
         wrong02[1] = 0xf;
         wrong02[2] = 0xf;
@@ -129,7 +129,7 @@ public class SectionTest {
     @Test
     @ExpectedExceptionMessage("配列切り詰め中に問題発生。")
     public void testConstructor_4() throws DecoderException {
-        LOG.debug("異常系_セクション長フィールドの値より渡された配列が短い。");
+        LOG.info("異常系_セクション長フィールドの値より渡された配列が短い。");
         Section instance = new Section(Hex.decodeHex("09f203110fff1f6a706e540211ff2edd7299ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toCharArray()));
     }
 
@@ -138,7 +138,7 @@ public class SectionTest {
      */
     @Test
     public void testGetTable_id_const() {
-        LOG.debug("getTable_id_const");
+        LOG.info("getTable_id_const");
         Section instance = this.testSection_OK1;
         TABLE_ID expResult = TABLE_ID.SDT;
         TABLE_ID result = instance.getTable_id_const();
@@ -150,7 +150,7 @@ public class SectionTest {
      */
     @Test
     public void testGetTable_id() {
-        LOG.debug("getTable_id");
+        LOG.info("getTable_id");
         Section instance = this.testSection_OK1;
         int expResult = 0x42;
         int result = instance.getTable_id();
@@ -162,7 +162,7 @@ public class SectionTest {
      */
     @Test
     public void testGetSection_syntax_indicator() {
-        LOG.debug("getSection_syntax_indicator");
+        LOG.info("getSection_syntax_indicator");
         Section instance = this.testSection_OK1;
         int expResult = 1;
         int result = instance.getSection_syntax_indicator();
@@ -174,7 +174,7 @@ public class SectionTest {
      */
     @Test
     public void testGetReservedFutureUse1() {
-        LOG.debug("getReservedFutureUse1");
+        LOG.info("getReservedFutureUse1");
         Section instance = this.testSection_OK1;
         int expResult = 1;
         int result = instance.getReservedFutureUse1();
@@ -186,7 +186,7 @@ public class SectionTest {
      */
     @Test
     public void testGetReserved1() {
-        LOG.debug("getReserved1");
+        LOG.info("getReserved1");
         Section instance = this.testSection_OK1;
         int expResult = 3;
         int result = instance.getReserved1();
@@ -198,7 +198,7 @@ public class SectionTest {
      */
     @Test
     public void testGetSectionLength() {
-        LOG.debug("getSectionLength");
+        LOG.info("getSectionLength");
         Section instance = this.testSection_OK1;
         int expResult = 0x097;
         int result = instance.getSectionLength();
@@ -210,7 +210,7 @@ public class SectionTest {
      */
     @Test
     public void testGetSectionBody() throws DecoderException {
-        LOG.debug("getSectionBody");
+        LOG.info("getSectionBody");
         Section instance = this.testSection_OK1;
         byte[] expResult = Hex.decodeHex("7fe1d100007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32".toCharArray());
         byte[] result = instance.getSectionBody().getData();
@@ -222,7 +222,7 @@ public class SectionTest {
      */
     @Test
     public void testGetTable_id_extension() {
-        LOG.debug("getTable_id_extension");
+        LOG.info("getTable_id_extension");
         Section instance = this.testSection_OK1;
         int expResult = 0x7fe1;
         int result = instance.getTable_id_extension();
@@ -234,12 +234,12 @@ public class SectionTest {
      */
     @Test
     public void testGetCRC() throws DecoderException {
-        LOG.debug("getCRC");
+        LOG.info("getCRC");
         Section instance = this.testSection_OK1;
         int expResult = ByteConverter.bytesToInt(Hex.decodeHex("722fa2b5".toCharArray()));
-        LOG.debug(expResult);
+        LOG.info(expResult);
         int result = instance.getCRC();
-        LOG.debug(result);
+        LOG.info(result);
         assertEquals(expResult, result);
     }
 
@@ -248,7 +248,7 @@ public class SectionTest {
      */
     @Test
     public void testCheckCRC() {
-        LOG.debug("checkCRC");
+        LOG.info("checkCRC");
         Section instance = this.testSection_OK1;
         Section.CRC_STATUS expResult = Section.CRC_STATUS.NO_CRC_ERROR;
         Section.CRC_STATUS result = instance.checkCRC();
@@ -260,9 +260,9 @@ public class SectionTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         Section instance = this.testSection_OK1;
-        LOG.debug(instance);
+        LOG.info(instance);
     }
 
     /**
@@ -272,7 +272,7 @@ public class SectionTest {
      */
     @Test
     public void testHashCode() throws DecoderException {
-        LOG.debug("hashCode");
+        LOG.info("hashCode");
         Section instance1 = this.testSection_OK1;
         Section instance2 = this.testSection_OK2;
         assertTrue(instance1.hashCode() == instance2.hashCode());
@@ -290,7 +290,7 @@ public class SectionTest {
      */
     @Test
     public void testEquals() {
-        LOG.debug("equals_ok");
+        LOG.info("equals_ok");
         EqualsChecker<Section> ec = new EqualsChecker<>();
         Section instance1 = this.testSection_OK1;
         Section instance2 = this.testSection_OK2;
@@ -305,7 +305,7 @@ public class SectionTest {
      */
     @Test
     public void testEquals_ng() throws DecoderException {
-        LOG.debug("equals_ng");
+        LOG.info("equals_ng");
         Section instance1 = this.testSection_OK1;
         
         byte[] b = ArrayUtils.remove(new TestPacket_SDT().getTarget200().getPayload(), 0);
@@ -321,12 +321,12 @@ public class SectionTest {
      */
     @Test
     public void testGetData() throws DecoderException {
-        LOG.debug("getData");
+        LOG.info("getData");
         Section instance = testSection_OK1;
         byte[] expResult = Hex.decodeHex("42f0977fe1d100007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32722fa2b5".toCharArray());
         byte[] result = instance.getData();
-//        LOG.debug(Hex.encodeHexString(expResult));
-//        LOG.debug(Hex.encodeHexString(result));
+//        LOG.info(Hex.encodeHexString(expResult));
+//        LOG.info(Hex.encodeHexString(result));
         assertArrayEquals(expResult, result);
         
     }

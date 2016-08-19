@@ -64,7 +64,7 @@ public class TsPacketAlignerTest {
      */
     @Test
     public void testGetPid() {
-        LOG.debug("\ngetPid");
+        LOG.info("\ngetPid");
         TsPacketAligner instance = new TsPacketAligner(10);
         int expResult = 10;
         int result = instance.getPid();
@@ -76,7 +76,7 @@ public class TsPacketAlignerTest {
      */
     @Test
     public void testAdd_ONLY_ADAPTATION() throws DecoderException {
-        LOG.debug("\nadd_正常系_アダプテーションフィールドのみ");
+        LOG.info("\nadd_正常系_アダプテーションフィールドのみ");
 
         TestPacket_Only_Adaptation_Field tspa = new TestPacket_Only_Adaptation_Field();
 
@@ -129,13 +129,13 @@ public class TsPacketAlignerTest {
      */
     @Test
     public void testAdd_NG() throws DecoderException {
-        LOG.debug("\nadd_異常系");
+        LOG.info("\nadd_異常系");
         TsPacketAligner instance;
         TsPacket p;
         TsPacketAligner.ADD_RESULT add;
         boolean ret;
 
-        LOG.debug("\n連送パケット");
+        LOG.info("\n連送パケット");
         p = this.testData.target_p0d;
         instance = new TsPacketAligner(p.getPid());
         add = instance.add(p);
@@ -145,20 +145,20 @@ public class TsPacketAlignerTest {
         ret = (add == TsPacketAligner.ADD_RESULT.DUPLICATION);
         assertEquals(true, ret);
 
-        LOG.debug("\nエラーパケット");
+        LOG.info("\nエラーパケット");
         p = new TsPacket_error_indicator().target_error01;
         instance = new TsPacketAligner(p.getPid());
         add = instance.add(p);
         ret = (add == TsPacketAligner.ADD_RESULT.ERROR_PACKET);
         assertEquals(true, ret);
 
-        LOG.debug("\npid相違");
+        LOG.info("\npid相違");
         p = new TestPacket_Only_Adaptation_Field().target00;
         instance = new TsPacketAligner(0x11);
         add = instance.add(p);
         assertEquals(TsPacketAligner.ADD_RESULT.DEFFERENT_PID, add);
 
-        LOG.debug("\nnull追加");
+        LOG.info("\nnull追加");
         p = new TestPacket_Only_Adaptation_Field().target00;
         instance = new TsPacketAligner(p.getPid());
         ret = false;
@@ -177,7 +177,7 @@ public class TsPacketAlignerTest {
      */
     @Test
     public void testGetPackets() {
-        LOG.debug("\ngetPackets");
+        LOG.info("\ngetPackets");
         TsPacketAligner instance = new TsPacketAligner(0x11);
         TsPacket p;
         TsPacketAligner.ADD_RESULT add;
@@ -219,7 +219,7 @@ public class TsPacketAlignerTest {
      */
     @Test
     public void testGetPackets_missing() {
-        LOG.debug("\ngetPackets_パケット飛びあり");
+        LOG.info("\ngetPackets_パケット飛びあり");
         TsPacketAligner instance = new TsPacketAligner(0x11);
         TsPacket p;
         TsPacketAligner.ADD_RESULT add;

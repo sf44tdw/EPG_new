@@ -65,7 +65,7 @@ public class NibbleTest {
      */
     @Test
     public void testGetData() throws Throwable {
-        LOG.debug("getData");
+        LOG.info("getData");
         Nibble instance = NIbbleMaker.init(this.data);
         byte[] expResult = this.data;
         byte[] result = instance.getData();
@@ -79,7 +79,7 @@ public class NibbleTest {
      */
     @Test
     public void testGetContent_nibble_level_1() throws Throwable {
-        LOG.debug("getContent_nibble_level_1");
+        LOG.info("getContent_nibble_level_1");
         Nibble instance = NIbbleMaker.init(this.data);
         NIBBLE_LEVEL_1 expResult = NIBBLE_LEVEL_1.SPORTS;
         NIBBLE_LEVEL_1 result = instance.getContent_nibble_level_1();
@@ -93,7 +93,7 @@ public class NibbleTest {
      */
     @Test
     public void testGetContent_nibble_level_2() throws Throwable {
-        LOG.debug("getContent_nibble_level_2");
+        LOG.info("getContent_nibble_level_2");
         Nibble instance = NIbbleMaker.init(this.data);
         NIBBLE_LEVEL_2 expResult = NIBBLE_LEVEL_2.BASEBALL;
         NIBBLE_LEVEL_2 result = instance.getContent_nibble_level_2();
@@ -107,7 +107,7 @@ public class NibbleTest {
      */
     @Test
     public void testGetUser_nibble1() throws Throwable {
-        LOG.debug("getUser_nibble1");
+        LOG.info("getUser_nibble1");
         Nibble instance = NIbbleMaker.init(this.data);
         int expResult = 0x1;
         int result = instance.getUser_nibble1();
@@ -121,7 +121,7 @@ public class NibbleTest {
      */
     @Test
     public void testGetUser_nibble2() throws Throwable {
-        LOG.debug("getUser_nibble2");
+        LOG.info("getUser_nibble2");
         Nibble instance = NIbbleMaker.init(this.data);
         int expResult = 0x1;
         int result = instance.getUser_nibble1();
@@ -133,7 +133,7 @@ public class NibbleTest {
      */
     @Test
     public void testHashCode() throws Throwable {
-        LOG.debug("hashCode");
+        LOG.info("hashCode");
         Nibble instance = NIbbleMaker.init(this.data);
         int expResult = 2019;
         int result = instance.hashCode();
@@ -145,7 +145,7 @@ public class NibbleTest {
 //     */
 //    @Test
 //    public void testEquals() {
-//        LOG.debug("equals");
+//        LOG.info("equals");
 //        Object obj = null;
 //        Nibble instance = null;
 //        boolean expResult = false;
@@ -161,7 +161,7 @@ public class NibbleTest {
      */
     @Test
     public void testEquals() throws Throwable {
-        LOG.debug("equals_ok");
+        LOG.info("equals_ok");
         EqualsChecker<Nibble> ec = new EqualsChecker<>();
 
         Nibble instance1 = NIbbleMaker.init(Hex.decodeHex("82ff".toCharArray()));
@@ -178,7 +178,7 @@ public class NibbleTest {
      */
     @Test
     public void testEquals_ng() throws DecoderException, Throwable {
-        LOG.debug("equals_ng");
+        LOG.info("equals_ng");
         Nibble instance1 = NIbbleMaker.init(Hex.decodeHex("82ff".toCharArray()));
         Nibble instance2 = NIbbleMaker.init(Hex.decodeHex("81ff".toCharArray()));
         boolean result = instance1.equals(instance2);
@@ -193,8 +193,8 @@ public class NibbleTest {
      */
     @Test
     public void testToString() throws Throwable {
-        LOG.debug("toString");
+        LOG.info("toString");
         Nibble instance = NIbbleMaker.init(this.data);
-        LOG.debug(instance);
+        LOG.info(instance);
     }
 }

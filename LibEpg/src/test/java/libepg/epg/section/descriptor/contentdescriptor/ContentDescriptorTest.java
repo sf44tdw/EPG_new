@@ -96,7 +96,7 @@ public class ContentDescriptorTest {
      */
     @Test
     public void testGetNibbles() throws DecoderException, Throwable {
-        LOG.debug("getNibbles");
+        LOG.info("getNibbles");
         ContentDescriptor instance = new ContentDescriptor(d.getCONTENT_DESCRIPTOR());
         List<Nibble> expResult = new ArrayList<>();
         expResult.add(NIbbleMaker.init(Hex.decodeHex("82ff".toCharArray())));
@@ -112,9 +112,9 @@ public class ContentDescriptorTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString1");
+        LOG.info("toString1");
         ContentDescriptor instance = new ContentDescriptor(d.getCONTENT_DESCRIPTOR());
-        LOG.debug(instance);
+        LOG.info(instance);
 
     }
 
@@ -126,9 +126,9 @@ public class ContentDescriptorTest {
      */
     @Test
     public void testToString2() throws InvocationTargetException, DecoderException {
-        LOG.debug("toString2");
+        LOG.info("toString2");
         ContentDescriptor instance = new ContentDescriptor(Descriptors.init(Hex.decodeHex("540260ff".toCharArray())));
-        LOG.debug(instance);
+        LOG.info(instance);
 
     }
 

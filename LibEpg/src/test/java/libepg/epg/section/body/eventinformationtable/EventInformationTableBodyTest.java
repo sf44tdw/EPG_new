@@ -171,7 +171,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetService_id() {
-        LOG.debug("getService_id");
+        LOG.info("getService_id");
         EventInformationTableBody instance = this.eitb;
         int expResult = 0x67;
         int result = instance.getService_id();
@@ -183,7 +183,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetReserved1() {
-        LOG.debug("getReserved1");
+        LOG.info("getReserved1");
         EventInformationTableBody instance = this.eitb;
         int expResult = 3;
         int result = instance.getReserved1();
@@ -195,7 +195,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetVersion_number() {
-        LOG.debug("getVersion_number");
+        LOG.info("getVersion_number");
         EventInformationTableBody instance = this.eitb;
         int expResult = 18;
         int result = instance.getVersion_number();
@@ -208,7 +208,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetCurrent_next_indicator() {
-        LOG.debug("getCurrent_next_indicator");
+        LOG.info("getCurrent_next_indicator");
         EventInformationTableBody instance = this.eitb;
         int expResult = 1;
         int result = instance.getCurrent_next_indicator();
@@ -220,7 +220,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetSection_number() {
-        LOG.debug("getSection_number");
+        LOG.info("getSection_number");
         EventInformationTableBody instance = this.eitb;
         int expResult = 0x30;
         int result = instance.getSection_number();
@@ -233,7 +233,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetLast_section_number() {
-        LOG.debug("getLast_section_number");
+        LOG.info("getLast_section_number");
         EventInformationTableBody instance = this.eitb;
         int expResult = 0xf8;
         int result = instance.getLast_section_number();
@@ -246,7 +246,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetTransport_stream_id() {
-        LOG.debug("getTransport_stream_id");
+        LOG.info("getTransport_stream_id");
         EventInformationTableBody instance = this.eitb;
         int expResult = 0x40f2;
         int result = instance.getTransport_stream_id();
@@ -259,7 +259,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetOriginal_network_id() {
-        LOG.debug("getOriginal_network_id");
+        LOG.info("getOriginal_network_id");
         EventInformationTableBody instance = this.eitb;
         int expResult = 0x0004;
         int result = instance.getOriginal_network_id();
@@ -272,7 +272,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetSegment_last_section_number() {
-        LOG.debug("getSegment_last_section_number");
+        LOG.info("getSegment_last_section_number");
         EventInformationTableBody instance = this.eitb;
         int expResult = 0x30;
         int result = instance.getSegment_last_section_number();
@@ -284,7 +284,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetLast_table_id() {
-        LOG.debug("getLast_table_id");
+        LOG.info("getLast_table_id");
         EventInformationTableBody instance = this.eitb;
         int expResult = 0x61;
         int result = instance.getLast_table_id();
@@ -296,7 +296,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetRepeatingPart() {
-        LOG.debug("getRepeatingPart");
+        LOG.info("getRepeatingPart");
         EventInformationTableBody instance = this.eitb;
         byte[] expResult = this.Repeating_Part;
         byte[] result = instance.getRepeatingPart();
@@ -324,7 +324,7 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testGetEITRepeatingPartList() throws DecoderException, InvocationTargetException {
-        LOG.debug("getEITRepeatingPartList");
+        LOG.info("getEITRepeatingPartList");
         EventInformationTableBody instance = this.eitb;
         byte[] target1 = Hex.decodeHex("7361e07c18000000250000f64dbb6a706e3d1b7ceff3eff3d1c3b3ed1b7ea11b7cade3e91b7dc8e21b7cef213cebc9212148741b7dd33d50bb1b7ea13f4d35241b7cbdf3b01b242a3b1b7dfad6faea791b7ceff3eff31b7dbfc1ac2122b3c9e248564148c73f4d3524ce324ef2335ab7af3e5232702123364acf2156e6adc0ebdece1b7ce6ad1b7dc1e3f3c821572156a4c3b7e7cae9d8a4adc0e82157cac9212321561b7cc9ecdfd5a121261b7dc9213ccac3c41b7ea121571b7dceecc3b7213cac45503e6c1b7ea15006f1b3006a706ec409f203100f0f6f6a706ec70e0008300501136a706e006a706e005406a8ff54ff49ffc10184d609120067736100687361".toCharArray());
         byte[] target2 = Hex.decodeHex("6abbe07c18250000050000cc4da56a706e331b7ca2cbe121211b7daab7eaabb8ea436e1b7ea8b1b4a921561b7cdbf3c81b7ea1bf1b7cb8b81b7dce1b7cd7eddd213cba21576da4c4e2d8f3cab3c8d0abeab7c6a4c62122a4a4abb2f3cab3c8b7ab3840efcaa41b7cb8b821232156d0d021221b7dcaf3c71b7cb8b81b7dc8376b3a27b7bfce1b7ebf21571b7dc84a39afabb8ea436ecb21221b7cd0d01b7dacaac9edafd9ad3b57a43d504f43f2386ceb1b7ea15006f1b3006a706ec409f203100f0f6f6a706e540270ffc10184d6091200676abb00686abb".toCharArray());
@@ -355,9 +355,9 @@ public class EventInformationTableBodyTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         EventInformationTableBody instance = this.eitb;
-        LOG.debug(instance);
+        LOG.info(instance);
     }
 
 }

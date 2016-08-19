@@ -78,7 +78,7 @@ public class ExtendedEventDescriptorItemTest {
      */
     @Test
     public void testGetData() throws DecoderException {
-        LOG.debug("getData");
+        LOG.info("getData");
         ExtendedEventDescriptorItem instance = target;
         byte[] expResult = Hex.decodeHex("084856414846624d46dc3c673f4d3878cf3f373f4d4c2132683248fe4c7045673877b5f3214a0e32360f214bfa42673358423436483865fd306c4559cf42673c6a0e49540f346b3648cb3d223f26b7bfacfd3b52c9e2ce3a22abe9ce4c34c0c3bf4c2132683248ce463bf2447ce1adecba0e330f472fc742603f26b7bffa48603d77ce1b7cc7d3e5f91972386532211b7db7b7bfceacfb0e5745420f4c213268fcce40243326fab3b33f74472fc70e5745421b6f5e732cce352448ac0f3c21213945503e6cb7fd4c2132683248cbcaeb1b6f41637339e20f392dacc3bffae8a6e4af3925adca".toCharArray());
         byte[] result = instance.getData();
@@ -91,7 +91,7 @@ public class ExtendedEventDescriptorItemTest {
      */
     @Test
     public void testGetItem_description_length() {
-        LOG.debug("getItem_description_length");
+        LOG.info("getItem_description_length");
         ExtendedEventDescriptorItem instance = target;
         int expResult = 8;
         int result = instance.getItem_description_length();
@@ -104,7 +104,7 @@ public class ExtendedEventDescriptorItemTest {
      */
     @Test
     public void testGetiItem_description() throws DecoderException {
-        LOG.debug("getiItem_description");
+        LOG.info("getiItem_description");
         ExtendedEventDescriptorItem instance = target;
         byte[] expResult = Hex.decodeHex("4856414846624d46".toCharArray());
         byte[] result = instance.getiItem_description();
@@ -117,7 +117,7 @@ public class ExtendedEventDescriptorItemTest {
 //     */
 //    @Test
 //    public void testGetiItem_description_String() {
-//        LOG.debug("getiItem_description_String");
+//        LOG.info("getiItem_description_String");
 //        ExtendedEventDescriptorItem instance = null;
 //        String expResult = "";
 //        String result = instance.getiItem_description_String();
@@ -130,7 +130,7 @@ public class ExtendedEventDescriptorItemTest {
      */
     @Test
     public void testGetItem_length() {
-        LOG.debug("getItem_length");
+        LOG.info("getItem_length");
         ExtendedEventDescriptorItem instance = target;
         int expResult = 220;
         int result = instance.getItem_length();
@@ -142,7 +142,7 @@ public class ExtendedEventDescriptorItemTest {
      */
     @Test
     public void testGetItem() throws DecoderException {
-        LOG.debug("getItem");
+        LOG.info("getItem");
         ExtendedEventDescriptorItem instance = target;
         byte[] expResult = Hex.decodeHex("3c673f4d3878cf3f373f4d4c2132683248fe4c7045673877b5f3214a0e32360f214bfa42673358423436483865fd306c4559cf42673c6a0e49540f346b3648cb3d223f26b7bfacfd3b52c9e2ce3a22abe9ce4c34c0c3bf4c2132683248ce463bf2447ce1adecba0e330f472fc742603f26b7bffa48603d77ce1b7cc7d3e5f91972386532211b7db7b7bfceacfb0e5745420f4c213268fcce40243326fab3b33f74472fc70e5745421b6f5e732cce352448ac0f3c21213945503e6cb7fd4c2132683248cbcaeb1b6f41637339e20f392dacc3bffae8a6e4af3925adca".toCharArray());
         byte[] result = instance.getItem();
@@ -154,7 +154,7 @@ public class ExtendedEventDescriptorItemTest {
 //     */
 //    @Test
 //    public void testGetItem_String() {
-//        LOG.debug("getItem_String");
+//        LOG.info("getItem_String");
 //        ExtendedEventDescriptorItem instance = null;
 //        String expResult = "";
 //        String result = instance.getItem_String();
@@ -167,7 +167,7 @@ public class ExtendedEventDescriptorItemTest {
 //     */
 //    @Test
 //    public void testHashCode() {
-//        LOG.debug("hashCode");
+//        LOG.info("hashCode");
 //        ExtendedEventDescriptorItem instance = null;
 //        int expResult = 0;
 //        int result = instance.hashCode();
@@ -181,7 +181,7 @@ public class ExtendedEventDescriptorItemTest {
 //     */
 //    @Test
 //    public void testEquals() {
-//        LOG.debug("equals");
+//        LOG.info("equals");
 //        Object obj = null;
 //        ExtendedEventDescriptorItem instance = null;
 //        boolean expResult = false;
@@ -195,8 +195,8 @@ public class ExtendedEventDescriptorItemTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         ExtendedEventDescriptorItem instance = target;
-        LOG.debug(instance.toString());
+        LOG.info(instance.toString());
     }
 }

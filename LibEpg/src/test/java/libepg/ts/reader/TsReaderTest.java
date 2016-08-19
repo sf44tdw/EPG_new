@@ -193,7 +193,7 @@ public class TsReaderTest {
     @Test
     public void testGetPackets_NoLimit() throws FileNotFoundException {
         assumeThat(TARGET_TS_FILE, notNullValue());
-        LOG.debug("getPackets_noLimit");
+        LOG.info("getPackets_noLimit");
         TsReader instance = this.eofWrapper(TARGET_TS_FILE, this.pids);
         this.read(instance);
 
@@ -206,13 +206,13 @@ public class TsReaderTest {
     @Test
     public void testGetPackets_Limit() throws FileNotFoundException {
         assumeThat(TARGET_TS_FILE, notNullValue());
-        LOG.debug("getPackets_Limit");
+        LOG.info("getPackets_Limit");
         TsReader instance = this.limittedWrapper(TARGET_TS_FILE, this.pids, 500L);
         this.read(instance);
     }
 
     private void read(TsReader instance) {
-        LOG.debug("getPackets_正常系");
+        LOG.info("getPackets_正常系");
         Map<Integer, List<TsPacketParcel>> ss = instance.getPackets();
         for (Integer key : ss.keySet()) {
             List<TsPacketParcel> l = ss.get(key);
@@ -220,9 +220,9 @@ public class TsReaderTest {
             Iterator<TsPacketParcel> it = l.iterator();
             while (it.hasNext()) {
                 TsPacketParcel pk = it.next();
-                LOG.debug("***********************************************************************************************************************************");
-                LOG.debug(pk.toString());
-                LOG.debug("***********************************************************************************************************************************");
+                LOG.info("***********************************************************************************************************************************");
+                LOG.info(pk.toString());
+                LOG.info("***********************************************************************************************************************************");
 
                 x++;
             }

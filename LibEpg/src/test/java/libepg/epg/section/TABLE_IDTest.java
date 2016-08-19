@@ -13,8 +13,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import libepg.epg.section.SectionBody;
-import libepg.epg.section.TABLE_ID;
 import static libepg.epg.section.TABLE_ID.EIT_OTHER_STREAM_8_DAYS;
 import static libepg.epg.section.TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT;
 import static libepg.epg.section.TABLE_ID.EIT_THIS_STREAM_8_DAYS;
@@ -66,7 +64,7 @@ public class TABLE_IDTest {
      */
     @Test
     public void testValues() {
-        LOG.debug("values");
+        LOG.info("values");
         TABLE_ID[] expResult = {SDT, EIT_THIS_STREAM_8_DAYS, EIT_THIS_STREAM_NOW_AND_NEXT, EIT_OTHER_STREAM_8_DAYS, EIT_OTHER_STREAM_NOW_AND_NEXT, OTHER_TABLE_IDS};
         TABLE_ID[] result = TABLE_ID.values();
         assertArrayEquals(expResult, result);
@@ -77,7 +75,7 @@ public class TABLE_IDTest {
      */
     @Test
     public void testValueOf() {
-        LOG.debug("valueOf");
+        LOG.info("valueOf");
         String name = "SDT";
         TABLE_ID expResult = TABLE_ID.SDT;
         TABLE_ID result = TABLE_ID.valueOf(name);
@@ -89,7 +87,7 @@ public class TABLE_IDTest {
      */
     @Test
     public void testReverseLookUp() {
-        LOG.debug("reverseLookUp");
+        LOG.info("reverseLookUp");
         Integer tableID = 0x67;
         TABLE_ID expResult = TABLE_ID.EIT_OTHER_STREAM_8_DAYS;
         TABLE_ID result = TABLE_ID.reverseLookUp(tableID);
@@ -101,7 +99,7 @@ public class TABLE_IDTest {
      */
     @Test
     public void testContains() {
-        LOG.debug("contains");
+        LOG.info("contains");
         Integer tableID = 0x42;
         TABLE_ID instance = TABLE_ID.SDT;
         boolean expResult = true;
@@ -114,7 +112,7 @@ public class TABLE_IDTest {
      */
     @Test
     public void testGetMaxSectionLength() {
-        LOG.debug("getMaxSectionLength");
+        LOG.info("getMaxSectionLength");
         TABLE_ID instance = TABLE_ID.EIT_OTHER_STREAM_8_DAYS;
         TABLE_ID.MAX_SECTION_LENGTH expResult = TABLE_ID.MAX_SECTION_LENGTH.BYTE_4093;
         TABLE_ID.MAX_SECTION_LENGTH result = instance.getMaxSectionLength();
@@ -126,8 +124,8 @@ public class TABLE_IDTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
-        LOG.debug(EIT_OTHER_STREAM_8_DAYS);
+        LOG.info("toString");
+        LOG.info(EIT_OTHER_STREAM_8_DAYS);
     }
 
     /**
@@ -135,7 +133,7 @@ public class TABLE_IDTest {
      */
     @Test
     public void testGetDataType() {
-        LOG.debug("getDataType");
+        LOG.info("getDataType");
         TABLE_ID instance = EIT_THIS_STREAM_NOW_AND_NEXT;
         Class<? extends SectionBody> expResult = EventInformationTableBody.class;
         Class<? extends SectionBody> result = instance.getDataType();
@@ -147,7 +145,7 @@ public class TABLE_IDTest {
      */
     @Test
     public void testGetTableName() {
-        LOG.debug("getTableName");
+        LOG.info("getTableName");
         TABLE_ID instance = SDT;
         String expResult = "サービス記述テーブル";
         String result = instance.getTableName();

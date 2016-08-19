@@ -59,7 +59,7 @@ public class DESCRIPTOR_TAGTest {
      */
     @Test
     public void testValues() {
-        LOG.debug("values");
+        LOG.info("values");
         DESCRIPTOR_TAG[] expResult = {
             DESCRIPTOR_TAG.SERVICE_DESCRIPTOR,
             DESCRIPTOR_TAG.SHORT_EVENT_DESCRIPTOR,
@@ -78,7 +78,7 @@ public class DESCRIPTOR_TAGTest {
      */
     @Test
     public void testValueOf() {
-        LOG.debug("valueOf");
+        LOG.info("valueOf");
         String name = "SERVICE_DESCRIPTOR";
         DESCRIPTOR_TAG expResult = DESCRIPTOR_TAG.SERVICE_DESCRIPTOR;
         DESCRIPTOR_TAG result = DESCRIPTOR_TAG.valueOf(name);
@@ -90,7 +90,7 @@ public class DESCRIPTOR_TAGTest {
      */
     @Test
     public void testReverseLookUp() {
-        LOG.debug("reverseLookUp");
+        LOG.info("reverseLookUp");
         int tag1 = 0x48;
         DESCRIPTOR_TAG expResult1 = DESCRIPTOR_TAG.SERVICE_DESCRIPTOR;
         DESCRIPTOR_TAG result1 = DESCRIPTOR_TAG.reverseLookUp(tag1);
@@ -106,7 +106,7 @@ public class DESCRIPTOR_TAGTest {
      */
     @Test
     public void testContains() {
-        LOG.debug("contains");
+        LOG.info("contains");
         int tag1 = 0x48;
         DESCRIPTOR_TAG instance1 = DESCRIPTOR_TAG.SERVICE_DESCRIPTOR;
         boolean expResult1 = true;
@@ -126,9 +126,9 @@ public class DESCRIPTOR_TAGTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         DESCRIPTOR_TAG instance = DESCRIPTOR_TAG.OTHER_DESCRIPTOR_TAGS;
-        LOG.debug(instance.toString());
+        LOG.info(instance.toString());
     }
 
     /**

@@ -70,7 +70,7 @@ public class SectionCrcCheckerTest {
      */
     @Test
     public void testCalcCrc() throws DecoderException {
-        LOG.debug("calcCrc");
+        LOG.info("calcCrc");
         byte[] sectionData = Hex.decodeHex("42f0977fe1d100007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32722fa2b5".toCharArray());
         SectionCrcChecker instance = new SectionCrcChecker();
         int expResult = 0;
@@ -83,7 +83,7 @@ public class SectionCrcCheckerTest {
      */
     @Test
     public void testCalcCrc2() throws DecoderException {
-        LOG.debug("calcCrc_ng");
+        LOG.info("calcCrc_ng");
         byte[] sectionData = Hex.decodeHex("52f0977fe1d100007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32722fa2b5".toCharArray());
         SectionCrcChecker instance = new SectionCrcChecker();
         int expResult = 0;

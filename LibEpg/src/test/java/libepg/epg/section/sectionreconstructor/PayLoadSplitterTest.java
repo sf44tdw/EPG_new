@@ -68,7 +68,7 @@ public class PayLoadSplitterTest {
      */
     @Test
     public void testGetPacket() {
-        LOG.debug("getPacket");
+        LOG.info("getPacket");
         TsPacket packet = this.testData.getEit0();
         PayLoadSplitter instance = new PayLoadSplitter();
         instance.setPacket(packet);
@@ -84,7 +84,7 @@ public class PayLoadSplitterTest {
      */
     @Test
     public void testGetSplittedPayLoad01() throws DecoderException {
-        LOG.debug("getSplittedPayLoad_先端有り 分割有り");
+        LOG.info("getSplittedPayLoad_先端有り 分割有り");
         TsPacket packet = this.testData.getEit0();
 
         PayLoadSplitter instance = new PayLoadSplitter();
@@ -116,7 +116,7 @@ public class PayLoadSplitterTest {
      */
     @Test
     public void testGetSplittedPayLoad02() throws DecoderException {
-        LOG.debug("getSplittedPayLoad_先端有り 分割なし");
+        LOG.info("getSplittedPayLoad_先端有り 分割なし");
         TsPacket packet = this.testData.getEit20();
 
         PayLoadSplitter instance = new PayLoadSplitter();
@@ -146,7 +146,7 @@ public class PayLoadSplitterTest {
      */
     @Test
     public void testGetSplittedPayLoad03() throws DecoderException {
-        LOG.debug("getSplittedPayLoad_先端なし 分割なし");
+        LOG.info("getSplittedPayLoad_先端なし 分割なし");
         TsPacket packet = this.testData.getEit19();
 
         PayLoadSplitter instance = new PayLoadSplitter();

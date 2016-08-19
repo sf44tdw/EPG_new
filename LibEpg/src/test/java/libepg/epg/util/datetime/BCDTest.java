@@ -79,7 +79,7 @@ public class BCDTest {
     @Test
     @ExpectedExceptionMessage("^このオブジェクトで取り扱える範囲外の数値です.*$")
     public void testConstructor_1() {
-        LOG.debug("異常系_BCD範囲外1");
+        LOG.info("異常系_BCD範囲外1");
         byte wrong = 0x0a;
         BCD instance = new BCD(wrong);
     }
@@ -87,7 +87,7 @@ public class BCDTest {
     @Test
     @ExpectedExceptionMessage("^このオブジェクトで取り扱える範囲外の数値です.*$")
     public void testConstructor_2() {
-        LOG.debug("異常系_BCD範囲外2");
+        LOG.info("異常系_BCD範囲外2");
         byte wrong = (byte) 0xa0;
         BCD instance = new BCD(wrong);
     }
@@ -97,7 +97,7 @@ public class BCDTest {
      */
     @Test
     public void testGetHigh() {
-        LOG.debug("getHigh");
+        LOG.info("getHigh");
         BCD instance = target1;
         int expResult = 1;
         int result = instance.getHigh();
@@ -109,7 +109,7 @@ public class BCDTest {
      */
     @Test
     public void testGetLow() {
-        LOG.debug("getLow");
+        LOG.info("getLow");
         BCD instance = target1;
         int expResult = 2;
         int result = instance.getLow();
@@ -121,7 +121,7 @@ public class BCDTest {
      */
     @Test
     public void testGetDecimal() {
-        LOG.debug("getDecimal");
+        LOG.info("getDecimal");
         BCD instance = target1;
         int expResult = 12;
         int result = instance.getDecimal();
@@ -133,9 +133,9 @@ public class BCDTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         BCD instance = target1;
-        LOG.debug(instance);
+        LOG.info(instance);
     }
 
     /**
@@ -143,7 +143,7 @@ public class BCDTest {
      */
     @Test
     public void testHashCode() {
-        LOG.debug("hashCode");
+        LOG.info("hashCode");
         BCD instance1 = this.target1;
         BCD instance2 = this.target2;
         assertTrue(instance1.hashCode() == new BCD(this.bcds1).hashCode());
@@ -155,7 +155,7 @@ public class BCDTest {
      */
     @Test
     public void testEquals_OK() {
-        LOG.debug("equals_ok");
+        LOG.info("equals_ok");
         EqualsChecker<BCD> ec = new EqualsChecker<>();
         BCD instance1 = this.target1;
         BCD instance2 = this.target1;
@@ -168,7 +168,7 @@ public class BCDTest {
      */
     @Test
     public void testEquals_NG() {
-        LOG.debug("equals_ng");
+        LOG.info("equals_ng");
         EqualsChecker<BCD> ec = new EqualsChecker<>();
         BCD instance1 = this.target1;
         BCD instance2 = this.target2;

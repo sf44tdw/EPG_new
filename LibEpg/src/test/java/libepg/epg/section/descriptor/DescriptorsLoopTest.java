@@ -77,7 +77,7 @@ public class DescriptorsLoopTest {
      */
     @Test
     public void testGetData() throws DecoderException {
-        LOG.debug("getData");
+        LOG.info("getData");
         DescriptorsLoop instance = target;
         byte[] expResult = Hex.decodeHex("481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f0010408".toCharArray());
         byte[] result = instance.getData();
@@ -89,13 +89,13 @@ public class DescriptorsLoopTest {
      */
     @Test
     public void testGetDescriptors_loopList() {
-        LOG.debug("getDescriptors_loopList");
+        LOG.info("getDescriptors_loopList");
         DescriptorsLoop instance = target;
 
         List<Descriptor> expResult = descsList;
         List<Descriptor> result = instance.getDescriptors_loopList();
 
-        LOG.debug(instance);
+        LOG.info(instance);
 
         assertEquals(expResult, result);
     }
@@ -105,9 +105,9 @@ public class DescriptorsLoopTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         DescriptorsLoop instance = target;
-        LOG.debug(instance);
+        LOG.info(instance);
     }
 
     /**
@@ -115,7 +115,7 @@ public class DescriptorsLoopTest {
      */
     @Test
     public void testHashCode() {
-        LOG.debug("HashCode_same");
+        LOG.info("HashCode_same");
         DescriptorsLoop instance1 = target;
         DescriptorsLoop instance2 = target;
         assertEquals(instance1.hashCode(), instance2.hashCode());
@@ -123,7 +123,7 @@ public class DescriptorsLoopTest {
 
     @Test
     public void testHashCode_NotSame() throws DecoderException {
-        LOG.debug("HashCode_Notsame");
+        LOG.info("HashCode_Notsame");
         DescriptorsLoop instance1 = target;
         DescriptorsLoop instance2 = target2;
         boolean xx = (instance1.hashCode() == instance2.hashCode());
@@ -135,7 +135,7 @@ public class DescriptorsLoopTest {
      */
     @Test
     public void testEquals_same() {
-        LOG.debug("equals_same");
+        LOG.info("equals_same");
         EqualsChecker<DescriptorsLoop> ec = new EqualsChecker<>();
         DescriptorsLoop obj = target;
         DescriptorsLoop obj2 = target;
@@ -148,7 +148,7 @@ public class DescriptorsLoopTest {
      */
     @Test
     public void testEquals_Notsame() throws DecoderException {
-        LOG.debug("equals_Notsame");
+        LOG.info("equals_Notsame");
         EqualsChecker<DescriptorsLoop> ec = new EqualsChecker<>();
         DescriptorsLoop obj = target;
         DescriptorsLoop obj2 = target;

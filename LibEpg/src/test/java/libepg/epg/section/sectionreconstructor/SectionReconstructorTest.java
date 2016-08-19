@@ -57,7 +57,7 @@ public class SectionReconstructorTest {
     private final List<TsPacketAligner> als = new ArrayList<>();
 
     public SectionReconstructorTest() throws DecoderException {
-        LOG.debug(pids);
+        LOG.info(pids);
         eits = new TestPacket_EIT();
         for (int pid : pids.getPids()) {
             this.als.add(new TsPacketAligner(pid));
@@ -100,9 +100,9 @@ public class SectionReconstructorTest {
     @Test
     @ExpectedExceptionMessage("指定されたPid以外のPidを持つパケットが混じっています")
     public void con_NG_multi_pid_list() throws DecoderException {
-        LOG.debug("con_NG");
+        LOG.info("con_NG");
 
-        LOG.debug("expect 18 but was 17");
+        LOG.info("expect 18 but was 17");
 
         TestPacket_SDT sdt = new TestPacket_SDT();
 
@@ -122,13 +122,13 @@ public class SectionReconstructorTest {
      */
     @Test
     public void testGetPid() {
-        LOG.debug("getPid");
+        LOG.info("getPid");
 
         Map<Integer, List<TsPacketParcel>> p = this.getParcels();
 
         int k = p.keySet().iterator().next();
 
-        LOG.debug("k=" + k);
+        LOG.info("k=" + k);
 
         SectionReconstructor instance = new SectionReconstructor(p.get(k), k);
         int expResult = k;
@@ -167,7 +167,7 @@ public class SectionReconstructorTest {
     @Test
     public void testGetSectionByteArrays() {
 
-        LOG.debug("getSectionByteArrays");
+        LOG.info("getSectionByteArrays");
         Set<byte[]> result = makeEITList();
 
         StringBuilder sbl = new StringBuilder();
@@ -184,7 +184,7 @@ public class SectionReconstructorTest {
             assertEquals(s.checkCRC(), CRC_STATUS.NO_CRC_ERROR);
 
         }
-        LOG.debug(sbl.toString());
+        LOG.info(sbl.toString());
     }
 
 

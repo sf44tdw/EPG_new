@@ -74,7 +74,7 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testGetService_type() {
-        LOG.debug("getService_type");
+        LOG.info("getService_type");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);
         int expResult = 0x01;
         int result = instance.getService_type();
@@ -87,7 +87,7 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testGetService_provider_name_length() {
-        LOG.debug("getService_provider_name_length");
+        LOG.info("getService_provider_name_length");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);
         int expResult = 0;
         int result = instance.getService_provider_name_length();
@@ -99,7 +99,7 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testGetService_provider_name() {
-        LOG.debug("getService_provider_name");
+        LOG.info("getService_provider_name");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);
         byte[] expResult = {};
         byte[] result = instance.getService_provider_name();
@@ -111,7 +111,7 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testGetSservice_name_length() {
-        LOG.debug("getSservice_name_length");
+        LOG.info("getSservice_name_length");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);
         int expResult = 0x0f;
         int result = instance.getService_name_length();
@@ -123,7 +123,7 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testGetService_name() throws DecoderException {
-        LOG.debug("getService_name");
+        LOG.info("getService_name");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);
         byte[] expResult = Hex.decodeHex("0e4e484b451d461d6c310f456c357e".toCharArray());
         byte[] result = instance.getService_name();
@@ -135,9 +135,9 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);
-        LOG.debug(instance.toString());
+        LOG.info(instance.toString());
     }
 
     /**
@@ -146,7 +146,7 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testGetService_provider_name_String() {
-        LOG.debug("getService_provider_name_String");
+        LOG.info("getService_provider_name_String");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);;
         String expResult = "";
         String result = instance.getService_provider_name_String();
@@ -159,7 +159,7 @@ public class ServiceDescriptorTest {
      */
     @Test
     public void testGetService_name_String() {
-        LOG.debug("getService_name_String");
+        LOG.info("getService_name_String");
         ServiceDescriptor instance = new ServiceDescriptor(sdesc);;
         String expResult = "ＮＨＫＥテレ１東京";
         String result = instance.getService_name_String();

@@ -89,16 +89,15 @@ public final class EventInformationTableRepeatingPart {
     /**
      * start_time（開始時間）
      *
-     * @return タイムスタンプに変換された開始時間
-     * @throws java.text.ParseException 変換できなかったか、未定義の場合。
+     * @return タイムスタンプに変換された開始時間 変換不能な場合はnull;
      */
-    public synchronized Timestamp getStart_time_Object() throws ParseException {
+    public synchronized Timestamp getStart_time_Object() {
         try {
             byte[] t = this.getStart_time();
             return (DateTimeFieldConverter.BytesToSqlDateTime(t));
         } catch (IllegalArgumentException | IndexOutOfBoundsException | ParseException ex) {
             LOG.warn("開始時間を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
-            throw ex;
+            return null;
         }
     }
 
@@ -119,18 +118,17 @@ public final class EventInformationTableRepeatingPart {
     /**
      * 終了日時
      *
-     * @return タイムスタンプに変換された 終了日時
-     * @throws java.text.ParseException 変換できなかったか、未定義の場合。
+     * @return タイムスタンプに変換された 終了日時 変換不能な場合はnull;
      */
-    public synchronized Timestamp getStop_Time_Object() throws ParseException {
+    public synchronized Timestamp getStop_Time_Object() {
         try {
             byte[] t = this.getDuration();
             long x = DateTimeFieldConverter.BcdTimeToSecond(t) * 1000;
             x = x + this.getStart_time_Object().getTime();
             return new Timestamp(x);
-        } catch (ParseException ex) {
-            LOG.warn("終了日時を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
-            throw ex;
+        } catch (IndexOutOfBoundsException | IllegalArgumentException ex) {
+            LOG.error("終了日時を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
+            return null;
         }
     }
 
@@ -210,12 +208,9 @@ public final class EventInformationTableRepeatingPart {
 
         String start = "", stop = "";
 
-        try {
-            start = this.getStart_time_Object().toString();
-            stop = this.getStop_Time_Object().toString();
-        } catch (ParseException ex) {
-            Logger.getLogger(EventInformationTableRepeatingPart.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        start = this.getStart_time_Object().toString();
+        stop = this.getStop_Time_Object().toString();
+
         Object[] parameters = {this.data,
             Integer.toHexString(this.getEvent_id()),
             Hex.encodeHexString(this.getStart_time()),

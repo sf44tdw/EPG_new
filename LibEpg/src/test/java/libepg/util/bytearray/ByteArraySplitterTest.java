@@ -61,7 +61,7 @@ public class ByteArraySplitterTest {
      */
     @Test
     public void testSplit() throws DecoderException {
-        LOG.debug("split");
+        LOG.info("split");
         byte[] src = Hex.decodeHex("00112233445566778899aabbccddeeff".toCharArray());
         int size = 3;
         List<byte[]> expResult = new ArrayList<>();
@@ -85,7 +85,7 @@ public class ByteArraySplitterTest {
                 s.append(Hex.encodeHexString(expRes));
                 s.append(" = ");
                 s.append(Hex.encodeHexString(res));
-                LOG.debug(s.toString());
+                LOG.info(s.toString());
             }
         }
     }
@@ -97,7 +97,7 @@ public class ByteArraySplitterTest {
      */
     @Test
     public void testSplitByLengthField_3args() throws DecoderException {
-        LOG.debug("splitByLengthField");
+        LOG.info("splitByLengthField");
         byte[] src = Hex.decodeHex("0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32".toCharArray());
         int lengthFieldPosition = 4;
         int lengthFieldLength = 2;
@@ -120,7 +120,7 @@ public class ByteArraySplitterTest {
                 s.append(Hex.encodeHexString(expRes));
                 s.append(" = ");
                 s.append(Hex.encodeHexString(res));
-                LOG.debug(s.toString());
+                LOG.info(s.toString());
             }
         }
     }
@@ -132,7 +132,7 @@ public class ByteArraySplitterTest {
      */
     @Test
     public void testSplitByLengthField_4args() throws DecoderException {
-        LOG.debug("splitByLengthField");
+        LOG.info("splitByLengthField");
         byte[] src = Hex.decodeHex("0408f31020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32".toCharArray());
         int lengthFieldPosition = 4;
         int lengthFieldLength = 2;
@@ -155,7 +155,7 @@ public class ByteArraySplitterTest {
                 s.append(Hex.encodeHexString(expRes));
                 s.append(" = ");
                 s.append(Hex.encodeHexString(res));
-                LOG.debug(s.toString());
+                LOG.info(s.toString());
             }
         }
     }

@@ -60,11 +60,11 @@ public class AribstrTest {
      */
     @Test
     public void testAribToString() throws Exception {
-        LOG.debug("AribToString");
+        LOG.info("AribToString");
         byte[] pSrcData = Hex.decodeHex("0e4e484b451d461d6c310f456c357e".toCharArray());
         String expResult = "ＮＨＫＥテレ１東京";
         String result = Aribstr.AribToString(pSrcData);
-        LOG.debug(result);
+        LOG.info(result);
         assertEquals(expResult, result);
     }
 
@@ -76,11 +76,11 @@ public class AribstrTest {
      */
     @Test
     public void testAribToString_null() throws Exception {
-        LOG.debug("AribToString_null");
+        LOG.info("AribToString_null");
         byte[] pSrcData = null;
         String expResult = "";
         String result = Aribstr.AribToString(pSrcData);
-        LOG.debug(result);
+        LOG.info(result);
         assertEquals(expResult, result);
     }
 
@@ -91,11 +91,11 @@ public class AribstrTest {
      */
     @Test
     public void testAribToString_emptyArray() throws Exception {
-        LOG.debug("AribToString_emptyArray");
+        LOG.info("AribToString_emptyArray");
         byte[] pSrcData = new byte[0];
         String expResult = "";
         String result = Aribstr.AribToString(pSrcData);
-        LOG.debug(result);
+        LOG.info(result);
         assertEquals(expResult, result);
     }
 }

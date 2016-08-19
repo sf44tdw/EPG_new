@@ -92,7 +92,7 @@ public class SectionBodyTest {
      */
     @Test
     public void testGetTableID() {
-        LOG.debug("getTableID");
+        LOG.info("getTableID");
         SectionBody instance = this.testBody1;
         TABLE_ID expResult = TABLE_ID.SDT;
         TABLE_ID result = instance.getTableID();
@@ -104,7 +104,7 @@ public class SectionBodyTest {
      */
     @Test
     public void testGetData() {
-        LOG.debug("getSectionBody");
+        LOG.info("getSectionBody");
         SectionBody instance = this.testBody1;
         byte[] expResult = this.data1;
         byte[] result = instance.getData();
@@ -121,7 +121,7 @@ public class SectionBodyTest {
      */
     @Test
     public void testHashCode() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        LOG.debug("hashCode");
+        LOG.info("hashCode");
         SectionBody instance1 = this.testBody1;
         SectionBody instance2 = this.testBody2;
         assertTrue(instance1.hashCode() == SectionBodyTest.init(new Object[]{TABLE_ID.SDT, data1}).hashCode());
@@ -133,7 +133,7 @@ public class SectionBodyTest {
      */
     @Test
     public void testEquals_Ok() {
-        LOG.debug("equals_ok");
+        LOG.info("equals_ok");
         EqualsChecker<SectionBody> ec = new EqualsChecker<>();
         SectionBody instance1 = this.testBody1;
         SectionBody instance2 = this.testBody1;
@@ -149,7 +149,7 @@ public class SectionBodyTest {
      */
     @Test
     public void testEquals_Ng() {
-        LOG.debug("equals_ng");
+        LOG.info("equals_ng");
         SectionBody instance1 = this.testBody1;
         SectionBody instance2 = this.testBody2;
         assertFalse(instance1.equals(instance2));
@@ -161,8 +161,8 @@ public class SectionBodyTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         SectionBody instance = this.testBody1;
-        LOG.debug(instance);
+        LOG.info(instance);
     }
 }

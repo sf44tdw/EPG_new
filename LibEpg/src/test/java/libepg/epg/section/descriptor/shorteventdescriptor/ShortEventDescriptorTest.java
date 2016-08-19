@@ -88,7 +88,7 @@ public class ShortEventDescriptorTest {
      */
     @Test
     public void testGetISO_639_language_code() {
-        LOG.debug("getISO_639_language_code");
+        LOG.info("getISO_639_language_code");
         ShortEventDescriptor instance = target;
         String expResult = "jpn";
         String result = instance.getISO_639_language_code();
@@ -100,7 +100,7 @@ public class ShortEventDescriptorTest {
      */
     @Test
     public void testGetEvent_name_length() {
-        LOG.debug("getEvent_name_length");
+        LOG.info("getEvent_name_length");
         ShortEventDescriptor instance = target;
         int expResult = 61;
         int result = instance.getEvent_name_length();
@@ -112,7 +112,7 @@ public class ShortEventDescriptorTest {
      */
     @Test
     public void testGetEvent_name_char() throws DecoderException {
-        LOG.debug("getEvent_name_char");
+        LOG.info("getEvent_name_char");
         ShortEventDescriptor instance = target;
         byte[] expResult = Hex.decodeHex("1b7ceff3eff3d1c3b3ed1b7ea11b7cade3e91b7dc8e21b7cef213cebc9212148741b7dd33d50bb1b7ea13f4d35241b7cbdf3b01b242a3b1b7dfad6faea".toCharArray());
         byte[] result = instance.getEvent_name_char();
@@ -124,7 +124,7 @@ public class ShortEventDescriptorTest {
      */
     @Test
     public void testGetEvent_name_String() {
-        LOG.debug("getEvent_name_String");
+        LOG.info("getEvent_name_String");
         ShortEventDescriptor instance = target;
         String expResult = "ワンワンパッコロ！キャラともワールド　飛び出せ！人気ソング【字】【再】";
         String result = instance.getEvent_name_String();
@@ -136,7 +136,7 @@ public class ShortEventDescriptorTest {
      */
     @Test
     public void testGetText_length() {
-        LOG.debug("getText_length");
+        LOG.info("getText_length");
         ShortEventDescriptor instance = target;
         int expResult = 121;
         int result = instance.getText_length();
@@ -159,7 +159,7 @@ public class ShortEventDescriptorTest {
      */
     @Test
     public void testGetText_String() {
-        LOG.debug("getText_String");
+        LOG.info("getText_String");
         ShortEventDescriptor instance = target;
         String expResult = "ワンワンたちが、こども番組で人気の歌を楽しく紹介。曲は「ゆきだるまのユキちゃんと」「いっしょならへいきだよ」など。「ドレミファ・どーなっつ！」のれっしーが登場！";
         String result = instance.getText_String();
@@ -172,9 +172,9 @@ public class ShortEventDescriptorTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         ShortEventDescriptor instance = target;
-        LOG.debug(instance);
+        LOG.info(instance);
 
     }
 }

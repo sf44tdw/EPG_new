@@ -84,9 +84,9 @@ public class DescriptorsLoopTest_eit {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         for (DescriptorsLoop x : this.ldl) {
-            LOG.debug(x);
+            LOG.info(x);
         }
     }
 

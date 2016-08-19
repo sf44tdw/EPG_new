@@ -64,7 +64,7 @@ public class ExtendedEventDescriptorTest {
     public ExtendedEventDescriptorTest() throws DecoderException {
         descs = new Descriptors();
         Descriptor src = this.descs.getEXTENDED_EVENT_DESCRIPTOR();
-        LOG.debug(src);
+        LOG.info(src);
         target1 = new ExtendedEventDescriptor(src);
 
     }
@@ -90,7 +90,7 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetDescriptor_number() {
-        LOG.debug("getDescriptor_number");
+        LOG.info("getDescriptor_number");
         ExtendedEventDescriptor instance = target1;
         int expResult = 0;
         int result = instance.getDescriptor_number();
@@ -103,7 +103,7 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetLast_descriptor_number() {
-        LOG.debug("getLast_descriptor_number");
+        LOG.info("getLast_descriptor_number");
         ExtendedEventDescriptor instance = target1;
         int expResult = 2;
         int result = instance.getLast_descriptor_number();
@@ -116,7 +116,7 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetISO_639_language_code() {
-        LOG.debug("getISO_639_language_code");
+        LOG.info("getISO_639_language_code");
         ExtendedEventDescriptor instance = target1;
         String expResult = "jpn";
         String result = instance.getISO_639_language_code();
@@ -128,7 +128,7 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetLength_of_items() {
-        LOG.debug("getLength_of_items");
+        LOG.info("getLength_of_items");
         ExtendedEventDescriptor instance = target1;
         int expResult = 230;
         int result = instance.getLength_of_items();
@@ -142,7 +142,7 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetItems() throws DecoderException {
-        LOG.debug("getItems");
+        LOG.info("getItems");
         ExtendedEventDescriptor instance = target1;
         byte[] expResult = Hex.decodeHex("084856414846624d46dc3c673f4d3878cf3f373f4d4c2132683248fe4c7045673877b5f3214a0e32360f214bfa42673358423436483865fd306c4559cf42673c6a0e49540f346b3648cb3d223f26b7bfacfd3b52c9e2ce3a22abe9ce4c34c0c3bf4c2132683248ce463bf2447ce1adecba0e330f472fc742603f26b7bffa48603d77ce1b7cc7d3e5f91972386532211b7db7b7bfceacfb0e5745420f4c213268fcce40243326fab3b33f74472fc70e5745421b6f5e732cce352448ac0f3c21213945503e6cb7fd4c2132683248cbcaeb1b6f41637339e20f392dacc3bffae8a6e4af3925adca".toCharArray());
         byte[] result = instance.getItems();
@@ -154,7 +154,7 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetText_length() {
-        LOG.debug("getText_length");
+        LOG.info("getText_length");
         ExtendedEventDescriptor instance = target1;
         int expResult = 0;
         int result = instance.getText_length();
@@ -166,7 +166,7 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetText_char1() {
-        LOG.debug("getText_char1");
+        LOG.info("getText_char1");
         ExtendedEventDescriptor instance = target1;
         byte[] expResult = new byte[0];
         byte[] result = instance.getText_char();
@@ -182,22 +182,22 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testGetText_char2() throws DecoderException, InvocationTargetException {
-        LOG.debug("getText_char2");
+        LOG.info("getText_char2");
 
         byte[] dat = this.descs.getEXTENDED_EVENT_DESCRIPTOR_BYTE();
         byte[] dat2 = Hex.decodeHex("0e4e484b451d461d6c310f456c357e".toCharArray());
         //テキストフィールドを追加
         byte[] dat3 = ArrayUtils.addAll(dat, dat2);
 
-        LOG.debug(Hex.encodeHexString(dat));
-        LOG.debug(Hex.encodeHexString(dat2));
-        LOG.debug(Hex.encodeHexString(dat3));
+        LOG.info(Hex.encodeHexString(dat));
+        LOG.info(Hex.encodeHexString(dat2));
+        LOG.info(Hex.encodeHexString(dat3));
 
         //記述子長を改ざん
         dat3[1] = (byte) (dat.length - 1 + dat2.length - 1);
         //テキストフィールド長を改ざん
         dat3[dat.length - 1] = (byte) dat2.length;
-        LOG.debug(Hex.encodeHexString(dat3));
+        LOG.info(Hex.encodeHexString(dat3));
 
         Descriptor dummy = Descriptors.init(dat3);
         ExtendedEventDescriptor instance = new ExtendedEventDescriptor(dummy);
@@ -212,9 +212,9 @@ public class ExtendedEventDescriptorTest {
      */
     @Test
     public void testToString() {
-        LOG.debug("toString");
+        LOG.info("toString");
         ExtendedEventDescriptor instance = target1;
-        LOG.debug(instance.toString());
+        LOG.info(instance.toString());
     }
 
     /**

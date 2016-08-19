@@ -67,7 +67,7 @@ public class TSpacketTest {
      */
     @Test
     public void testcheckHeader() throws DecoderException {
-        LOG.debug("checkHeader");
+        LOG.info("checkHeader");
         TsPacket instance;
         boolean expResult;
         boolean result;
@@ -89,7 +89,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetSync_byte() {
-        LOG.debug("getSync_byte");
+        LOG.info("getSync_byte");
         TsPacket instance = this.target00;
         int expResult = 0x47;
         int result = instance.getSync_byte();
@@ -101,7 +101,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetTransport_error_indicator() {
-        LOG.debug("getTransport_error_indicator");
+        LOG.info("getTransport_error_indicator");
         TsPacket instance = this.target00;
         int expResult = 0;
         int result = instance.getTransport_error_indicator();
@@ -113,7 +113,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetPayload_unit_start_indicator() {
-        LOG.debug("getPayload_unit_start_indicator");
+        LOG.info("getPayload_unit_start_indicator");
         TsPacket instance = this.target00;
         TsPacket.PAYLOAD_UNIT_START_INDICATOR expResult = TsPacket.PAYLOAD_UNIT_START_INDICATOR.START_PES_OR_START_SECTION;
         TsPacket.PAYLOAD_UNIT_START_INDICATOR result = instance.getPayload_unit_start_indicator();
@@ -125,7 +125,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetTransport_priority() {
-        LOG.debug("getTransport_priority");
+        LOG.info("getTransport_priority");
         TsPacket instance = this.target00;
         int expResult = 0;
         int result = instance.getTransport_priority();
@@ -137,7 +137,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetPid() {
-        LOG.debug("getPid");
+        LOG.info("getPid");
         TsPacket instance = this.target00;
         int expResult = 0x11;
         int result = instance.getPid();
@@ -149,7 +149,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetTransport_scrambling_control() {
-        LOG.debug("getTransport_scrambling_control");
+        LOG.info("getTransport_scrambling_control");
         TsPacket instance = this.target00;
         int expResult = 0;
         int result = instance.getTransport_scrambling_control().getValue();
@@ -161,7 +161,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetAdaptation_field_control() {
-        LOG.debug("getAdaptation_field_control");
+        LOG.info("getAdaptation_field_control");
         TsPacket instance = this.target00;
         TsPacket.ADAPTATION_FIELD_CONTROL expResult = TsPacket.ADAPTATION_FIELD_CONTROL.ONLY_PAYLOAD;
         TsPacket.ADAPTATION_FIELD_CONTROL result = instance.getAdaptation_field_control();
@@ -173,7 +173,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetContinuity_counter() {
-        LOG.debug("getContinuity_counter");
+        LOG.info("getContinuity_counter");
         TsPacket instance = this.target00;
         int expResult = 0;
         int result = instance.getContinuity_counter();
@@ -185,7 +185,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetAdaptation_field() {
-        LOG.debug("getAdaptation_field");
+        LOG.info("getAdaptation_field");
         TsPacket instance = this.target00;
         byte[] expResult = {0};
         byte[] result = instance.getAdaptation_field();
@@ -197,7 +197,7 @@ public class TSpacketTest {
      */
     @Test
     public void testGetPayload() throws DecoderException {
-        LOG.debug("getPayload");
+        LOG.info("getPayload");
         TsPacket instance = this.target00;
         String paStr = "0042f0977fe1d100007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32722fa2b5ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
         byte[] expResult = Hex.decodeHex(paStr.toCharArray());
@@ -210,7 +210,7 @@ public class TSpacketTest {
      */
     @Test
     public void testEquals_same() throws DecoderException {
-        LOG.debug("equals_same");
+        LOG.info("equals_same");
 
         EqualsChecker<TsPacket> ec = new EqualsChecker<>();
 
@@ -230,7 +230,7 @@ public class TSpacketTest {
      */
     @Test
     public void testEquals_Notsame() throws DecoderException {
-        LOG.debug("equals_Notsame");
+        LOG.info("equals_Notsame");
 
         EqualsChecker<TsPacket> ec = new EqualsChecker<>();
 
@@ -242,7 +242,7 @@ public class TSpacketTest {
 
     @Test
     public void testHashCode() throws DecoderException {
-        LOG.debug("HashCode_same");
+        LOG.info("HashCode_same");
         TsPacket obj = new TsPacket(Hex.decodeHex(this.pd.p10));
         TsPacket obj2 = new TsPacket(Hex.decodeHex(this.pd.p10));
         assertEquals(obj.hashCode(), obj2.hashCode());
@@ -250,7 +250,7 @@ public class TSpacketTest {
 
     @Test
     public void testHashCode_NotSame() throws DecoderException {
-        LOG.debug("HashCode_Notsame");
+        LOG.info("HashCode_Notsame");
         TsPacket obj = new TsPacket(Hex.decodeHex(this.pd.p10));
         TsPacket obj2 = new TsPacket(Hex.decodeHex(this.pd.p11));
         assertNotEquals(obj.hashCode(), obj2.hashCode());
@@ -259,9 +259,9 @@ public class TSpacketTest {
 
     @Test
     public void testToString() throws DecoderException {
-        LOG.debug("toString");
+        LOG.info("toString");
         TsPacket instance = new TestPacket_SDT().getTarget100();
-        LOG.debug(instance);
+        LOG.info(instance);
     }
 
 }

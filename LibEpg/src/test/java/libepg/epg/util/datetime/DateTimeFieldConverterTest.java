@@ -72,7 +72,7 @@ public class DateTimeFieldConverterTest {
      */
     @Test
     public void testBcdTimeToSecond() throws ParseException {
-        LOG.debug("BcdTimeToSecond");
+        LOG.info("BcdTimeToSecond");
         byte[] hms = {0x01, 0x01, 0x01};
         long expResult = 3661L;
         long result = DateTimeFieldConverter.BcdTimeToSecond(hms);
@@ -82,7 +82,7 @@ public class DateTimeFieldConverterTest {
     @Test
     @ExpectedExceptionMessage("^配列が想定外のサイズです.*$")
     public void testBcdTimeToSecond2() throws ParseException {
-        LOG.debug("異常系_配列サイズ相違");
+        LOG.info("異常系_配列サイズ相違");
         byte[] hms = {0x01, 0x01, 0x01, 0x01};
         long result = DateTimeFieldConverter.BcdTimeToSecond(hms);
     }
@@ -90,7 +90,7 @@ public class DateTimeFieldConverterTest {
     @Test
     @ExpectedExceptionMessage("^時刻が定義なしです.*$")
     public void testBcdTimeToSecond3() throws ParseException {
-        LOG.debug("異常系_時刻定義なし");
+        LOG.info("異常系_時刻定義なし");
         byte b = (byte) 0xff;
         byte[] hms = {b, b, b};
         long result = DateTimeFieldConverter.BcdTimeToSecond(hms);
@@ -98,21 +98,21 @@ public class DateTimeFieldConverterTest {
 
     @Test
     public void testBcdTimeToSecond4() throws ParseException {
-        LOG.debug("正常系_時24");
+        LOG.info("正常系_時24");
         byte[] hms = {0x24, 0x01, 0x01};
         long result = DateTimeFieldConverter.BcdTimeToSecond(hms);
     }
 
     @Test
     public void testBcdTimeToSecond5() throws ParseException {
-        LOG.debug("正常系_分60");
+        LOG.info("正常系_分60");
         byte[] hms = {0x00, 0x60, 0x01};
         long result = DateTimeFieldConverter.BcdTimeToSecond(hms);
     }
 
     @Test
     public void testBcdTimeToSecond6() throws ParseException {
-        LOG.debug("正常系_秒60");
+        LOG.info("正常系_秒60");
         byte[] hms = {0x01, 0x01, 0x60};
         long result = DateTimeFieldConverter.BcdTimeToSecond(hms);
     }
@@ -124,7 +124,7 @@ public class DateTimeFieldConverterTest {
      */
     @Test
     public void testBytesTOSqlDateTime1() throws Exception {
-        LOG.debug("BytesTOSqlDateTime1");
+        LOG.info("BytesTOSqlDateTime1");
         byte[] source = Hex.decodeHex("C079124500".toCharArray());
         Timestamp expResult = new Timestamp(new java.text.SimpleDateFormat("yyyyMMddHHmmss").parse("19931013124500").getTime());
         Timestamp result = DateTimeFieldConverter.BytesToSqlDateTime(source);
@@ -138,7 +138,7 @@ public class DateTimeFieldConverterTest {
      */
     @Test
     public void testBytesTOSqlDateTime2() throws Exception {
-        LOG.debug("BytesTOSqlDateTime2");
+        LOG.info("BytesTOSqlDateTime2");
         byte[] source = Hex.decodeHex("e07c180000".toCharArray());
         Timestamp expResult = new Timestamp(new java.text.SimpleDateFormat("yyyyMMddHHmmss").parse("20160321180000").getTime());
         Timestamp result = DateTimeFieldConverter.BytesToSqlDateTime(source);
@@ -148,7 +148,7 @@ public class DateTimeFieldConverterTest {
     @Test
     @ExpectedExceptionMessage("^時刻表示の範囲外になっている部分があります.*$")
     public void testBytesTOSqlDateTime3() throws Exception {
-        LOG.debug("異常系_時24");
+        LOG.info("異常系_時24");
         byte[] source = Hex.decodeHex("e07c240000".toCharArray());
         Timestamp result = DateTimeFieldConverter.BytesToSqlDateTime(source);
     }
@@ -156,7 +156,7 @@ public class DateTimeFieldConverterTest {
     @Test
     @ExpectedExceptionMessage("^時刻表示の範囲外になっている部分があります.*$")
     public void testBytesTOSqlDateTime4() throws Exception {
-        LOG.debug("異常系_分60");
+        LOG.info("異常系_分60");
         byte[] source = Hex.decodeHex("e07c186000".toCharArray());
         Timestamp result = DateTimeFieldConverter.BytesToSqlDateTime(source);
     }
@@ -164,7 +164,7 @@ public class DateTimeFieldConverterTest {
     @Test
     @ExpectedExceptionMessage("^時刻表示の範囲外になっている部分があります.*$")
     public void testBytesTOSqlDateTime5() throws Exception {
-        LOG.debug("異常系_秒60");
+        LOG.info("異常系_秒60");
         byte[] source = Hex.decodeHex("e07c180060".toCharArray());
         Timestamp result = DateTimeFieldConverter.BytesToSqlDateTime(source);
     }

@@ -64,7 +64,7 @@ public class ByteDataBlockTest {
      */
     @Test
     public void testToString() throws DecoderException {
-        LOG.debug("toString");
+        LOG.info("toString");
         ByteDataBlock instance = new ByteDataBlock(Hex.decodeHex(dat.p0d));
         String expResult = Hex.encodeHexString(instance.getData());
         String result = instance.toString();
@@ -76,7 +76,7 @@ public class ByteDataBlockTest {
      */
     @Test
     public void testHashCode() throws DecoderException {
-        LOG.debug("hashCode");
+        LOG.info("hashCode");
         ByteDataBlock instance1 = new ByteDataBlock(Hex.decodeHex(dat.p0d));
         ByteDataBlock instance2 = new ByteDataBlock(Hex.decodeHex(dat.p0d));
         assertTrue((instance1.hashCode() == instance2.hashCode()));
@@ -92,7 +92,7 @@ public class ByteDataBlockTest {
      */
     @Test
     public void testEquals() throws DecoderException {
-        LOG.debug("equals");
+        LOG.info("equals");
         EqualsChecker<ByteDataBlock> ec = new EqualsChecker<>();
 
         ByteDataBlock instance1 = new ByteDataBlock(Hex.decodeHex(dat.p0d));
@@ -116,7 +116,7 @@ public class ByteDataBlockTest {
      */
     @Test
     public void testGetData() {
-        LOG.debug("getData");
+        LOG.info("getData");
         byte[] x = {0x01, 0x02, 0x03};
         ByteDataBlock instance = new ByteDataBlock(x);
         byte[] expResult = x;
@@ -131,7 +131,7 @@ public class ByteDataBlockTest {
      */
     @Test
     public void testLength() {
-        LOG.debug("length");
+        LOG.info("length");
         byte[] x = {0x01, 0x02, 0x03};
         ByteDataBlock instance = new ByteDataBlock(x);
         int expResult = 3;
