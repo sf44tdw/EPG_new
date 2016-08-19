@@ -167,7 +167,7 @@ public final class PayLoadSplitter {
         EXEC:
         {
             if (this.packet.getPayload_unit_start_indicator() == TsPacket.PAYLOAD_UNIT_START_INDICATOR.NOT_START_POINT) {
-                LOG.trace("ペイロードにセクションの先端なし。");
+                LOG.trace("ペイロードにセクションの先端なし。 ペイロード = "+Hex.encodeHexString(this.packet.getPayload()));
                 temp.put(PAYLOAD_PART_KEY.ALL_PAYLOAD, this.packet.getPayload());
                 break EXEC;
             }

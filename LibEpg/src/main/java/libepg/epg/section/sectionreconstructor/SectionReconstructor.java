@@ -128,17 +128,18 @@ public final class SectionReconstructor {
         return Collections.unmodifiableSet(ret);
     }
 
-    private int remaining;
-    private String bufferDump;
-    private String putDataDump;
-
     private void put(ByteBuffer buf, byte[] putData) {
-        buf.put(putData);
         if (LOG.isTraceEnabled()) {
-            bufferDump = Hex.encodeHexString(buf.array());
-            putDataDump = Hex.encodeHexString(putData);
-            remaining = buf.remaining();
+            LOG.trace(
+                    "\nバッファ容量 = " + buf.capacity()
+                    + "\nバッファ位置 = " + buf.position()
+                    + "\nバッファ残量 = " + buf.remaining()
+                    + "\nバッファ = " + Hex.encodeHexString(buf.array())
+                    + "\n追加予定データ長 = " + putData.length
+                    + "\n追加予定データ = " + Hex.encodeHexString(putData));
         }
+
+        buf.put(putData);
     }
 
     /**
@@ -176,14 +177,13 @@ public final class SectionReconstructor {
                         LOG.trace("直前のパケットが欠落していたか、バッファの初期化がなされていない場合、バッファを初期化する。");
                     }
                     if (buf == null) {
-                        buf = ByteBuffer.allocate(TABLE_ID.MAX_SECTION_LENGTH.BYTE_4093.getMaxSectionLength() + 10);
+                        //セクションの最大容量ギリギリまで迫ったあげく、パケットのパディング部分で容量を超過することがあるので、セクション最大容量に加え、パケット2個分の容量を余計に確保しておく。
+                        buf = ByteBuffer.allocate(TABLE_ID.MAX_SECTION_LENGTH.BYTE_4093.getMaxSectionLength() + TsPacket.TS_PACKET_BYTE_LENGTH.PACKET_LENGTH.getByteLength() * 2);
                     } else {
                         buf.clear();
                     }
                 }
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("バッファ=" + Hex.encodeHexString(buf.array()));
-                }
+
                 if ((first_start_indicator_found == false) && (parcel.getPacket().getPayload_unit_start_indicator() == TsPacket.PAYLOAD_UNIT_START_INDICATOR.START_PES_OR_START_SECTION)) {
                     if (LOG.isTraceEnabled()) {
                         LOG.trace("最初のセクション開始パケットを発見。");
@@ -251,9 +251,6 @@ public final class SectionReconstructor {
             }
             return Collections.unmodifiableSet(ret);
         } catch (BufferOverflowException ex) {
-            LOG.fatal("buf = " + this.bufferDump);
-            LOG.fatal("putData" + this.putDataDump);
-            LOG.fatal("remaining = " + this.remaining);
             LOG.fatal(ex);
             throw ex;
         }
