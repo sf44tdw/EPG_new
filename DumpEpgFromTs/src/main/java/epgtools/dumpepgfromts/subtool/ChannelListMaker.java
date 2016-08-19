@@ -16,23 +16,25 @@
  */
 package epgtools.dumpepgfromts.subtool;
 
+import com.orangesignal.csv.manager.CsvManager;
+import com.orangesignal.csv.manager.CsvManagerFactory;
 import epgtools.dumpepgfromts.FileLoader;
 import epgtools.dumpepgfromts.dataextractor.KeyFields;
 import epgtools.dumpepgfromts.dataextractor.channel.Channel;
 import epgtools.dumpepgfromts.dataextractor.programme.Programme;
 import epgtools.dumpepgfromts.jaxb.physicalchannel.PhysicalChannelNumberRecord;
-import epgtools.dumpepgfromts.jaxb.physicalchannel.PhysicalChannelNumbers;
 import epgtools.dumpepgfromts.subtool.filelistmaker.FileSeeker;
 import epgtools.dumpepgfromts.subtool.filelistmaker.Suffix;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 
 /**
@@ -53,7 +55,7 @@ public class ChannelListMaker {
         return "";
     }
 
-    public void maker(File Dir) throws FileNotFoundException {
+    public void maker(File Dir) throws FileNotFoundException, IOException {
 
         FileSeeker seeker = new FileSeeker(Dir, Suffix.TS_SUFFIX);
 
@@ -87,7 +89,7 @@ public class ChannelListMaker {
             }
 
         }
-        PhysicalChannelNumbers numList = new PhysicalChannelNumbers();
+        Set<PhysicalChannelNumberRecord> numSet = new HashSet<>();
 
         Set<KeyFields> kfs = idMap.keySet();
         for (KeyFields kf : kfs) {
@@ -99,13 +101,20 @@ public class ChannelListMaker {
             } else {
                 name = "";
             }
-            numList.add(new PhysicalChannelNumberRecord(pt, kf.getTransport_stream_id(), kf.getOriginal_network_id(), kf.getService_id(), name));
+            numSet.add(new PhysicalChannelNumberRecord(pt, kf.getTransport_stream_id(), kf.getOriginal_network_id(), kf.getService_id(), name));
         }
 
         //一応データはできている。
-        for (PhysicalChannelNumberRecord r : numList.getChannels()) {
+        for (PhysicalChannelNumberRecord r : numSet) {
             System.out.println(r);
         }
+        //重複排除のため一回セットに入れている。
+        List<PhysicalChannelNumberRecord> nl = new ArrayList<>();
+        nl.addAll(numSet);
+        CsvManager csvManager = CsvManagerFactory.newCsvManager();
+        File dest = new File("channellist/channels.csv");
+        System.out.println(dest.getAbsolutePath());
+        csvManager.save(nl, PhysicalChannelNumberRecord.class).to(dest, "UTF-8");
 
     }
 

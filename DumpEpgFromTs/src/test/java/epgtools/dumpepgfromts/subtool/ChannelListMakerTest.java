@@ -56,7 +56,7 @@ public class ChannelListMakerTest {
     @Test
     public void testMaker() throws Exception {
         System.out.println("maker");
-        File Dir = new File ("C:/Users/normal/Videos/19f");
+        File Dir = new File ("C:/Users/normal/Videos");
         ChannelListMaker instance = new ChannelListMaker();
         instance.maker(Dir);
     }

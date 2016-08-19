@@ -16,6 +16,8 @@
  */
 package epgtools.dumpepgfromts.jaxb.physicalchannel;
 
+import com.orangesignal.csv.annotation.CsvColumn;
+import com.orangesignal.csv.annotation.CsvEntity;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -24,34 +26,40 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  *
  * @author normal
  */
+@CsvEntity(header = true)
 public final class PhysicalChannelNumberRecord {
 
     /**
      * 物理チャンネル番号
      */
-    private int physical_channel_number;
+    @CsvColumn(position = 0, name = " 物理チャンネル番号")
+    public int physical_channel_number;
     /**
      * トランスポートストリーム識別
      */
-    private int transport_stream_id;
+    @CsvColumn(position = 1, name = " トランスポートストリーム識別")
+    public int transport_stream_id;
 
     /**
      * オリジナルネットワーク識別
      */
-    private int original_network_id;
+    @CsvColumn(position = 2, name = " オリジナルネットワーク識別")
+    public int original_network_id;
 
     /**
      * サービス識別
      */
-    private int service_id;
+    @CsvColumn(position = 3, name = " サービス識別")
+    public int service_id;
 
     /**
      * サービス名
      */
-    private String service_name;
+    @CsvColumn(position = 4, name = " サービス名")
+    public String service_name;
 
     /**
-     * デフォルトコンストラクタが無いと marshal 時に javax.xml.bind.DataBindingException が発生してしまう。
+     * デフォルトコンストラクタ
      */
     public PhysicalChannelNumberRecord() {
     }
@@ -63,8 +71,6 @@ public final class PhysicalChannelNumberRecord {
         this.service_id = service_id;
         this.service_name = service_name;
     }
-
-
 
     @Override
     public int hashCode() {
@@ -120,5 +126,6 @@ public final class PhysicalChannelNumberRecord {
     public void setService_name(String service_name) {
         this.service_name = service_name;
     }
-
+    
+    
 }
