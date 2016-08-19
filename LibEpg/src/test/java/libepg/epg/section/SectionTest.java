@@ -15,9 +15,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -25,12 +22,6 @@ import org.junit.Test;
 import testtool.EqualsChecker;
 import testtool.testrule.regexmessagerule.ExpectedExceptionMessage;
 import testtool.testrule.regexmessagerule.ExpectedExceptionRule;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -81,38 +72,38 @@ CRC:722fa2b5
  * @author normal
  */
 public class SectionTest {
-
+    
     private static final Log LOG;
-
+    
     static {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, Section.CLASS_LOG_OUTPUT_MODE).getLOG();
     }
     @Rule
     public ExpectedExceptionRule rule = new ExpectedExceptionRule();
-
+    
     private final byte[] section_byte1;
     private final Section testSection_OK1;
     private final Section testSection_OK2;
-
+    
     public SectionTest() throws DecoderException {
         this.section_byte1 = Hex.decodeHex("42f0977fe1d100007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32722fa2b5ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toCharArray());
         this.testSection_OK1 = new Section(this.section_byte1);
         this.testSection_OK2 = new Section(this.section_byte1);
     }
-
+    
     @BeforeClass
     public static void setUpClass() {
     }
-
+    
     @AfterClass
     public static void tearDownClass() {
     }
-
+    
     @Before
     public void setUp() {
     }
-
+    
     @After
     public void tearDown() {
     }
@@ -133,6 +124,13 @@ public class SectionTest {
         wrong02[1] = 0xf;
         wrong02[2] = 0xf;
         Section instance = new Section(wrong02);
+    }
+    
+    @Test
+    @ExpectedExceptionMessage("配列切り詰め中に問題発生。")
+    public void testConstructor_4() throws DecoderException {
+        LOG.debug("異常系_セクション長フィールドの値より渡された配列が短い。");
+        Section instance = new Section(Hex.decodeHex("09f203110fff1f6a706e540211ff2edd7299ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toCharArray()));
     }
 
     /**
@@ -278,7 +276,7 @@ public class SectionTest {
         Section instance1 = this.testSection_OK1;
         Section instance2 = this.testSection_OK2;
         assertTrue(instance1.hashCode() == instance2.hashCode());
-
+        
         byte[] b = ArrayUtils.remove(new TestPacket_SDT().getTarget200().getPayload(), 0);
         Section instance3 = new Section(b);
 
@@ -309,10 +307,10 @@ public class SectionTest {
     public void testEquals_ng() throws DecoderException {
         LOG.debug("equals_ng");
         Section instance1 = this.testSection_OK1;
-
+        
         byte[] b = ArrayUtils.remove(new TestPacket_SDT().getTarget200().getPayload(), 0);
         Section instance2 = new Section(b);
-
+        
         boolean result = instance1.equals(instance2);
         boolean expResult = false;
         assertEquals(expResult, result);
@@ -330,7 +328,7 @@ public class SectionTest {
 //        LOG.debug(Hex.encodeHexString(expResult));
 //        LOG.debug(Hex.encodeHexString(result));
         assertArrayEquals(expResult, result);
-
+        
     }
-
+    
 }

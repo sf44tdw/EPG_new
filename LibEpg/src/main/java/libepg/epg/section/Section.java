@@ -71,8 +71,9 @@ public final class Section {
      * @param data セクションのデータ
      * @throws IllegalArgumentException
      * 1:渡された配列の配列長が、テーブルID定数に設定された最大セクション長に3バイトを加えた値より大きい場合。<br>
-     * 2:セクション長フィールドの先頭2ビットが0ではない場合<br>
-     * 3:受け取ったデータのテーブル識別値がpreferedTableIDで渡された定数に含まれていない場合。<br>
+     * 2:渡された配列の配列長が、その配列から取得したセクション長に3バイトを加えた値より小さい場合。<br>
+     * 3:セクション長フィールドの先頭2ビットが0ではない場合<br>
+     * 4:受け取ったデータのテーブル識別値がテーブルID定数に含まれていない場合。<br>
      */
     public Section(byte[] data) throws IllegalArgumentException {
         byte[] temp = Arrays.copyOf(data, data.length);
@@ -116,19 +117,28 @@ public final class Section {
         }
 
         //セクション長フィールドの長さに合わせて渡された配列を切り詰める。
-        int targetLength = sectionLength + 3;
-        byte[] sectionByteArray = new byte[targetLength];
-        System.arraycopy(temp, 0, sectionByteArray, 0, sectionByteArray.length);
-
-        if (LOG.isTraceEnabled()) {
-            MessageFormat msg1 = new MessageFormat("\n切り詰め前={0}\n切り詰め後={1}");
-            Object[] parameters1 = {Hex.encodeHexString(temp), Hex.encodeHexString(sectionByteArray)};
+        int targetLength = Integer.MIN_VALUE;
+        try {
+            targetLength = sectionLength + 3;
+            byte[] sectionByteArray = new byte[targetLength];
             if (LOG.isTraceEnabled()) {
-                LOG.trace(msg1.format(parameters1));
+                LOG.trace("セクション長フィールドからの全長算出値(targetLength) = " + targetLength);
+                LOG.trace("切り詰め前の配列(temp)全長 = " + temp.length);
+                LOG.trace("切り詰め前の配列(temp) = " + Hex.encodeHexString(temp));
+                LOG.trace("切り詰め先配列全長(sectionByteArray) = " + sectionByteArray.length);
             }
+            System.arraycopy(temp, 0, sectionByteArray, 0, sectionByteArray.length);
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("切り詰め後の配列(sectionByteArray)全長 = " + sectionByteArray.length);
+                LOG.trace("切り詰め後の配列(sectionByteArray) = " + Hex.encodeHexString(sectionByteArray));
+            }
+            this.data = new ByteDataBlock(sectionByteArray);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new IllegalArgumentException("配列切り詰め中に問題発生。"
+                    + "\nセクション長フィールドからの全長算出値(targetLength) = " + targetLength
+                    + "\n切り詰め前の配列(temp)全長 = " + temp.length
+                    + "\n切り詰め前の配列 = " + Hex.encodeHexString(temp), ex);
         }
-
-        this.data = new ByteDataBlock(sectionByteArray);
     }
 
     /**
