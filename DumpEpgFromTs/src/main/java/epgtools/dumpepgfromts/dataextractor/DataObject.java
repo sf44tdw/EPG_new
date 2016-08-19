@@ -27,7 +27,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  *
  * @author normal
  */
-public class DataObject implements Id {
+public class DataObject  {
 
     protected static String replaceNull(String src) {
         if (src == null) {
@@ -46,7 +46,6 @@ public class DataObject implements Id {
     /**
      * @return トランスポートストリーム識別
      */
-    @Override
     public int getTransport_stream_id() {
         return this.kf.getTransport_stream_id();
     }
@@ -54,7 +53,6 @@ public class DataObject implements Id {
     /**
      * @return オリジナルネットワーク識別
      */
-    @Override
     public int getOriginal_network_id() {
         return this.kf.getOriginal_network_id();
     }
@@ -62,7 +60,6 @@ public class DataObject implements Id {
     /**
      * @return サービス識別
      */
-    @Override
     public int getService_id() {
         return this.kf.getService_id();
     }

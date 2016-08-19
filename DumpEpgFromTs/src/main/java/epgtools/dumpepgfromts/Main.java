@@ -5,8 +5,11 @@
  */
 package epgtools.dumpepgfromts;
 
+import epgtools.dumpepgfromts.dataextractor.PredicateSet;
 import epgtools.dumpepgfromts.dataextractor.channel.Channel;
 import epgtools.dumpepgfromts.dataextractor.channel.ChannelDataExtractor;
+import epgtools.dumpepgfromts.dataextractor.programme.Programme;
+import epgtools.dumpepgfromts.dataextractor.programme.ProgrammeDataExtractor;
 import epgtools.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,9 +50,9 @@ public class Main {
      * falseのとき、このクラスはログを出さなくなる
      */
     public static final boolean CLASS_LOG_OUTPUT_MODE = true;
-
+    
     private static final Log LOG;
-
+    
     static {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, Main.CLASS_LOG_OUTPUT_MODE).getLOG();
@@ -67,7 +70,7 @@ public class Main {
             System.exit(1);
         }
     }
-
+    
     private String dumpCollection(Collection<?> target) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -80,22 +83,22 @@ public class Main {
         sb.append("}");
         return sb.toString();
     }
-
+    
     private String dumpArgs(String[] args) {
         Collection<String> strs = Arrays.asList(args);
         return this.dumpCollection(strs);
     }
-
+    
     private String dumpSet(Set<?> target) {
         return this.dumpCollection(target);
     }
-
+    
     public void start(String[] args) throws org.apache.commons.cli.ParseException {
         final String fileName;
         final Long limit;
-
+        
         System.out.println("args   : " + dumpArgs(args));
-
+        
         final Option fileNameOption = Option.builder("f")
                 .required()
                 .longOpt("tsfile")
@@ -103,7 +106,7 @@ public class Main {
                 .hasArg()
                 .type(String.class)
                 .build();
-
+        
         final Option limitOption = Option.builder("l")
                 .required(false)
                 .longOpt("limit")
@@ -111,24 +114,24 @@ public class Main {
                 .hasArg()
                 .type(Long.class)
                 .build();
-
+        
         Options opts = new Options();
         opts.addOption(fileNameOption);
         opts.addOption(limitOption);
         CommandLineParser parser = new DefaultParser();
         CommandLine cl;
         HelpFormatter help = new HelpFormatter();
-
+        
         try {
 
             // parse options
             cl = parser.parse(opts, args);
-
+            
             fileName = cl.getOptionValue(fileNameOption.getOpt());
             if (fileName == null) {
                 throw new ParseException("ファイル名が指定されていません。");
             }
-
+            
             Long xl = null;
             try {
                 xl = Long.parseUnsignedLong(cl.getOptionValue(limitOption.getOpt()));
@@ -137,7 +140,7 @@ public class Main {
             } finally {
                 limit = xl;
             }
-
+            
             LOG.info("Starting application...");
             LOG.info("filename   : " + fileName);
             LOG.info("limit : " + limit);
@@ -157,7 +160,7 @@ public class Main {
             LOG.info("読み込み対象ファイル = " + tsFile.getAbsolutePath());
             final TsReader reader = new TsReader(tsFile, pids, limit);
             Map<Integer, List<TsPacketParcel>> pid_packets = reader.getPackets();
-
+            
             Map<Integer, Set<Section>> pids_sections_temp = new ConcurrentHashMap<>();
             for (Integer pidKey : pid_packets.keySet()) {
                 LOG.info("処理対象pid = " + Integer.toHexString(pidKey) + " pid定数 = " + RESERVED_PROGRAM_ID.reverseLookUp(pidKey));
@@ -170,29 +173,45 @@ public class Main {
             }
             Map<Integer, Set<Section>> pids_sections = Collections.unmodifiableMap(pids_sections_temp);
             
-            pid_packets=null;
+            pid_packets = null;
             pids_sections_temp = null;
-
+            
             final Map<MultiKey<Integer>, Channel> multiKey_channels_temp = new ConcurrentHashMap<>();
+            final Map<MultiKey<Integer>, PredicateSet<Programme>> muiltiKey_programmes_temp = new ConcurrentHashMap<>();
+            
             for (Integer pid : pids_sections.keySet()) {
                 LOG.info("処理対象pid = " + Integer.toHexString(pid) + " pid定数 = " + RESERVED_PROGRAM_ID.reverseLookUp(pid));
                 for (Section s : pids_sections.get(pid)) {
                     if (RESERVED_PROGRAM_ID.reverseLookUp(pid) == RESERVED_PROGRAM_ID.SDT_OR_BAT) {
-                        multiKey_channels_temp.putAll(new ChannelDataExtractor(s).getDataList());
+//                        multiKey_channels_temp.putAll(new ChannelDataExtractor(s).getDataList());
                     } else if (RESERVED_PROGRAM_ID.reverseLookUp(pid) == RESERVED_PROGRAM_ID.EIT_GR_ST) {
-                        LOG.info("EIT処理。未実装");
+                        muiltiKey_programmes_temp.putAll(new ProgrammeDataExtractor(s).getDataList());
                     }
                 }
             }
-            pids_sections = null;
 
-            //仮処理。チャンネル情報をダンプ。
-            for (MultiKey<Integer> k : multiKey_channels_temp.keySet()) {
-                LOG.info(multiKey_channels_temp.get(k));
-            }
-
+//            //仮処理。チャンネル情報をダンプ。
+//            for (MultiKey<Integer> k : multiKey_channels_temp.keySet()) {
+//                LOG.info("***********************************************************************************************************************************************************************************************************");
+//                LOG.info("***********************************************************************************************************************************************************************************************************");
+//                LOG.info(multiKey_channels_temp.get(k));
+//                LOG.info("***********************************************************************************************************************************************************************************************************");
+//                LOG.info(pids_sections.get(k));
+//                LOG.info("***********************************************************************************************************************************************************************************************************");
+//                LOG.info("***********************************************************************************************************************************************************************************************************");
+//            }
+//
+//            //仮処理。番組情報をダンプ。
+//            for (MultiKey<Integer> k : muiltiKey_programmes_temp.keySet()) {
+//                for (Programme p : muiltiKey_programmes_temp.get(k)) {
+//                    LOG.info("***********************************************************************************************************************************************************************************************************");
+//                    LOG.info(p);
+//                    LOG.info("***********************************************************************************************************************************************************************************************************");
+//                }
+//            }
+            
             System.gc();
-
+            
         } catch (ParseException e) {
             // print usage.
             help.printHelp("My Java Application", opts);
@@ -201,5 +220,5 @@ public class Main {
             LOG.fatal("ファイルが見つかりません。", ex);
         }
     }
-
+    
 }

@@ -17,10 +17,12 @@
 package epgtools.dumpepgfromts.dataextractor.programme;
 
 import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
+import epgtools.dumpepgfromts.dataextractor.PredicateSet;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
 import libepg.epg.section.TABLE_ID;
 import libepg.epg.section.body.eventinformationtable.EventInformationTableBody;
@@ -46,16 +48,16 @@ import org.apache.commons.collections4.keyvalue.MultiKey;
  *
  * @author normal
  */
-public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
+public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<Programme>> {
 
     public ProgrammeDataExtractor(Section source) throws IllegalArgumentException {
         super(source, TABLE_ID.EIT_OTHER_STREAM_8_DAYS, TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT, TABLE_ID.EIT_THIS_STREAM_8_DAYS, TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT);
     }
 
     @Override
-    public Map<MultiKey<Integer>, Programme> getDataList() throws IllegalStateException {
+    public Map<MultiKey<Integer>, PredicateSet<Programme>> getDataList() throws IllegalStateException {
 
-        Set<Programme> pSet = this.initiarizeSet();
+        final boolean isPutMessage = true;
 
         this.checkSectionBodyType();
         EventInformationTableBody b = (EventInformationTableBody) this.getSource().getSectionBody();
@@ -74,6 +76,8 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
         int original_network_id = b.getOriginal_network_id();
 
         int service_id = b.getService_id();
+
+        PredicateSet<Programme> pSet = new PredicateSet(transport_stream_id, original_network_id, service_id, this.initiarizeSet());
 
         int event_id = Integer.MIN_VALUE;
 
@@ -105,6 +109,10 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
                     start_Time = new Timestamp(Long.MIN_VALUE);
                 }
 
+                if (LOG.isInfoEnabled() && isPutMessage) {
+                    LOG.info(start_Time);
+                }
+
                 try {
 
                     stop_Time = rpart.getStop_Time_Object();
@@ -113,6 +121,10 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
                     LOG.warn("終了時刻のタイムスタンプ生成に失敗しました。ダミーを入力します。　 セクション = " + Hex.encodeHexString(this.getSource().getData()), ex);
                     //タイムスタンプが取得できなかったので、ダミーで代用。(3億年ばかり未来の日付)
                     stop_Time = new Timestamp(Long.MAX_VALUE);
+                }
+
+                if (LOG.isInfoEnabled() && isPutMessage) {
+                    LOG.info(stop_Time);
                 }
 
                 final StringBuilder sb_extendedEd = new StringBuilder();
@@ -124,8 +136,15 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
                         ShortEventDescriptor sedesc = (ShortEventDescriptor) desc;
 
                         event_name = sedesc.getEvent_name_String();
+                        if (LOG.isInfoEnabled() && isPutMessage) {
+                            LOG.info(event_name);
+                        }
 
                         description = sedesc.getText_String();
+                        event_name = sedesc.getEvent_name_String();
+                        if (LOG.isInfoEnabled() && isPutMessage) {
+                            LOG.info(description);
+                        }
                     }
 
                     //拡張イベント記述子の処理(複数ある場合は文字列を連結する。)
@@ -154,15 +173,27 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
                         service_id,
                         this_or_other
                 );
+
                 if (p != null) {
                     pSet.add(p);
                 } else {
                     LOG.error("番組情報がnullです。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
                 }
-            }
 
+            }
+//            LOG.info("");
+//            LOG.info("*********************************************************************************************************************************************************************");
+//            LOG.info(this.getSource());
+//            LOG.info("*********************************************************************************************************************************************************************");
+//            for (Programme p : pSet.getSet()) {
+//                LOG.info(p);
+//            }
+//            LOG.info("*********************************************************************************************************************************************************************");
+//             LOG.info("");
         }
-        return this.SetToMap(pSet);
+        Map<MultiKey<Integer>, PredicateSet<Programme>> dest = new ConcurrentHashMap<>();
+        pSet.putToMap(dest);
+        return Collections.unmodifiableMap(dest);
     }
 
 }

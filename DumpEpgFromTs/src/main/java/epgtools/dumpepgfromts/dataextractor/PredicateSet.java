@@ -17,30 +17,31 @@
 package epgtools.dumpepgfromts.dataextractor;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections4.keyvalue.MultiKey;
 
 /**
- * 事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つデータのみを重複なしで保管する。
+ * 事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つデータのみを重複なしで保管するセットのラッパー。
  *
  * @author normal
  * @param <T> 格納データ型
  *
  * @see java.util.HashSet
  */
-public class PredicateSet<T extends Id> implements Set<T> {
+public class PredicateSet<T extends DataObject> extends DataObject implements Set<T> {
 
-    private final KeyFields Predicate;
+    private final Set<T> set;
 
-    private final Set<T> set = new HashSet<>();
-
-    public PredicateSet(KeyFields Predicate) {
-        this.Predicate = Predicate;
+    public PredicateSet(int transport_stream_id, int original_network_id, int service_id, Set<T> set) throws IllegalArgumentException {
+        super(transport_stream_id, original_network_id, service_id);
+        this.set = set;
     }
 
-    private boolean predicateIt(Id e) {
-        if ((Predicate.getOriginal_network_id() == e.getOriginal_network_id()) && (Predicate.getService_id() == e.getService_id()) && (Predicate.getOriginal_network_id() == e.getOriginal_network_id())) {
+    private boolean predicateIt(T e) {
+        if ((this.getTransport_stream_id() == e.getTransport_stream_id()) && (this.getService_id() == e.getService_id()) && (this.getOriginal_network_id() == e.getOriginal_network_id())) {
             return true;
         } else {
             return false;
@@ -96,7 +97,8 @@ public class PredicateSet<T extends Id> implements Set<T> {
     }
 
     /**
-     *
+     * {@inheritDoc}
+     * <br>基本的には上記。ただし、事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ要素のみを追加する。
      */
     @Override
     public boolean add(T e) {
@@ -125,7 +127,7 @@ public class PredicateSet<T extends Id> implements Set<T> {
 
     /**
      * {@inheritDoc}
-     * 基本的には上記。ただし、事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ要素のみを追加する。
+     * <br>基本的には上記。ただし、事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ要素のみを追加する。
      */
     @Override
     public boolean addAll(Collection<? extends T> c) {
@@ -160,6 +162,25 @@ public class PredicateSet<T extends Id> implements Set<T> {
     @Override
     public void clear() {
         set.clear();
+    }
+
+    /**
+     *
+     * @return このオブジェクトが管理しているSetの変更不可能なビュー
+     */
+    public Set<T> getSet() {
+        return Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * このオブジェクトが管理しているSetの変更可能なビューを、このオブジェクトが管理しているトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別から生成したキーと関連付けてマップに追加する。
+     *
+     * @param dest 追加するマップ
+     * @return 下記参照
+     * @see java.util.Map#put(java.lang.Object, java.lang.Object)
+     */
+    public Set<T> putToMap(Map<MultiKey<Integer>, PredicateSet<T>> dest) {
+        return dest.put(this.getMuiltiKey(), new PredicateSet(this.getTransport_stream_id(),this.getOriginal_network_id(),this.getService_id(),Collections.unmodifiableSet(this.getSet())));
     }
 
 }

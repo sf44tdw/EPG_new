@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package epgtools.dumpepgfromts.dataextractor.channel;
+package epgtools.dumpepgfromts.dataextractor;
 
 import epgtools.dumpepgfromts.dataextractor.KeyFields;
 import java.lang.invoke.MethodHandles;

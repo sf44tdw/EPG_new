@@ -27,7 +27,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  *
  * @author dosdiaopfhj
  */
-public final class KeyFields implements Id{
+public final  class KeyFields{
 
     /**
      * トランスポートストリーム識別
@@ -78,15 +78,15 @@ public final class KeyFields implements Id{
         }
     }
 
-    public int getTransport_stream_id() {
+    public final int getTransport_stream_id() {
         return transport_stream_id;
     }
 
-    public int getOriginal_network_id() {
+    public final int getOriginal_network_id() {
         return original_network_id;
     }
 
-    public int getService_id() {
+    public final  int getService_id() {
         return service_id;
     }
 

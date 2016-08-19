@@ -114,31 +114,11 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
      * @return セット
      */
     protected final Set<T> initiarizeSet() {
-        if (LOG.isInfoEnabled()) {
+        final boolean isPutMessage = false;
+        if (LOG.isInfoEnabled() && isPutMessage) {
             LOG.info("重複排除用セット作製");
         }
         return Collections.synchronizedSet(new HashSet<T>());
-    }
-
-    /**
-     * キー生成メソッドを持つT型オブジェクトが入ったSetの中身を、そのキー生成メソッドを使用してマップに移し替える。
-     *
-     * @param src 変換元
-     * @return 変換元の中身を移したマップ。キーについては自動生成される。
-     */
-    protected final Map<MultiKey<Integer>, T> SetToMap(Set<T> src) {
-        final boolean isPutLog = true;
-        Map<MultiKey<Integer>, T> ret = new ConcurrentHashMap<>();
-        if (LOG.isInfoEnabled() && isPutLog) {
-            LOG.info("セットの要素数 = " + src.size());
-        }
-        for (T value : src) {
-            if (LOG.isInfoEnabled() && isPutLog) {
-                LOG.info("セットからマップへ移動したオブジェクト " + value);
-            }
-            ret.put(value.getMuiltiKey(), value);
-        }
-        return Collections.unmodifiableMap(ret);
     }
 
     /**

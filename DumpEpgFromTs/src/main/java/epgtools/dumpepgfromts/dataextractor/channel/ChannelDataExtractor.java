@@ -17,11 +17,12 @@
 package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
-import libepg.epg.section.SectionBody;
 import libepg.epg.section.TABLE_ID;
 import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableBody;
 import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableRepeatingPart;
@@ -53,6 +54,29 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
         super(source, TABLE_ID.SDT);
     }
 
+    
+    
+        /**
+     * キー生成メソッドを持つT型オブジェクトが入ったSetの中身を、そのキー生成メソッドを使用してマップに移し替える。
+     *
+     * @param src 変換元
+     * @return 変換元の中身を移したマップ。キーについては自動生成される。
+     */
+    private  Map<MultiKey<Integer>, Channel> SetToMap(Set<Channel> src) {
+        final boolean isPutLog = true;
+        Map<MultiKey<Integer>, Channel> ret = new ConcurrentHashMap<>();
+        if (LOG.isInfoEnabled() && isPutLog) {
+            LOG.info("セットの要素数 = " + src.size());
+        }
+        for (Channel value : src) {
+            if (LOG.isInfoEnabled() && isPutLog) {
+                LOG.info("セットからマップへ移動したオブジェクト " + value);
+            }
+            ret.put(value.getMuiltiKey(), value);
+        }
+        return Collections.unmodifiableMap(ret);
+    }
+    
     /**
      * @return チャンネル情報をまとめたオブジェクト
      * @throws IllegalStateException セクションのデータ部分の型がテーブルIdの指定と異なる場合。

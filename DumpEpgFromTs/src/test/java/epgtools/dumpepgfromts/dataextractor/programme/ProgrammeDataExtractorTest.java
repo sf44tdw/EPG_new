@@ -16,6 +16,7 @@
  */
 package epgtools.dumpepgfromts.dataextractor.programme;
 
+import epgtools.dumpepgfromts.dataextractor.PredicateSet;
 import epgtools.dumpepgfromts.test.common.TestSection;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
@@ -68,12 +69,15 @@ public class ProgrammeDataExtractorTest {
     public void testGetDataList() throws DecoderException {
         LOG.info("getDataList");
         ProgrammeDataExtractor instance = new ProgrammeDataExtractor(TestSection.getEit1());
-        Map<MultiKey<Integer>, Programme> result = instance.getDataList();
-        LOG.info("***********************************************************************************************************************************************************************************************************");
+        Map<MultiKey<Integer>, PredicateSet<Programme>> result = instance.getDataList();
         for (MultiKey<Integer> k : result.keySet()) {
-            LOG.info(result);
+            for (Programme p : result.get(k)) {
+                LOG.info("***********************************************************************************************************************************************************************************************************");
+                LOG.info(p);
+                LOG.info("***********************************************************************************************************************************************************************************************************");
+            }
         }
-        LOG.info("***********************************************************************************************************************************************************************************************************");
+
     }
 
 }
