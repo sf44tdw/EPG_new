@@ -104,7 +104,7 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
                 }
                 //正常系
                 if ((d.getService_name_String() != null) && !("".equals(d.getService_name_String()))) {
-                    LOG.debug("サービス名を設定します。");
+//                    LOG.debug("サービス名を設定します。");
                     service_name_String = d.getService_name_String();
                     break POST_PROCESS;
                 }
@@ -119,11 +119,11 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
                 service_name_String = "unknown-display-name";
             }
 
-            LOG.debug("サービス名 = " + service_name_String);
+//            LOG.debug("サービス名 = " + service_name_String);
             final Channel ch = new Channel(transport_stream_id, original_network_id, service_id, service_name_String);
             boolean addret = this.getDataSet().add(ch);
             if (addret = false) {
-                LOG.info("重複しました。 データ = " + ch);
+//                LOG.info("重複しました。 データ = " + ch);
             }
         }
         if (LOG.isInfoEnabled() && isPutMaeesgage) {

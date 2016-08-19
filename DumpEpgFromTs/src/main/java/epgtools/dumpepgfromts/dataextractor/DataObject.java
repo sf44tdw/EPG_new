@@ -27,7 +27,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  *
  * @author normal
  */
-public class DataObject  {
+public class DataObject {
 
     protected static String replaceNull(String src) {
         if (src == null) {
@@ -37,31 +37,35 @@ public class DataObject  {
         }
     }
 
-    private final KeyFields kf;
+    private final KeyFields keyfFields;
 
     public DataObject(int transport_stream_id, int original_network_id, int service_id) throws IllegalArgumentException {
-        this.kf = new KeyFields(transport_stream_id, original_network_id, service_id);
+        this.keyfFields = new KeyFields(transport_stream_id, original_network_id, service_id);
     }
 
     /**
      * @return トランスポートストリーム識別
      */
-    public int getTransport_stream_id() {
-        return this.kf.getTransport_stream_id();
+    public final int getTransport_stream_id() {
+        return this.keyfFields.getTransport_stream_id();
     }
 
     /**
      * @return オリジナルネットワーク識別
      */
-    public int getOriginal_network_id() {
-        return this.kf.getOriginal_network_id();
+    public final int getOriginal_network_id() {
+        return this.keyfFields.getOriginal_network_id();
     }
 
     /**
      * @return サービス識別
      */
-    public int getService_id() {
-        return this.kf.getService_id();
+    public final int getService_id() {
+        return this.keyfFields.getService_id();
+    }
+
+    public KeyFields getKeyfFields() {
+        return keyfFields;
     }
 
     /**
@@ -71,7 +75,7 @@ public class DataObject  {
      * @return 複合キー
      */
     public final MultiKey<Integer> getMuiltiKey() {
-        return this.kf.getMuiltiKey();
+        return this.keyfFields.getMuiltiKey();
     }
 
     @Override

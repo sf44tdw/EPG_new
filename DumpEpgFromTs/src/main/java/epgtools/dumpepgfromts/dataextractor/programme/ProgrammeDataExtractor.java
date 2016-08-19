@@ -97,29 +97,20 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
             {
                 event_id = rpart.getEvent_id();
 
-                try {
-                    start_Time = rpart.getStart_time_Object();
-
-                } catch (Exception ex) {
-                    LOG.warn("開始時刻のタイムスタンプ生成に失敗しました。 ダミーを入力します。　セクション = " + Hex.encodeHexString(s.getData()), ex);
-                    //タイムスタンプが取得できなかったので、ダミーで代用。(3億年ばかり過去の日付)
-                    start_Time = new Timestamp(Long.MIN_VALUE);
+                start_Time = rpart.getStart_time_Object();
+                if (start_Time == null) {
+                    LOG.warn("開始時刻のタイムスタンプ生成に失敗しました。 この箇所については無視します。　セクション = " + Hex.encodeHexString(s.getData()));
+                    break REPEATING_PART;
                 }
-
                 if (LOG.isInfoEnabled() && isPutMessage) {
                     LOG.info(start_Time);
                 }
 
-                try {
-
-                    stop_Time = rpart.getStop_Time_Object();
-
-                } catch (Exception ex) {
-                    LOG.warn("終了時刻のタイムスタンプ生成に失敗しました。ダミーを入力します。　 セクション = " + Hex.encodeHexString(s.getData()), ex);
-                    //タイムスタンプが取得できなかったので、ダミーで代用。(3億年ばかり未来の日付)
-                    stop_Time = new Timestamp(Long.MAX_VALUE);
+                stop_Time = rpart.getStop_Time_Object();
+                if (stop_Time == null) {
+                    LOG.warn("終了時刻のタイムスタンプ生成に失敗しました。この箇所については無視します。　 セクション = " + Hex.encodeHexString(s.getData()));
+                    break REPEATING_PART;
                 }
-
                 if (LOG.isInfoEnabled() && isPutMessage) {
                     LOG.info(stop_Time);
                 }
@@ -156,8 +147,8 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
                         try {
                             nibbles = cdesc.getNibbles();
                         } catch (IllegalStateException ex) {
-                            LOG.error("ジャンルコードの取得ができなかったので、ダミーを使用します。",ex);
-                            nibbles=new ArrayList<>();
+                            LOG.error("ジャンルコードの取得ができなかったので、ダミーを使用します。", ex);
+                            nibbles = new ArrayList<>();
                         }
                     }
 
@@ -180,14 +171,13 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
 
                 if (p != null) {
                     boolean ret = this.getDataSet().add(p);
-                    LOG.info(ret);
-                    if ((ret == false) && LOG.isInfoEnabled() && true) {
+                    if ((ret == false) && LOG.isInfoEnabled() && isPutMessage) {
                         LOG.info("重複\n" + p);
                     }
                 } else {
                     LOG.error("番組情報がnullです。 セクション = " + Hex.encodeHexString(s.getData()));
                 }
             }
-        };
+        }
     }
 }

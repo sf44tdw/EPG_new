@@ -6,26 +6,14 @@
 package epgtools.dumpepgfromts;
 
 import epgtools.dumpepgfromts.dataextractor.channel.Channel;
-import epgtools.dumpepgfromts.dataextractor.channel.ChannelDataExtractor;
 import epgtools.dumpepgfromts.dataextractor.programme.Programme;
-import epgtools.dumpepgfromts.dataextractor.programme.ProgrammeDataExtractor;
 import epgtools.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import libepg.epg.section.Section;
-import libepg.epg.section.sectionreconstructor.SectionReconstructor;
-import libepg.ts.packet.RESERVED_PROGRAM_ID;
-import libepg.ts.packet.TsPacketParcel;
-import libepg.ts.reader.TsReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -33,7 +21,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 
 /**
@@ -94,6 +81,7 @@ public class Main {
 
     public void start(String[] args) throws org.apache.commons.cli.ParseException {
         final String fileName;
+//        final Integer physicalChannelNumber;
         final Long limit;
 
         System.out.println("args   : " + dumpArgs(args));
@@ -106,6 +94,14 @@ public class Main {
                 .type(String.class)
                 .build();
 
+//        final Option PhysicalChannelNumberOption = Option.builder("p")
+//                .required()
+//                .longOpt("physicalchannelnumber")
+//                .desc("tsファイルを保存したときの物理チャンネル番号。")
+//                .hasArg()
+//                .type(Integer.class)
+//                .build();
+
         final Option limitOption = Option.builder("l")
                 .required(false)
                 .longOpt("limit")
@@ -116,6 +112,7 @@ public class Main {
 
         Options opts = new Options();
         opts.addOption(fileNameOption);
+//        opts.addOption(PhysicalChannelNumberOption);
         opts.addOption(limitOption);
         CommandLineParser parser = new DefaultParser();
         CommandLine cl;
@@ -131,6 +128,11 @@ public class Main {
                 throw new ParseException("ファイル名が指定されていません。");
             }
 
+//            physicalChannelNumber = Integer.parseUnsignedInt(cl.getOptionValue(PhysicalChannelNumberOption.getOpt()));
+//            if (physicalChannelNumber == null) {
+//                throw new ParseException("物理チャンネル番号が指定されていません。");
+//            }
+
             Long xl = null;
             try {
                 xl = Long.parseUnsignedLong(cl.getOptionValue(limitOption.getOpt()));
@@ -144,57 +146,11 @@ public class Main {
             LOG.info("filename   : " + fileName);
             LOG.info("limit : " + limit);
 
-            //ファイルを開く。
-            File tsFile = new File(fileName);
-            if (!tsFile.isFile()) {
-                throw new FileNotFoundException("ファイルがありません。パス = " + tsFile.getAbsolutePath());
-            }
-
-            //SDTとEITを取得。
-            final Set<Integer> pids = new HashSet<>();
-            pids.addAll(RESERVED_PROGRAM_ID.SDT_OR_BAT.getPids());
-            pids.addAll(RESERVED_PROGRAM_ID.EIT_GR_ST.getPids());
-
-            LOG.info("読み込み対象ファイル = " + tsFile.getAbsolutePath());
-            final TsReader reader = new TsReader(tsFile, pids, limit);
-            Map<Integer, List<TsPacketParcel>> pid_packets = reader.getPackets();
-
-            Map<Integer, Set<Section>> pids_sections_temp = new ConcurrentHashMap<>();
-            for (Integer pidKey : pid_packets.keySet()) {
-                LOG.info("処理対象pid = " + Integer.toHexString(pidKey) + " pid定数 = " + RESERVED_PROGRAM_ID.reverseLookUp(pidKey));
-                SectionReconstructor sectionMaker = new SectionReconstructor(pid_packets.get(pidKey), pidKey);
-                Set<Section> sections = sectionMaker.getSections();
-                if (sections != null) {
-                    LOG.info("セクション数 = " + sections.size());
-                    pids_sections_temp.put(pidKey, sections);
-                }
-            }
-            Map<Integer, Set<Section>> pids_sections = Collections.unmodifiableMap(pids_sections_temp);
-
-            pid_packets = null;
-            pids_sections_temp = null;
-
-            ChannelDataExtractor chde = new ChannelDataExtractor();
-            ProgrammeDataExtractor pgde = new ProgrammeDataExtractor();
-
-            for (Integer pid : pids_sections.keySet()) {
-                LOG.info("処理対象pid = " + Integer.toHexString(pid) + " pid定数 = " + RESERVED_PROGRAM_ID.reverseLookUp(pid));
-                for (Section s : pids_sections.get(pid)) {
-                    try {
-                        if (RESERVED_PROGRAM_ID.reverseLookUp(pid) == RESERVED_PROGRAM_ID.SDT_OR_BAT) {
-                            chde.makeDataSet(s);
-                        } else if (RESERVED_PROGRAM_ID.reverseLookUp(pid) == RESERVED_PROGRAM_ID.EIT_GR_ST) {
-                            pgde.makeDataSet(s);
-                        }
-                    } catch (IllegalArgumentException ex) {
-                        LOG.warn(ex);
-                    }
-                }
-
-            }
+            FileLoader fl = new FileLoader(new File(fileName), limit);
+            fl.load();
 
             //仮処理。チャンネル情報をダンプ。
-            Set<Channel> ch = chde.getUnmodifiableDataSet();
+            Set<Channel> ch = fl.getChannels();
             LOG.info("チャンネル件数 = " + ch.size());
             for (Channel c : ch) {
                 LOG.info("***********************************************************************************************************************************************************************************************************");
@@ -203,7 +159,7 @@ public class Main {
             }
 
 //            仮処理。番組情報をダンプ。
-            Set<Programme> p = pgde.getUnmodifiableDataSet();
+            Set<Programme> p = fl.getProgrammes();
             LOG.info("番組件数 = " + p.size());
             for (Programme pg : p) {
                 LOG.info("***********************************************************************************************************************************************************************************************************");

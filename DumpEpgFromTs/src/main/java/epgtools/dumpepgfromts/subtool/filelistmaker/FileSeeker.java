@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package epgtools.dumpepgfromts.filelistmaker;
+package epgtools.dumpepgfromts.subtool.filelistmaker;
 
 import java.io.File;
 import java.util.ArrayList;
