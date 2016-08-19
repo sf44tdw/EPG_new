@@ -20,6 +20,7 @@ import libepg.util.bytearray.ByteConverter;
 import java.text.MessageFormat;
 import java.util.Objects;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * ジャンルコード(2バイト)
@@ -35,6 +36,7 @@ public final class Nibble {
             MessageFormat msg1 = new MessageFormat("渡されたデータの長さが想定と異なります。データから算出した配列長={0} 想定される配列長={1}");
             Object[] parameters1 = {lengthFromData, 2};
             throw new IllegalArgumentException(msg1.format(parameters1));
+
         }
     }
 
@@ -46,18 +48,29 @@ public final class Nibble {
     public synchronized byte[] getData() {
         return data.getData();
     }
+    
+    
+    
+    
+    
+    
 
     /**
      * content_nibble_level_1（ジャンル1）：この4 ビットのフィールドは、コンテント識別の
      * 第一段階分類を表す。符号化については別途規定する。（付録H 参照）
      *
      * @return 上記の値
+     * @throws IllegalStateException 当てはまるジャンルが見つからないとき。
      */
-    public synchronized NIBBLE_LEVEL_1 getContent_nibble_level_1() {
+    public synchronized NIBBLE_LEVEL_1 getContent_nibble_level_1() throws IllegalStateException {
         int temp;
         temp = ByteConverter.byteToInt(this.getData()[0]);
         temp = temp >>> 4;
-        return NIBBLE_LEVEL_1.reverseLookUp(temp);
+        NIBBLE_LEVEL_1 n1 = NIBBLE_LEVEL_1.reverseLookUp(temp);
+        if (n1 == null) {
+            throw new IllegalStateException("ジャンルが見つかりません  検索値 = " + Integer.toHexString(temp) + " バイト列 = " + Hex.encodeHexString(this.getData()));
+        }
+        return n1;
     }
 
     /**
@@ -65,12 +78,18 @@ public final class Nibble {
      * 第二段階分類を表す。符号化については別途規定する。（付録H 参照）
      *
      * @return 上記の値
+     * @throws IllegalStateException 当てはまるジャンルが見つからないとき。
      */
-    public synchronized NIBBLE_LEVEL_2 getContent_nibble_level_2() {
+    public synchronized NIBBLE_LEVEL_2 getContent_nibble_level_2() throws IllegalStateException {
         int temp;
         temp = ByteConverter.byteToInt(this.getData()[0]);
         temp = temp & 0xf;
-        return NIBBLE_LEVEL_2.reverseLookUp(this.getContent_nibble_level_1().getCode(), temp);
+        NIBBLE_LEVEL_1 n1 = this.getContent_nibble_level_1();
+        NIBBLE_LEVEL_2 n2 = NIBBLE_LEVEL_2.reverseLookUp(n1.getCode(), temp);
+        if (n2 == null) {
+            throw new IllegalStateException("ジャンルが見つかりません 上位ジャンル = " + n1 + "\n検索値 = " + Integer.toHexString(temp) + "\nバイト列 = " + Hex.encodeHexString(this.getData()));
+        }
+        return n2;
     }
 
     /**

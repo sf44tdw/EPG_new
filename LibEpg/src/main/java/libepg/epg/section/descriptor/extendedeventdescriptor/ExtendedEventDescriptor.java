@@ -155,14 +155,22 @@ public class ExtendedEventDescriptor extends Descriptor {
     }
 
     /**
-     * @return 全ての項目と拡張記述を連結した文字列
+     * @return 全ての項目と拡張記述を連結した文字列。項目中にnullや空もじっがる場合は無視する。
      */
     public final synchronized String getStoredText() {
         StringBuilder sb = new StringBuilder();
         for (ExtendedEventDescriptorItem i : this.getItemsList()) {
-            sb.append(i.getStoredString()).append("\n");
+            String s = i.getStoredString();
+            if (s == null || "".equals(s)) {
+            } else {
+                sb.append(s).append("\n");
+            }
         }
-        sb.append(this.getText_String()).append("\n");
+        String b = this.getText_String();
+        if (b == null || "".equals(b)) {
+        } else {
+            sb.append(this.getText_String()).append("\n");
+        }
         return sb.toString();
     }
 

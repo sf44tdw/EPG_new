@@ -130,11 +130,18 @@ public class ExtendedEventDescriptorItem {
 
     /**
      * 項目名と項目を文字列に連結して返す。
-     *
+     * どちらかがnullの場合は空文字列。
      * @return 項目名 項目の内容。
      */
     public final synchronized String getStoredString() {
-        return this.getItem_description_length() + "  " + this.getItem_String();
+        String a, b;
+        b = this.getItem_String();
+        a = this.getiItem_description_String();
+        if (a == null || b == null) {
+            return "";
+        } else {
+            return a + "  " + b;
+        }
     }
 
     @Override

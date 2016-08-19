@@ -16,7 +16,6 @@
  */
 package libepg.epg.section.descriptor.contentdescriptor;
 
-
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +32,6 @@ import static libepg.epg.section.descriptor.contentdescriptor.NIBBLE_LEVEL_1.USE
 import static libepg.epg.section.descriptor.contentdescriptor.NIBBLE_LEVEL_1.VARIETY;
 import static libepg.epg.section.descriptor.contentdescriptor.NIBBLE_LEVEL_1.WELFARE;
 import org.apache.commons.collections4.keyvalue.MultiKey;
-
 
 /**
  * 第二段階分類符号 (ジャンル中分類)
@@ -470,7 +468,11 @@ public enum NIBBLE_LEVEL_2 {
     /**
      * IP 放送用番組付属情報
      */
-    IP_BROADCAST_PROGRAM_SUPPLIED_INFORMATION(USER_NIBBLE, 0x4, "IP 放送用番組付属情報", "IP broadcast program supplied information");
+    IP_BROADCAST_PROGRAM_SUPPLIED_INFORMATION(USER_NIBBLE, 0x4, "IP 放送用番組付属情報", "IP broadcast program supplied information"),
+    /**
+     * その他
+     */
+    OTHERS(NIBBLE_LEVEL_1.OTHERS, 0xf, "その他", "others");
 
     //逆引きリスト
     private static final Map<MultiKey<Integer>, NIBBLE_LEVEL_2> rev = new HashMap<>();
@@ -553,7 +555,7 @@ public enum NIBBLE_LEVEL_2 {
 
     @Override
     public String toString() {
-        return "NIBBLE_LEVEL_2{" + "parentNibble=" + parentNibble + ", code=" + code + ", nibble_jp=" + nibble_jp + ", nibble_en=" + nibble_en + '}';
+        return "NIBBLE_LEVEL_2{" + "parentNibble=" + parentNibble + ", code=" + Integer.toHexString(code) + ", nibble_jp=" + nibble_jp + ", nibble_en=" + nibble_en + '}';
     }
 
 }

@@ -161,7 +161,7 @@ public enum NIBBLE_LEVEL_1 {
 
     @Override
     public String toString() {
-        return "NIBBLE_LEVEL_1{" + "code=" + code + ", nibble_jp=" + nibble_jp + ", nibble_en=" + nibble_en + '}';
+        return "NIBBLE_LEVEL_1{" + "code=" + Integer.toHexString(code) + ", nibble_jp=" + nibble_jp + ", nibble_en=" + nibble_en + '}';
     }
 
 }
