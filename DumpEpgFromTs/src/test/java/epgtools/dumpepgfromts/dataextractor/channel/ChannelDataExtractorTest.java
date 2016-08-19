@@ -18,10 +18,9 @@ package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.test.common.TestSection;
 import java.lang.invoke.MethodHandles;
-import java.util.Map;
+import java.util.Set;
 import libepg.epg.section.Section;
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
@@ -44,7 +43,6 @@ public class ChannelDataExtractorTest {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = LogFactory.getLog(myClass);
     }
-
 
     public ChannelDataExtractorTest() {
     }
@@ -72,24 +70,14 @@ public class ChannelDataExtractorTest {
     public void testGetChannels() throws DecoderException {
         LOG.info("");
         Section sec = TestSection.getSdt1();
-        ChannelDataExtractor instance = new ChannelDataExtractor(sec);
-        Map<MultiKey<Integer>, Channel> map = instance.getDataList();
-        assertTrue(map.size() == 1);
-        Channel ch = map.get(new MultiKey<>(0x4750, 0x4, 0xfc));
+        ChannelDataExtractor instance = new ChannelDataExtractor();
+        instance.makeDataSet(sec);
+        Set<Channel> set = instance.getUnmodifiableDataSet();
+        assertTrue(set.size() == 1);
+        Channel ch = set.iterator().next();
         assertEquals(ch.getDisplay_name(), "イマジカＢＳ・映画");
     }
 
-    /**
-     * Test of getSource method, of class ChannelDataExtractor.
-     */
-    @Test
-    public void testGetSource() throws DecoderException {
-        LOG.info("");
-        Section sec = TestSection.getSdt1();
-        ChannelDataExtractor instance = new ChannelDataExtractor(sec);
-        LOG.info("\nセクション_S****************************************************************************************************************************************************************************************************");
-        LOG.info(instance.getSource());
-        LOG.info("セクション_E****************************************************************************************************************************************************************************************************\n");
-    }
+
 
 }

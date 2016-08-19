@@ -17,12 +17,9 @@
 package epgtools.dumpepgfromts.dataextractor.programme;
 
 import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
-import epgtools.dumpepgfromts.dataextractor.PredicateSet;
 import java.sql.Timestamp;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
 import libepg.epg.section.TABLE_ID;
 import libepg.epg.section.body.eventinformationtable.EventInformationTableBody;
@@ -31,9 +28,9 @@ import libepg.epg.section.descriptor.DESCRIPTOR_TAG;
 import libepg.epg.section.descriptor.Descriptor;
 import libepg.epg.section.descriptor.contentdescriptor.ContentDescriptor;
 import libepg.epg.section.descriptor.contentdescriptor.Nibble;
+import libepg.epg.section.descriptor.extendedeventdescriptor.ExtendedEventDescriptor;
 import libepg.epg.section.descriptor.shorteventdescriptor.ShortEventDescriptor;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 
 /**
  * EITから番組情報を取り出し、重複を除去してリスト化する。取り出す情報は以下の通り。
@@ -48,26 +45,28 @@ import org.apache.commons.collections4.keyvalue.MultiKey;
  *
  * @author normal
  */
-public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<Programme>> {
+public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
 
-    public ProgrammeDataExtractor(Section source) throws IllegalArgumentException {
-        super(source, TABLE_ID.EIT_OTHER_STREAM_8_DAYS, TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT, TABLE_ID.EIT_THIS_STREAM_8_DAYS, TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT);
+    public ProgrammeDataExtractor() throws IllegalArgumentException {
+        super(TABLE_ID.EIT_OTHER_STREAM_8_DAYS, TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT, TABLE_ID.EIT_THIS_STREAM_8_DAYS, TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT);
     }
 
     @Override
-    public Map<MultiKey<Integer>, PredicateSet<Programme>> getDataList() throws IllegalStateException {
+    public void makeDataSet(Section s) throws IllegalStateException {
+        final boolean isPutMessage = false;
 
-        final boolean isPutMessage = true;
+        this.checkSection(s);
 
-        this.checkSectionBodyType();
-        EventInformationTableBody b = (EventInformationTableBody) this.getSource().getSectionBody();
+        this.checkSectionBodyType(s);
 
-        final TABLE_ID tid = this.getSource().getTable_id_const();
+        EventInformationTableBody b = (EventInformationTableBody) s.getSectionBody();
+
+        final TABLE_ID tid = s.getTable_id_const();
 
         boolean this_or_other = false;
-        if (tid == TABLE_ID.EIT_THIS_STREAM_8_DAYS || tid == TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT) {
+        if (tid == TABLE_ID.EIT_THIS_STREAM_8_DAYS || tid == TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT) {
             this_or_other = true;
-        } else if (tid == TABLE_ID.EIT_THIS_STREAM_8_DAYS || tid == TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT) {
+        } else if (tid == TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT || tid == TABLE_ID.EIT_OTHER_STREAM_8_DAYS) {
             this_or_other = false;
         }
 
@@ -76,8 +75,6 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<P
         int original_network_id = b.getOriginal_network_id();
 
         int service_id = b.getService_id();
-
-        PredicateSet<Programme> pSet = new PredicateSet(transport_stream_id, original_network_id, service_id, this.initiarizeSet());
 
         int event_id = Integer.MIN_VALUE;
 
@@ -104,7 +101,7 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<P
                     start_Time = rpart.getStart_time_Object();
 
                 } catch (Exception ex) {
-                    LOG.warn("開始時刻のタイムスタンプ生成に失敗しました。 ダミーを入力します。　セクション = " + Hex.encodeHexString(this.getSource().getData()), ex);
+                    LOG.warn("開始時刻のタイムスタンプ生成に失敗しました。 ダミーを入力します。　セクション = " + Hex.encodeHexString(s.getData()), ex);
                     //タイムスタンプが取得できなかったので、ダミーで代用。(3億年ばかり過去の日付)
                     start_Time = new Timestamp(Long.MIN_VALUE);
                 }
@@ -118,7 +115,7 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<P
                     stop_Time = rpart.getStop_Time_Object();
 
                 } catch (Exception ex) {
-                    LOG.warn("終了時刻のタイムスタンプ生成に失敗しました。ダミーを入力します。　 セクション = " + Hex.encodeHexString(this.getSource().getData()), ex);
+                    LOG.warn("終了時刻のタイムスタンプ生成に失敗しました。ダミーを入力します。　 セクション = " + Hex.encodeHexString(s.getData()), ex);
                     //タイムスタンプが取得できなかったので、ダミーで代用。(3億年ばかり未来の日付)
                     stop_Time = new Timestamp(Long.MAX_VALUE);
                 }
@@ -127,7 +124,6 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<P
                     LOG.info(stop_Time);
                 }
 
-                final StringBuilder sb_extendedEd = new StringBuilder();
                 for (Descriptor desc : rpart.getDescriptors_loop().getDescriptors_loopList()) {
 
                     //短形イベント記述子の処理(複数は存在しない想定)
@@ -148,16 +144,24 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<P
                     }
 
                     //拡張イベント記述子の処理(複数ある場合は文字列を連結する。)
-                    if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.CONTENT_DESCRIPTOR) {
-
-                        ContentDescriptor cdesc = (ContentDescriptor) desc;
-
-                        nibbles = cdesc.getNibbles();
+                    if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.EXTENDED_EVENT_DESCRIPTOR) {
+                        ExtendedEventDescriptor eevtdesc = (ExtendedEventDescriptor) desc;
+                        additional_description = eevtdesc.getStoredText();
                     }
 
                     //コンテント記述子の処理
+                    if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.CONTENT_DESCRIPTOR) {
+
+                        ContentDescriptor cdesc = (ContentDescriptor) desc;
+                        try {
+                            nibbles = cdesc.getNibbles();
+                        } catch (IllegalStateException ex) {
+                            LOG.error("ジャンルコードの取得ができなかったので、ダミーを使用します。",ex);
+                            nibbles=new ArrayList<>();
+                        }
+                    }
+
                 }
-                additional_description = sb_extendedEd.toString();
 
                 //番組情報を生成。
                 final Programme p = new Programme(
@@ -175,25 +179,15 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<PredicateSet<P
                 );
 
                 if (p != null) {
-                    pSet.add(p);
+                    boolean ret = this.getDataSet().add(p);
+                    LOG.info(ret);
+                    if ((ret == false) && LOG.isInfoEnabled() && true) {
+                        LOG.info("重複\n" + p);
+                    }
                 } else {
-                    LOG.error("番組情報がnullです。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
+                    LOG.error("番組情報がnullです。 セクション = " + Hex.encodeHexString(s.getData()));
                 }
-
             }
-//            LOG.info("");
-//            LOG.info("*********************************************************************************************************************************************************************");
-//            LOG.info(this.getSource());
-//            LOG.info("*********************************************************************************************************************************************************************");
-//            for (Programme p : pSet.getSet()) {
-//                LOG.info(p);
-//            }
-//            LOG.info("*********************************************************************************************************************************************************************");
-//             LOG.info("");
-        }
-        Map<MultiKey<Integer>, PredicateSet<Programme>> dest = new ConcurrentHashMap<>();
-        pSet.putToMap(dest);
-        return Collections.unmodifiableMap(dest);
+        };
     }
-
 }

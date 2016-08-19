@@ -16,12 +16,10 @@
  */
 package epgtools.dumpepgfromts.dataextractor.programme;
 
-import epgtools.dumpepgfromts.dataextractor.PredicateSet;
 import epgtools.dumpepgfromts.test.common.TestSection;
 import java.lang.invoke.MethodHandles;
-import java.util.Map;
+import java.util.Set;
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
@@ -68,16 +66,16 @@ public class ProgrammeDataExtractorTest {
     @Test
     public void testGetDataList() throws DecoderException {
         LOG.info("getDataList");
-        ProgrammeDataExtractor instance = new ProgrammeDataExtractor(TestSection.getEit1());
-        Map<MultiKey<Integer>, PredicateSet<Programme>> result = instance.getDataList();
-        for (MultiKey<Integer> k : result.keySet()) {
-            for (Programme p : result.get(k)) {
-                LOG.info("***********************************************************************************************************************************************************************************************************");
-                LOG.info(p);
-                LOG.info("***********************************************************************************************************************************************************************************************************");
-            }
+        ProgrammeDataExtractor instance = new ProgrammeDataExtractor();
+        instance.makeDataSet(TestSection.getEit1());
+        Set<Programme> result = instance.getUnmodifiableDataSet();
+        for (Programme p : result) {
+            LOG.info("***********************************************************************************************************************************************************************************************************");
+            LOG.info(p);
+            LOG.info("***********************************************************************************************************************************************************************************************************");
         }
 
     }
+
 
 }

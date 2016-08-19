@@ -19,6 +19,7 @@ package epgtools.dumpepgfromts.dataextractor.programme;
 import epgtools.dumpepgfromts.dataextractor.DataObject;
 import java.sql.Timestamp;
 import java.util.List;
+import libepg.epg.section.descriptor.contentdescriptor.NIBBLE_LEVEL_2;
 import libepg.epg.section.descriptor.contentdescriptor.Nibble;
 
 /**
@@ -45,6 +46,7 @@ public final class Programme extends DataObject {
     private final String additional_description;
     private final List<Nibble> nibbles;
     private final boolean this_or_other;
+
     /**
      *
      * @param event_id 番組ID
@@ -62,7 +64,7 @@ public final class Programme extends DataObject {
      * @see DataObject {
      *
      */
-    public Programme(int event_id, Timestamp start_Time, Timestamp stop_Time, String event_name, String description, String additional_description, List<Nibble> nibbles, int transport_stream_id, int original_network_id, int service_id,boolean this_or_other) {
+    public Programme(int event_id, Timestamp start_Time, Timestamp stop_Time, String event_name, String description, String additional_description, List<Nibble> nibbles, int transport_stream_id, int original_network_id, int service_id, boolean this_or_other) {
         super(transport_stream_id, original_network_id, service_id);
         this.event_id = event_id;
         this.start_Time = start_Time.getTime();
@@ -71,8 +73,8 @@ public final class Programme extends DataObject {
         this.description = replaceNull(description);
         this.additional_description = replaceNull(additional_description);
         this.nibbles = nibbles;
-        this.this_or_other=this_or_other;
-        
+        this.this_or_other = this_or_other;
+
     }
 
     /**
@@ -131,4 +133,38 @@ public final class Programme extends DataObject {
         return nibbles;
     }
 
+    /**
+     * ToStringの若干見やすい版
+     *
+     * @return 中身
+     */
+    public String getString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TSID = ").append(this.getTransport_stream_id()).append("\n");
+        sb.append("ONID = ").append(this.getOriginal_network_id()).append("\n");
+        sb.append("SID = ").append(this.getService_id()).append("\n");
+        sb.append("番組ID = ").append(this.getEvent_id()).append("\n");
+        sb.append("開始時刻 = ").append(this.getStart_Time()).append("\n");
+        sb.append("終了時刻 = ").append(this.getStop_Time()).append("\n");
+        sb.append("番組名 = ").append(this.getEvent_name()).append("\n");
+        sb.append("番組内容 = ").append(this.getDescription()).append("\n");
+        sb.append("補足 = ").append(this.getAdditional_description()).append("\n");
+        sb.append("自局フラグ = ").append(this.isThis_or_other()).append("\n");
+        sb.append("ジャンル = \n");
+        if (this.getNibble() == null) {
+        } else {
+            for (Nibble n : this.getNibble()) {
+                if (n == null) {
+                } else {
+                    NIBBLE_LEVEL_2 nb = n.getContent_nibble_level_2();
+                    if (nb == null) {
+                    } else {
+                        sb.append("ジャンル(en) = ").append(n.getContent_nibble_level_2().getNibble_en()).append("\n");
+                        sb.append("ジャンル(jp) = ").append(n.getContent_nibble_level_2().getNibble_jp()).append("\n");
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
 }

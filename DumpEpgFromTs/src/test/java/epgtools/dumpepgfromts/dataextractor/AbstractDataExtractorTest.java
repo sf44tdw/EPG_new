@@ -18,13 +18,10 @@ package epgtools.dumpepgfromts.dataextractor;
 
 import epgtools.dumpepgfromts.test.common.TestSection;
 import java.lang.invoke.MethodHandles;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import libepg.epg.section.Section;
 import libepg.epg.section.TABLE_ID;
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
@@ -51,23 +48,9 @@ public class AbstractDataExtractorTest {
     }
     private final Section S;
 
-    private class Target extends AbstractDataExtractor<DataObject> {
-
-        public Target(Section source, TABLE_ID tableId, TABLE_ID... tablsIds) throws IllegalArgumentException {
-            super(source, tableId, tablsIds);
-        }
-
-        @Override
-        public Map<MultiKey<Integer>, DataObject> getDataList() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-
-    private final Target t;
-
     public AbstractDataExtractorTest() throws DecoderException {
         S = TestSection.getEit1();
-        t = new Target(S, S.getTable_id_const(), TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT);
+
     }
 
     @BeforeClass
@@ -92,53 +75,27 @@ public class AbstractDataExtractorTest {
     @ExpectedExceptionMessage("^.*CRCエラーです.*$")
     public void testConstructor_CRC_Error() throws DecoderException {
         LOG.info("");
-        final AbstractDataExtractor instance = new Target(TestSection.getSdt3_CRCERROR(), TABLE_ID.SDT);
+        final AbstractDataExtractor instance = new AbstractDataExtractorImpl();
+        instance.checkSection(TestSection.getSdt3_CRCERROR());
     }
 
     @Test
     @ExpectedExceptionMessage("処理対象のテーブルIDではありません")
     public void testConstructor_Not_SDT() throws DecoderException {
         LOG.info("");
-        final AbstractDataExtractor instance = new Target(TestSection.getSdt2(), TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT);
+        final AbstractDataExtractor instance = new AbstractDataExtractorImpl();
+        instance.checkSection(TestSection.getEit1());
     }
 
-    /**
-     * Test of getSource method, of class AbstractDataExtractor.
-     */
-    @Test
-    public void testGetSource() throws DecoderException {
-        LOG.info("");
-        AbstractDataExtractor instance = t;
-        Section expResult = TestSection.getEit1();
-        Section result = instance.getSource();
-        assertEquals(expResult, result);
+    public class AbstractDataExtractorImpl extends AbstractDataExtractor {
+
+        public AbstractDataExtractorImpl() {
+            super(TABLE_ID.SDT);
+        }
+
+        public void makeDataSet(Section s) throws IllegalStateException {
+            this.checkSection(s);
+        }
     }
 
-    /**
-     * Test of getTableIds method, of class AbstractDataExtractor.
-     */
-    @Test
-    public void testGetTableIds() {
-        LOG.info("");
-        AbstractDataExtractor instance = t;
-        Set<TABLE_ID> expResult = new HashSet<TABLE_ID>();
-        expResult.add(S.getTable_id_const());
-        expResult.add(TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT);
-        Set<TABLE_ID> result = instance.getTableIds();
-        assertEquals(expResult, result);
-    }
-
-//    /**
-//     * Test of getDataList method, of class AbstractDataExtractor.
-//     */
-//    @Test
-//    public void testGetDataList() {
-//        System.out.println("getDataList");
-//        AbstractDataExtractor instance = t;
-//        Map expResult = null;
-//        Map result = instance.getDataList();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

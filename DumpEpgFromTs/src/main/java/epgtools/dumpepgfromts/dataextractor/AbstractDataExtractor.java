@@ -44,7 +44,7 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
 
     private final Set<TABLE_ID> tableIds;
 
-    private final Set<T> opjectStore = Collections.synchronizedSet(new HashSet<>());
+    private final Set<T> dataSet = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * サブクラス用コンストラクタ。<br>
@@ -83,16 +83,16 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
         return tableIds;
     }
 
-    protected final Set<T> getOpjectStore() {
-        return opjectStore;
+    protected final Set<T> getDataSet() {
+        return dataSet;
     }
 
-    public final Set<T> getUnmodifiableObjetStore() {
-        return Collections.unmodifiableSet(this.getOpjectStore());
+    public final Set<T> getUnmodifiableDataSet() {
+        return Collections.unmodifiableSet(this.getDataSet());
     }
 
-    protected final void clearObjectStore() {
-        this.opjectStore.clear();
+    public final void clearDataSet() {
+        this.dataSet.clear();
     }
 
     /**
@@ -124,9 +124,9 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
     /**
      * 例外条件参照
      *
-     * @throws IllegalStateException テーブルIDのデータ型指定とセクション本体のデータ型が異なっている場合。
+     * @throws IllegalArgumentException テーブルIDのデータ型指定とセクション本体のデータ型が異なっている場合。
      */
-    protected final void checkSectionBodyType(Section s) throws IllegalStateException {
+    protected final void checkSectionBodyType(Section s) throws IllegalArgumentException {
         SectionBody b = s.getSectionBody();
         if (b.getClass() != s.getTable_id_const().getDataType()) {
             //まずありえないのでテストケースにはしない。
@@ -139,5 +139,5 @@ public abstract class AbstractDataExtractor<T extends DataObject> {
      *
      * @param s
      */
-    public abstract void getDataList(Section s) throws IllegalStateException;
+    public abstract void makeDataSet(Section s) throws IllegalStateException;
 }

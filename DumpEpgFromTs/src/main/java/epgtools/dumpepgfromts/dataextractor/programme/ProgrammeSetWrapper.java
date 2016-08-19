@@ -14,38 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package epgtools.dumpepgfromts.dataextractor;
+package epgtools.dumpepgfromts.dataextractor.programme;
 
+import epgtools.dumpepgfromts.dataextractor.DataObject;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 
 /**
- * 事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つデータのみを重複なしで保管するセットのラッパー。
+ * 事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ番組データのみを保管するセットのラッパー。
  *
  * @author normal
- * @param <T> 格納データ型
- *
- * @see java.util.HashSet
  */
-public class PredicateSet<T extends DataObject> extends DataObject implements Set<T> {
+public class ProgrammeSetWrapper extends DataObject implements Set<Programme> {
 
-    private final Set<T> set;
+    private final Set<Programme> set;
 
-    public PredicateSet(int transport_stream_id, int original_network_id, int service_id, Set<T> set) throws IllegalArgumentException {
+    public ProgrammeSetWrapper(Set<Programme> set, int transport_stream_id, int original_network_id, int service_id) throws IllegalArgumentException {
         super(transport_stream_id, original_network_id, service_id);
         this.set = set;
     }
 
-    private boolean predicateIt(T e) {
-        if ((this.getTransport_stream_id() == e.getTransport_stream_id()) && (this.getService_id() == e.getService_id()) && (this.getOriginal_network_id() == e.getOriginal_network_id())) {
-            return true;
-        } else {
-            return false;
-        }
+    private boolean predicateIt(Programme e) {
+        return (this.getOriginal_network_id() == e.getOriginal_network_id()) && (this.getService_id() == e.getService_id()) && (this.getOriginal_network_id() == e.getOriginal_network_id());
     }
 
     /**
@@ -76,7 +69,7 @@ public class PredicateSet<T extends DataObject> extends DataObject implements Se
      * {@inheritDoc}
      */
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<Programme> iterator() {
         return set.iterator();
     }
 
@@ -98,10 +91,10 @@ public class PredicateSet<T extends DataObject> extends DataObject implements Se
 
     /**
      * {@inheritDoc}
-     * <br>基本的には上記。ただし、事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ要素のみを追加する。
+     * 基本的には上記。ただし、事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ要素のみを追加する。
      */
     @Override
-    public boolean add(T e) {
+    public boolean add(Programme e) {
         if (predicateIt(e)) {
             return this.set.add(e);
         } else {
@@ -127,12 +120,12 @@ public class PredicateSet<T extends DataObject> extends DataObject implements Se
 
     /**
      * {@inheritDoc}
-     * <br>基本的には上記。ただし、事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ要素のみを追加する。
+     * 基本的には上記。ただし、事前に設定したトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別を持つ要素のみを追加する。
      */
     @Override
-    public boolean addAll(Collection<? extends T> c) {
+    public boolean addAll(Collection<? extends Programme> c) {
         boolean ret = false;
-        for (T val : c) {
+        for (Programme val : c) {
             if (this.add(val)) {
                 ret = true;
             }
@@ -145,7 +138,7 @@ public class PredicateSet<T extends DataObject> extends DataObject implements Se
      */
     @Override
     public boolean retainAll(Collection<?> c) {
-        return set.containsAll(c);
+        return set.retainAll(c);
     }
 
     /**
@@ -165,22 +158,11 @@ public class PredicateSet<T extends DataObject> extends DataObject implements Se
     }
 
     /**
-     *
-     * @return このオブジェクトが管理しているSetの変更不可能なビュー
+     * @return 編集できないセットを返す。
      */
-    public Set<T> getSet() {
-        return Collections.unmodifiableSet(set);
-    }
-
-    /**
-     * このオブジェクトが管理しているSetの変更可能なビューを、このオブジェクトが管理しているトランスポートストリーム識別、オリジナルネットワーク識別、サービス識別から生成したキーと関連付けてマップに追加する。
-     *
-     * @param dest 追加するマップ
-     * @return 下記参照
-     * @see java.util.Map#put(java.lang.Object, java.lang.Object)
-     */
-    public Set<T> putToMap(Map<MultiKey<Integer>, PredicateSet<T>> dest) {
-        return dest.put(this.getMuiltiKey(), new PredicateSet(this.getTransport_stream_id(),this.getOriginal_network_id(),this.getService_id(),Collections.unmodifiableSet(this.getSet())));
+    public ProgrammeSetWrapper getUnmodifiableSet() {
+        Set<Programme> tempSet = new HashSet<>();
+        return new ProgrammeSetWrapper(Collections.unmodifiableSet(this.set), this.getTransport_stream_id(), this.getOriginal_network_id(), this.getService_id());
     }
 
 }

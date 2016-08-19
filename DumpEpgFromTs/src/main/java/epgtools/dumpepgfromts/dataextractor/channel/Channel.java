@@ -17,6 +17,7 @@
 package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.dataextractor.DataObject;
+import libepg.epg.section.descriptor.contentdescriptor.Nibble;
 
 /**
  * チャンネル情報を保持するクラス。 保持する情報は以下の通り。<br>
@@ -50,5 +51,18 @@ public final class Channel extends DataObject {
     public String getDisplay_name() {
         return display_name;
     }
-
+    
+    /**
+     * ToStringの若干見やすい版
+     *
+     * @return 中身
+     */
+    public String getString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TSID = ").append(this.getTransport_stream_id()).append("\n");
+        sb.append("ONID = ").append(this.getOriginal_network_id()).append("\n");
+        sb.append("SID = ").append(this.getService_id()).append("\n");
+        sb.append("サービス名 = ").append(this.getDisplay_name()).append("\n");
+        return sb.toString();
+    }
 }

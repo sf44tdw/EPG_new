@@ -17,11 +17,7 @@
 package epgtools.dumpepgfromts.dataextractor.channel;
 
 import epgtools.dumpepgfromts.dataextractor.AbstractDataExtractor;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import libepg.epg.section.Section;
 import libepg.epg.section.TABLE_ID;
 import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableBody;
@@ -31,7 +27,6 @@ import libepg.epg.section.descriptor.Descriptor;
 import libepg.epg.section.descriptor.servicedescriptor.SERVICE_TYPE;
 import libepg.epg.section.descriptor.servicedescriptor.ServiceDescriptor;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 
 /**
  * SDTからチャンネル情報を抽出し、重複を除去してリスト化する。 取り出す情報は以下の通り。
@@ -44,59 +39,27 @@ import org.apache.commons.collections4.keyvalue.MultiKey;
  */
 public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
 
-    /**
-     * @param source 処理対象のセクション
-     * @throws IllegalArgumentException　<br>
-     * 1:テーブル識別値がSDTのそれではない<br>
-     * 2:CRCエラーが起きている場合。<br>
-     */
-    public ChannelDataExtractor(Section source) {
-        super(source, TABLE_ID.SDT);
+    public ChannelDataExtractor() {
+        super(TABLE_ID.SDT);
     }
 
-    
-    
-        /**
-     * キー生成メソッドを持つT型オブジェクトが入ったSetの中身を、そのキー生成メソッドを使用してマップに移し替える。
-     *
-     * @param src 変換元
-     * @return 変換元の中身を移したマップ。キーについては自動生成される。
-     */
-    private  Map<MultiKey<Integer>, Channel> SetToMap(Set<Channel> src) {
-        final boolean isPutLog = true;
-        Map<MultiKey<Integer>, Channel> ret = new ConcurrentHashMap<>();
-        if (LOG.isInfoEnabled() && isPutLog) {
-            LOG.info("セットの要素数 = " + src.size());
-        }
-        for (Channel value : src) {
-            if (LOG.isInfoEnabled() && isPutLog) {
-                LOG.info("セットからマップへ移動したオブジェクト " + value);
-            }
-            ret.put(value.getMuiltiKey(), value);
-        }
-        return Collections.unmodifiableMap(ret);
-    }
-    
     /**
-     * @return チャンネル情報をまとめたオブジェクト
      * @throws IllegalStateException セクションのデータ部分の型がテーブルIdの指定と異なる場合。
      */
     @Override
-    public Map<MultiKey<Integer>, Channel> getDataList() throws IllegalStateException {
+    public void makeDataSet(Section s) throws IllegalStateException {
+        this.checkSection(s);
+        this.checkSectionBodyType(s);
+        this.clearDataSet();
 
         final boolean isPutMaeesgage = false;
-        
-        this.checkSectionBodyType();
 
-        final ServiceDescriptionTableBody body = (ServiceDescriptionTableBody)  this.getSource().getSectionBody();
+        final ServiceDescriptionTableBody body = (ServiceDescriptionTableBody) s.getSectionBody();
 
         final int transport_stream_id = body.getTransport_stream_id();
         final int original_network_id = body.getOriginal_network_id();
         int service_id = -1;
         String service_name_String;
-
-        final Set<Channel> ret = this.initiarizeSet();
-
 
         final List<ServiceDescriptionTableRepeatingPart> rep = body.getSDTRepeatingPartList();
 
@@ -135,7 +98,7 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
             {
                 //まずないとは思うが記述子が無いケース
                 if (d == null) {
-                    LOG.warn("サービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
+                    LOG.warn("サービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(s.getData()));
                     service_name_String = "unknown-display-name";
                     break POST_PROCESS;
                 }
@@ -147,27 +110,25 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
                 }
                 //サービス事業者名があるならそれで代用する。
                 if ((d.getService_provider_name_String() != null) && !("".equals(d.getService_provider_name_String()))) {
-                    LOG.warn("事業者名で代用します。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
+                    LOG.warn("事業者名で代用します。 セクション = " + Hex.encodeHexString(s.getData()));
                     service_name_String = d.getService_provider_name_String();
                     break POST_PROCESS;
                 }
                 //どれもないならダミーで代用。
-                LOG.warn("サービス名、サービス事業差名が記載されたサービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(this.getSource().getData()));
+                LOG.warn("サービス名、サービス事業差名が記載されたサービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(s.getData()));
                 service_name_String = "unknown-display-name";
             }
 
             LOG.debug("サービス名 = " + service_name_String);
             final Channel ch = new Channel(transport_stream_id, original_network_id, service_id, service_name_String);
-            boolean addret = ret.add(ch);
+            boolean addret = this.getDataSet().add(ch);
             if (addret = false) {
                 LOG.info("重複しました。 データ = " + ch);
             }
         }
         if (LOG.isInfoEnabled() && isPutMaeesgage) {
-            LOG.info("サービス情報の件数 = " + ret.size());
+            LOG.info("サービス情報の件数 = " + this.getDataSet().size());
         }
-        return this.SetToMap(ret);
-
     }
 
 }
