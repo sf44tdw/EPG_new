@@ -81,7 +81,6 @@ public class Main {
 
     public void start(String[] args) throws org.apache.commons.cli.ParseException {
         final String fileName;
-//        final Integer physicalChannelNumber;
         final Long limit;
 
         System.out.println("args   : " + dumpArgs(args));
@@ -94,18 +93,11 @@ public class Main {
                 .type(String.class)
                 .build();
 
-//        final Option PhysicalChannelNumberOption = Option.builder("p")
-//                .required()
-//                .longOpt("physicalchannelnumber")
-//                .desc("tsファイルを保存したときの物理チャンネル番号。")
-//                .hasArg()
-//                .type(Integer.class)
-//                .build();
 
         final Option limitOption = Option.builder("l")
                 .required(false)
                 .longOpt("limit")
-                .desc("読み込みパケット数(省略可。省略した場合は10000000パケット読む。)")
+                .desc("読み込みパケット数(省略可。省略した場合は100000000パケット読む。)")
                 .hasArg()
                 .type(Long.class)
                 .build();
@@ -128,16 +120,12 @@ public class Main {
                 throw new ParseException("ファイル名が指定されていません。");
             }
 
-//            physicalChannelNumber = Integer.parseUnsignedInt(cl.getOptionValue(PhysicalChannelNumberOption.getOpt()));
-//            if (physicalChannelNumber == null) {
-//                throw new ParseException("物理チャンネル番号が指定されていません。");
-//            }
 
             Long xl = null;
             try {
                 xl = Long.parseUnsignedLong(cl.getOptionValue(limitOption.getOpt()));
             } catch (NumberFormatException e) {
-                xl = 1000000L;
+                xl = 10000000L;
             } finally {
                 limit = xl;
             }

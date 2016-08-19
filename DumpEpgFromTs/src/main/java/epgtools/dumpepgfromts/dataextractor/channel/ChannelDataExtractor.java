@@ -50,7 +50,6 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
     public void makeDataSet(Section s) throws IllegalStateException {
         this.checkSection(s);
         this.checkSectionBodyType(s);
-        this.clearDataSet();
 
         final boolean isPutMaeesgage = false;
 
@@ -73,57 +72,51 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
             //とりあえず、TV用の局情報があるサービス記述子は1個だけだと思うことにする。
             final List<Descriptor> ld = rp.getDescriptors_loop().getDescriptors_loopList();
 
-            if (LOG.isInfoEnabled() && isPutMaeesgage) {
-                LOG.info("記述子数 = " + ld.size());
-                for (Descriptor desc : ld) {
-                    LOG.info("\n*********************************************************************************************************************************************************\n"
-                            + "記述子 = " + desc
-                            + "*********************************************************************************************************************************************************");
-                }
-            }
-
             for (Descriptor desc : ld) {
-                if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.SERVICE_DESCRIPTOR) {
+                PROCESS_SDT:
+                {
+                    if (desc.getDescriptor_tag_const() != DESCRIPTOR_TAG.SERVICE_DESCRIPTOR) {
+                        break PROCESS_SDT;
+                    }
                     d = (ServiceDescriptor) desc;
-                    if (d.getService_type_Enum() == SERVICE_TYPE.DIGITAL_TV_SERVICE) {
-                        if (LOG.isInfoEnabled() && isPutMaeesgage) {
-                            LOG.info("TV用の記述子を発見。内容 = " + d.toString());
+                    if (d.getService_type_Enum() != SERVICE_TYPE.DIGITAL_TV_SERVICE) {
+                        break PROCESS_SDT;
+                    }
+                    if (LOG.isInfoEnabled() && isPutMaeesgage) {
+                        LOG.info("TV用の記述子を発見。内容 = " + d.toString());
+                    }
+                    SERVICE_NAME:
+                    {
+                        service_name_String = "";
+                        //正常系
+                        if ((d.getService_name_String() != null) && !("".equals(d.getService_name_String()))) {
+                            service_name_String = d.getService_name_String();
+                            break SERVICE_NAME;
                         }
-                        break;
+
+                        //サービス事業者名があるならそれで代用する。
+                        if ((d.getService_provider_name_String() != null) && !("".equals(d.getService_provider_name_String()))) {
+                            LOG.warn("事業者名で代用します。 セクション = " + Hex.encodeHexString(s.getData()));
+                            service_name_String = d.getService_provider_name_String();
+                            break SERVICE_NAME;
+                        }
+
+                        //たまにサービス名を書いていない記述子があるので、その場合は事業者名を入れる。それもなければダミーを入れる。空白が入っていたりした場合はそのまま。
+                        //まずないとは思うが記述子が無いケース
+                        if (d == null) {
+                            LOG.warn("サービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(s.getData()));
+                            service_name_String = "unknown-display-name";
+                            break SERVICE_NAME;
+                        }
+                    }
+
+                    Channel ch = new Channel(transport_stream_id, original_network_id, service_id, service_name_String);
+//                    LOG.info("追加前のチャンネル情報 = " + ch);
+                    boolean addret = this.getDataSet().add(ch);
+                    
+                    if (addret = false) {
                     }
                 }
-            }
-            //たまにサービス名を書いていない記述子があるので、その場合は事業者名を入れる。それもなければダミーを入れる。空白が入っていたりした場合はそのまま。
-            POST_PROCESS:
-            {
-                //まずないとは思うが記述子が無いケース
-                if (d == null) {
-                    LOG.warn("サービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(s.getData()));
-                    service_name_String = "unknown-display-name";
-                    break POST_PROCESS;
-                }
-                //正常系
-                if ((d.getService_name_String() != null) && !("".equals(d.getService_name_String()))) {
-//                    LOG.debug("サービス名を設定します。");
-                    service_name_String = d.getService_name_String();
-                    break POST_PROCESS;
-                }
-                //サービス事業者名があるならそれで代用する。
-                if ((d.getService_provider_name_String() != null) && !("".equals(d.getService_provider_name_String()))) {
-                    LOG.warn("事業者名で代用します。 セクション = " + Hex.encodeHexString(s.getData()));
-                    service_name_String = d.getService_provider_name_String();
-                    break POST_PROCESS;
-                }
-                //どれもないならダミーで代用。
-                LOG.warn("サービス名、サービス事業差名が記載されたサービス記述子が見つかりません。ダミーで代用します。 セクション = " + Hex.encodeHexString(s.getData()));
-                service_name_String = "unknown-display-name";
-            }
-
-//            LOG.debug("サービス名 = " + service_name_String);
-            final Channel ch = new Channel(transport_stream_id, original_network_id, service_id, service_name_String);
-            boolean addret = this.getDataSet().add(ch);
-            if (addret = false) {
-//                LOG.info("重複しました。 データ = " + ch);
             }
         }
         if (LOG.isInfoEnabled() && isPutMaeesgage) {
