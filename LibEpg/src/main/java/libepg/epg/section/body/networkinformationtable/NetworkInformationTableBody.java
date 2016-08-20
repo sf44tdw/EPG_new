@@ -22,7 +22,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import libepg.epg.section.body.SectionBody;
-import libepg.epg.section.body.eventinformationtable.EventInformationTableRepeatingPart;
 import libepg.epg.section.body.util.SubTableSectionCommonFields;
 import libepg.epg.section.descriptor.DescriptorsLoop;
 import libepg.util.bytearray.ByteArraySplitter;
@@ -95,6 +94,7 @@ public class NetworkInformationTableBody extends SectionBody {
     /**
      * network_id（ネットワーク識別）：これは16 ビットのフィールドで、NIT が示す分配シ
      * ステムを他の分配システムと区別して識別するラベルの役割をする。このフィールド値の 割り当ては標準化機関の規定による。（付録Ｎ参照）
+     * @return 上記の値
      */
     public final synchronized int getNetwork_id() {
         return this.commonFields.getFirst16Bit();
@@ -210,6 +210,7 @@ public class NetworkInformationTableBody extends SectionBody {
     /**
      * transport_stream_loop_length（トランスポートストリームループ長）：これは、CRC_32
      * の最初のバイトの直前に終わるトランスポートストリームループの全バイト数を規定する 12 ビットのフィールドである。
+     * @return 上記の値
      */
     public synchronized int getTransport_stream_loop_length() {
         byte[] t = new byte[2];

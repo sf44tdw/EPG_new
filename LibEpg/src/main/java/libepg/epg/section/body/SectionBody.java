@@ -51,8 +51,8 @@ public class SectionBody {
     /**
      * データとテーブルIDから生成する。Sectionオブジェクトのみが使用する。
      *
-     * @param tableID
-     * @param data
+     * @param tableID セクションのテーブルID
+     * @param data データ
      */
     public SectionBody(TABLE_ID tableID, byte[] data) {
         this.tableID = tableID;
