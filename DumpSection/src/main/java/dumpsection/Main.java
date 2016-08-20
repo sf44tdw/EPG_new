@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +46,9 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.mozilla.universalchardet.UniversalDetector;
 
 /**
- * 指定されたtsファイルの先頭から数えて指定された数のパケットを読み込み、指定されたpidとテーブルIDのセクションを再構成して16進ダンプとして出力する。<br>
+ * 指定されたtsファイルの先頭から数えて指定された数のパケットを読み込み、指定されたpid(複数)とテーブルID(複数)のセクションを再構成して16進ダンプとして出力する。<br>
  * pidとテーブルIDは16進数で指定する。 16進ダンプのファイル名は、tsファイル名_pid_tableId.txtになる。<br>
  * 読み込んだパケットのうち、指定されていないpidやテーブルIDのパケットはすべて無視する。<br>
  * 再構成したセクションのうち、CRCエラーがあったもの、重複したものはダンプしない。<br>
@@ -59,9 +59,9 @@ public class Main {
      * falseのとき、このクラスはログを出さなくなる
      */
     public static final boolean CLASS_LOG_OUTPUT_MODE = true;
-    
+
     private static final Log LOG;
-    
+
     static {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, Main.CLASS_LOG_OUTPUT_MODE).getLOG();
@@ -80,47 +80,17 @@ public class Main {
             System.exit(1);
         }
     }
-    
-    private String dumpCollection(Collection<?> target) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        for (Object s : target) {
-            sb.append(s.getClass());
-            sb.append("=");
-            sb.append(s);
-            sb.append(" ");
-        }
-        sb.append("}");
-        return sb.toString();
-    }
-    
-    private String dumpArgs(String[] args) {
-        Collection<String> strs = Arrays.asList(args);
-        return this.dumpCollection(strs);
-    }
-    
-    private String dumpSet(Set<?> target) {
-        return this.dumpCollection(target);
-    }
-    
-    private String[] exChangeArgsCharSetDefaultToUtf8(String[] args) throws UnsupportedEncodingException {
-        Charset cs = Charset.defaultCharset();
-        List<String> strs = Arrays.asList(args);
-        List<String> strd = new ArrayList<>();
-        for (String str : strs) {
-            strd.add(StringUtils.toEncodedString(str.getBytes(cs), Charset.forName("UTF-8")));
-        }
-        return strd.toArray(args);
-    }
-    
+
+
+
     public void start(String[] args) throws org.apache.commons.cli.ParseException, FileNotFoundException, IOException {
-        final String[] args_i = exChangeArgsCharSetDefaultToUtf8(args);
-        
+        final String[] args_i = Util.stringArrayCharSetDefaultToDesired(args,Charset.forName("UTF-8"));
+
         final String fileName;
-        final Integer pid;
-        final Integer tableId;
+        final Set<Integer> pid;
+        final Set<Integer> tableId;
         final Long limit;
-        
+
         final Option fileNameOption = Option.builder("f")
                 .required()
                 .longOpt("filename")
@@ -128,23 +98,23 @@ public class Main {
                 .hasArg()
                 .type(String.class)
                 .build();
-        
-        final Option pidOption = Option.builder("p")
+
+        final Option pidsOption = Option.builder("p")
                 .required()
                 .longOpt("pid")
-                .desc("ダンプするpidの値。16進数")
-                .hasArg()
+                .desc("pid(複数指定可。16進数で入力)")
                 .type(Integer.class)
+                .hasArgs()
                 .build();
-        
-        final Option tableIdOption = Option.builder("t")
+
+        final Option tableIdsOption = Option.builder("t")
                 .required()
                 .longOpt("tableid")
-                .desc("ダンプするテーブルidの値。16進数")
-                .hasArg()
+                .desc("テーブルid(複数指定可。16進数で入力)")
+                .hasArgs()
                 .type(Integer.class)
                 .build();
-        
+
         final Option limitOption = Option.builder("l")
                 .required(false)
                 .longOpt("limit")
@@ -152,46 +122,46 @@ public class Main {
                 .hasArg()
                 .type(Long.class)
                 .build();
-        
+
         Options opts = new Options();
         opts.addOption(fileNameOption);
-        opts.addOption(pidOption);
-        opts.addOption(tableIdOption);
+        opts.addOption(pidsOption);
+        opts.addOption(tableIdsOption);
         opts.addOption(limitOption);
         CommandLineParser parser = new DefaultParser();
         CommandLine cl;
         HelpFormatter help = new HelpFormatter();
-        
+
         try {
 
             // parse options
             cl = parser.parse(opts, args_i);
-            
+
             fileName = cl.getOptionValue(fileNameOption.getOpt());
             if (fileName == null) {
                 throw new ParseException("ファイル名が指定されていません。");
             }
-            
-            Integer xI_p = null;
+
+            Set<Integer> temp1 = null;
             try {
-                xI_p = Integer.parseUnsignedInt(cl.getOptionValue(pidOption.getOpt()), 16);
+                temp1 = stringArrayToUnsignedIntegerSet(cl.getOptionValues(pidsOption.getOpt()), 16);
             } catch (NumberFormatException e) {
                 LOG.error(e);
                 throw new ParseException("pidの解釈に失敗しました。");
             } finally {
-                pid = xI_p;
+                pid = temp1;
             }
-            
-            Integer xI_t = null;
+
+            Set<Integer> temp2 = null;
             try {
-                xI_t = Integer.parseUnsignedInt(cl.getOptionValue(tableIdOption.getOpt()), 16);
+                temp2 = stringArrayToUnsignedIntegerSet(cl.getOptionValues(tableIdsOption.getOpt()), 16);
             } catch (NumberFormatException e) {
                 LOG.error(e);
                 throw new ParseException("テーブルIDの解釈に失敗しました。");
             } finally {
-                tableId = xI_t;
+                tableId = temp2;
             }
-            
+
             Long xl = null;
             try {
                 if (cl.hasOption(limitOption.getOpt())) {
@@ -208,42 +178,60 @@ public class Main {
             help.printHelp("My Java Application", opts);
             throw e;
         }
-        
+
         System.out.println("Starting application...");
         System.out.println("filename   : " + fileName);
         System.out.println("pid        : " + Integer.toHexString(pid));
         System.out.println("tableid    : " + Integer.toHexString(tableId));
         System.out.println("limit      : " + limit);
-        
-        Set<Integer> pids = new HashSet<>();
-        pids.add(pid);
-        
+
+
         TsReader reader = null;
         try {
             if (limit == null) {
-                reader = new TsReader(new File(fileName), pids);
+                reader = new TsReader(new File(fileName), pid);
             } else {
-                reader = new TsReader(new File(fileName), pids, limit);
+                reader = new TsReader(new File(fileName), pid, limit);
             }
         } catch (FileNotFoundException ex) {
             LOG.fatal("ファイルが見つかりません。", ex);
             throw ex;
-        }
+        }  
         
-        Map<Integer, List<TsPacketParcel>> ret = reader.getPackets();
-        for (Integer k : ret.keySet()) {
-            SectionReconstructor sr = new SectionReconstructor(ret.get(k), k);
-            try (FileWriter writer = new FileWriter(fileName + "_" + Integer.toHexString(k) + "_" + Integer.toHexString(tableId) + "_.txt")) {
-                for (Section s : sr.getSections()) {
-                    if (s.getTable_id() == tableId) {
-                        writer.write(Hex.encodeHexString(s.getData()) + "\n");
-                    }
-                }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        try (FileWriter writer = new FileWriter(fileName + "_" + Integer.toHexString(k) + "_" + Integer.toHexString(tableId) + "_.txt")) {
                 writer.flush();
             } catch (IOException ex) {
                 LOG.fatal("ファイル入出力エラー", ex);
                 throw ex;
             }
+        Map<Integer, List<TsPacketParcel>> ret = reader.getPackets();
+        for (Integer k : ret.keySet()) {
+            SectionReconstructor sr = new SectionReconstructor(ret.get(k), k);
+         
+                for (Section s : sr.getSections()) {
+                    if (s.getTable_id() == tableId) {
+                        writer.write(Hex.encodeHexString(s.getData()) + "\n");
+                    }
+                }
+
         }
     }
 }
