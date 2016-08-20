@@ -17,6 +17,7 @@ import static libepg.epg.section.descriptor.DESCRIPTOR_TAG.CONTENT_DESCRIPTOR;
 import libepg.epg.section.descriptor.contentdescriptor.ContentDescriptor;
 import epgtools.loggerfactory.LoggerFactory;
 import static libepg.epg.section.descriptor.DESCRIPTOR_TAG.NETWORK_NAME_DESCRIPTOR;
+import static libepg.epg.section.descriptor.DESCRIPTOR_TAG.SERVICE_LIST_DESCRIPTOR;
 
 /**
  *
@@ -62,7 +63,8 @@ public class DESCRIPTOR_TAGTest {
     public void testValues() {
         LOG.info("values");
         DESCRIPTOR_TAG[] expResult = {
-            NETWORK_NAME_DESCRIPTOR,
+            NETWORK_NAME_DESCRIPTOR, 
+            SERVICE_LIST_DESCRIPTOR,
             DESCRIPTOR_TAG.SERVICE_DESCRIPTOR,
             DESCRIPTOR_TAG.SHORT_EVENT_DESCRIPTOR,
             DESCRIPTOR_TAG.EXTENDED_EVENT_DESCRIPTOR,

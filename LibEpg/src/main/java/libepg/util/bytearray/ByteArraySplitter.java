@@ -40,7 +40,7 @@ public final class ByteArraySplitter {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
+        final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, ByteArraySplitter.CLASS_LOG_OUTPUT_MODE).getLOG();
     }
 
@@ -141,6 +141,18 @@ public final class ByteArraySplitter {
     }
 
     /**
+     * 長さフィールドの大きさがちょうどnバイトの場合、こちらを使用できる。
+     *
+     * @param src 別のsplitByLengthField()に同じ。
+     * @param lengthFieldPosition 別のsplitByLengthField()に同じ。
+     * @param lengthFieldLength 別のsplitByLengthField()に同じ。
+     * @return 別のsplitByLengthField()に同じ。
+     */
+    public static synchronized List<byte[]> splitByLengthField(byte[] src, int lengthFieldPosition, int lengthFieldLength) {
+        return splitByLengthField(src, lengthFieldPosition, lengthFieldLength, (x) -> x);
+    }
+
+    /**
      * バイト配列を指定の要素数で分割する。半端な部分は0で埋める。
      *
      * @param src 分割処理対象。
@@ -168,15 +180,4 @@ public final class ByteArraySplitter {
         }
     }
 
-    /**
-     * 長さフィールドの大きさがちょうどnバイトの場合、こちらを使用できる。
-     *
-     * @param src 別のsplitByLengthField()に同じ。
-     * @param lengthFieldPosition 別のsplitByLengthField()に同じ。
-     * @param lengthFieldLength 別のsplitByLengthField()に同じ。
-     * @return 別のsplitByLengthField()に同じ。
-     */
-    public static synchronized List<byte[]> splitByLengthField(byte[] src, int lengthFieldPosition, int lengthFieldLength) {
-        return splitByLengthField(src, lengthFieldPosition, lengthFieldLength, (x) -> x);
-    }
 }

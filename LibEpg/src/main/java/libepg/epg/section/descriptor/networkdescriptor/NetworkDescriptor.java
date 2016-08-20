@@ -18,6 +18,7 @@ package libepg.epg.section.descriptor.networkdescriptor;
 
 import libepg.epg.section.descriptor.Descriptor;
 import libepg.epg.util.Aribstr;
+import org.apache.commons.codec.binary.Hex;
 
 //network_name_descriptor(){
 //descriptor_tag 8 uimsbf
@@ -31,7 +32,7 @@ import libepg.epg.util.Aribstr;
  *
  * @author normal
  */
-public class NetworkDescriptor extends Descriptor {
+public final class NetworkDescriptor extends Descriptor {
 
     public NetworkDescriptor(Descriptor descriptor) {
         super(descriptor);
@@ -52,6 +53,13 @@ public class NetworkDescriptor extends Descriptor {
      */
     public synchronized String getChar_String() {
         return Aribstr.AribToString(this.getDescriptor_Body());
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n+"
+                + "ネットワーク名記述子 文字符号 = " + Hex.encodeHexString(this.getChar_byte()) + "\n"
+                + "ネットワーク名記述子 = " + this.getChar_String() + "\n";
     }
 
 }
