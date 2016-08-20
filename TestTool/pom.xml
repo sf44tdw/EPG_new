@@ -30,6 +30,35 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <show>private</show>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                </configuration>
+                <!-- ここの記述を追加する -->
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                            <!--
+                            ここに
+                            <report>test-javadoc</report>
+                            を追加するとテストのJavaDocも生成する
+                            -->
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <!-- ここの記述を追加する -->
+            </plugin>
+        </plugins>
+    </reporting>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
