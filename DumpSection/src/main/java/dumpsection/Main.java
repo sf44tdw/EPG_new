@@ -16,6 +16,7 @@
  */
 package dumpsection;
 
+import dumpsection.util.Util;
 import epgtools.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -81,10 +82,8 @@ public class Main {
         }
     }
 
-
-
     public void start(String[] args) throws org.apache.commons.cli.ParseException, FileNotFoundException, IOException {
-        final String[] args_i = Util.stringArrayCharSetDefaultToDesired(args,Charset.forName("UTF-8"));
+        final String[] args_i = Util.stringArrayCharSetDefaultToDesired(args, Charset.forName("UTF-8"));
 
         final String fileName;
         final Set<Integer> pid;
@@ -144,7 +143,7 @@ public class Main {
 
             Set<Integer> temp1 = null;
             try {
-                temp1 = stringArrayToUnsignedIntegerSet(cl.getOptionValues(pidsOption.getOpt()), 16);
+                temp1 = Util.stringArrayToUnsignedIntegerSet(cl.getOptionValues(pidsOption.getOpt()), 16);
             } catch (NumberFormatException e) {
                 LOG.error(e);
                 throw new ParseException("pidの解釈に失敗しました。");
@@ -154,7 +153,7 @@ public class Main {
 
             Set<Integer> temp2 = null;
             try {
-                temp2 = stringArrayToUnsignedIntegerSet(cl.getOptionValues(tableIdsOption.getOpt()), 16);
+                temp2 = Util.stringArrayToUnsignedIntegerSet(cl.getOptionValues(tableIdsOption.getOpt()), 16);
             } catch (NumberFormatException e) {
                 LOG.error(e);
                 throw new ParseException("テーブルIDの解釈に失敗しました。");
@@ -181,10 +180,9 @@ public class Main {
 
         System.out.println("Starting application...");
         System.out.println("filename   : " + fileName);
-        System.out.println("pid        : " + Integer.toHexString(pid));
-        System.out.println("tableid    : " + Integer.toHexString(tableId));
+        System.out.println("pid        : " + StringUtils.join(pid, " "));
+        System.out.println("tableid    : " + StringUtils.join(tableId, ""));
         System.out.println("limit      : " + limit);
-
 
         TsReader reader = null;
         try {
@@ -196,42 +194,22 @@ public class Main {
         } catch (FileNotFoundException ex) {
             LOG.fatal("ファイルが見つかりません。", ex);
             throw ex;
-        }  
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        try (FileWriter writer = new FileWriter(fileName + "_" + Integer.toHexString(k) + "_" + Integer.toHexString(tableId) + "_.txt")) {
-                writer.flush();
-            } catch (IOException ex) {
-                LOG.fatal("ファイル入出力エラー", ex);
-                throw ex;
-            }
+        }
         Map<Integer, List<TsPacketParcel>> ret = reader.getPackets();
-        for (Integer k : ret.keySet()) {
-            SectionReconstructor sr = new SectionReconstructor(ret.get(k), k);
-         
+        try (FileWriter writer = new FileWriter(fileName + "_" + StringUtils.join(pid, "_") + "_" + StringUtils.join(tableId, "_") + "_.txt")) {
+            for (Integer k : ret.keySet()) {
+                SectionReconstructor sr = new SectionReconstructor(ret.get(k), k);
                 for (Section s : sr.getSections()) {
-                    if (s.getTable_id() == tableId) {
+                    if (tableId.contains(s.getTable_id())) {
                         writer.write(Hex.encodeHexString(s.getData()) + "\n");
                     }
                 }
-
+            }
+            writer.flush();
+        } catch (IOException ex) {
+            LOG.fatal("ファイル入出力エラー", ex);
+            throw ex;
         }
+
     }
 }
