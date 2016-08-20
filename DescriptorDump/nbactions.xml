@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath ${packageClassName} -f "C:\Users\normal\Videos\D20151022235901P16307T3120C101.ts_pid_16_17_18_38_39_tid_64_65_66_70_78_79_80_81_82_83_84_85_86_87_88_89_90_91_92_93_94_95_96_97_98_99_100_101_102_103_104_105_106_107_108_109_110_111_.txt"</exec.args>
+                <exec.args>-classpath %classpath descriptordump.Main -f "C:\Users\normal\Videos\D20151022235901P16307T3120C101.ts_pid_16_17_18_38_39_tid_64_65_66_70_78_79_80_81_82_83_84_85_86_87_88_89_90_91_92_93_94_95_96_97_98_99_100_101_102_103_104_105_106_107_108_109_110_111_.txt"</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>

@@ -19,6 +19,7 @@ import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import libepg.epg.section.Section;
 import libepg.epg.section.Section.CRC_STATUS;
 import libepg.epg.section.TABLE_ID;
@@ -175,7 +176,7 @@ public class Main {
         descs.addAll(nide.getUnmodifiableDest());
         descs.addAll(eide.getUnmodifiableDest());
 
-        Set<Integer> dtags = new HashSet<>();
+        Set<Integer> dtags = new TreeSet<>();
         for (Descriptor d : descs) {
             dtags.add(d.getDescriptor_tag());
         }
