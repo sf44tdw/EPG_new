@@ -82,7 +82,7 @@ public class TransportStreamLoop {
      */
     public final synchronized int getOriginal_network_id() {
         byte[] t = new byte[2];
-        System.arraycopy(this.getData(), 3, t, 0, t.length);
+        System.arraycopy(this.getData(), 2, t, 0, t.length);
         int temp = ByteConverter.bytesToInt(t);
         return temp;
     }
@@ -122,7 +122,7 @@ public class TransportStreamLoop {
     public synchronized DescriptorsLoop getDescriptors_loop() {
         byte[] t = new byte[this.getDescriptors_loop_length()];
         if (t.length > 0) {
-            System.arraycopy(this.getData(), 5, t, 0, t.length);
+            System.arraycopy(this.getData(), 6, t, 0, t.length);
         }
         return new DescriptorsLoop(t);
     }
@@ -159,8 +159,7 @@ public class TransportStreamLoop {
      * このクラスで取得できるフィールドの内容を表示する。
      */
     public String toString() {
-        Object[] parameters = {this.data.toString(),
-            this.data,
+        Object[] parameters = {this.data,
             Integer.toHexString(this.getTransport_stream_id()),
             Integer.toHexString(this.getOriginal_network_id()),
             this.getReserved_future_use(),

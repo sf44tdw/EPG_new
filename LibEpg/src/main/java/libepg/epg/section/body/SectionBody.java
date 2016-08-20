@@ -89,7 +89,7 @@ public class SectionBody {
 
     private static final String TITLE = "セクション本体";
     private static final MessageFormat SECTION_BODY_DESC = new MessageFormat(
-            TITLE + " テーブル識別値 = {0}\n"
+            "\n"+TITLE + " テーブル識別値 = {0}\n"
             + TITLE + " バイト列 = {1}\n"
     );
 

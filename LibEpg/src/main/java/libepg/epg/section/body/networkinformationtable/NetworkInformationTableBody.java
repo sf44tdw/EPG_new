@@ -19,11 +19,13 @@ package libepg.epg.section.body.networkinformationtable;
 import epgtools.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import libepg.epg.section.body.SectionBody;
 import libepg.epg.section.body.eventinformationtable.EventInformationTableRepeatingPart;
 import libepg.epg.section.body.util.SubTableSectionCommonFields;
 import libepg.epg.section.descriptor.DescriptorsLoop;
+import libepg.util.bytearray.ByteArraySplitter;
 import libepg.util.bytearray.ByteConverter;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
@@ -158,7 +160,7 @@ public class NetworkInformationTableBody extends SectionBody {
      *
      * @return 上記の値
      */
-    public final synchronized int getReserved_future_use() {
+    public final synchronized int getReserved_future_use1() {
         int temp;
         temp = ByteConverter.byteToInt(this.getData()[5]);
         temp = temp >>> 4;
@@ -193,14 +195,28 @@ public class NetworkInformationTableBody extends SectionBody {
     }
 
     /**
+     * 符号化ビットストリームを定義する項の中で使用する場合、 その値が将来、ARIB
+     * STD-B10が定義する拡張子として使用されるかもしれないことを表す。 4bit
+     *
+     * @return 上記の値
+     */
+    public final synchronized int getReserved_future_use2() {
+        int temp;
+        temp = ByteConverter.byteToInt(this.getData()[5 + this.getDescriptors_loop_length() + 1 + 1]);
+        temp = temp >>> 4;
+        return temp;
+    }
+
+    /**
      * transport_stream_loop_length（トランスポートストリームループ長）：これは、CRC_32
      * の最初のバイトの直前に終わるトランスポートストリームループの全バイト数を規定する 12 ビットのフィールドである。
      */
     public synchronized int getTransport_stream_loop_length() {
         byte[] t = new byte[2];
-        System.arraycopy(this.getData(), 5 + this.getDescriptors_loop_length() + 1, t, 0, t.length);
+        System.arraycopy(this.getData(), 5 + this.getDescriptors_loop_length() + 1 + 1, t, 0, t.length);
         int it = ByteConverter.bytesToInt(t);
         it = it & 0x0FFF;
+        LOG.debug(Hex.encodeHexString(t) + " -> " + it);
         return it;
     }
 
@@ -209,12 +225,17 @@ public class NetworkInformationTableBody extends SectionBody {
      *
      * @return 上記の値
      */
-    public synchronized TransportStreamLoop getTransport_streams_loop() {
-        byte[] t = new byte[this.getDescriptors_loop_length()];
+    public synchronized List<TransportStreamLoop> getTransport_streams_loop() {
+        List<TransportStreamLoop> ret = new ArrayList<>();
+        byte[] t = new byte[this.getTransport_stream_loop_length()];
         if (t.length > 0) {
-            System.arraycopy(this.getData(), 7, t, 0, t.length);
+            System.arraycopy(this.getData(), 5 + this.getDescriptors_loop_length() + 1 + 1 + 2, t, 0, t.length);
+            List<byte[]> result = ByteArraySplitter.splitByLengthField(t, 5, 2, (x) -> x & 0x0FFF);
+            for (byte[] b : result) {
+                ret.add(new TransportStreamLoop(b));
+            }
         }
-        return new TransportStreamLoop(t);
+        return ret;
     }
 
     private static final String TITLE = "ネットワーク情報テーブル";
@@ -226,14 +247,12 @@ public class NetworkInformationTableBody extends SectionBody {
             + TITLE + " カレントネクスト指示 = {4}\n"
             + TITLE + " セクション番号 = {5}\n"
             + TITLE + " 最終セクション番号 = {6}\n"
-            + TITLE + " トランスポートストリーム識別 = {7}\n"
-            + TITLE + " オリジナルネットワーク識別 = {8}\n"
-            + TITLE + " セグメント最終セクション番号 = {9}\n"
+            + TITLE + " 予約1 = {7}\n"
+            + TITLE + " 記述子ループ長 = {8}\n"
+            + TITLE + " 記述子ループ={9}\n"
             + TITLE + " 予約2 = {10}\n"
-            + TITLE + " 記述子ループ長 = {11}\n"
-            + TITLE + " 記述子ループ={12}\n"
             + TITLE + " トランスポートストリームループ長 = {11}\n"
-            + TITLE + " トランスポートストリームループ={12}\n"
+            + TITLE + " トランスポートストリームループ = {12}\n"
     );
 
     @Override
@@ -241,19 +260,25 @@ public class NetworkInformationTableBody extends SectionBody {
      * このクラスで取得できるフィールドの内容を表示する。
      */
     public String toString() {
+        List<TransportStreamLoop> l = this.getTransport_streams_loop();
+        StringBuilder s = new StringBuilder();
+        for (TransportStreamLoop rp : l) {
+            s.append(rp);
+        }
         Object[] parameters = {
             super.toString(),
             Integer.toHexString(this.getNetwork_id()),
-            Integer.toHexString(this.getReserved1()),
+            this.getReserved1(),
             this.getVersion_number(),
             this.getCurrent_next_indicator(),
             this.getSection_number(),
             this.getLast_section_number(),
-            this.getReserved_future_use(),
+            this.getReserved_future_use1(),
             this.getDescriptors_loop_length(),
             this.getDescriptors_loop(),
+            this.getReserved_future_use2(),
             this.getTransport_stream_loop_length(),
-            this.getTransport_streams_loop()};
+            s};
         return TABLE_DESC.format(parameters);
     }
 

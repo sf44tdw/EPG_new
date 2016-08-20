@@ -151,15 +151,18 @@ public class Descriptor {
 
     private static final String TITLE = "記述子";
     private static final MessageFormat DESC = new MessageFormat(
-            TITLE + " バイト列 = {0}\n"
+            "\n"
+            + TITLE + " バイト列 = {0}\n"
             + TITLE + " 記述子タグ = {1}\n"
-            + TITLE + " 記述子長 = {2}\n"
-            + TITLE + " 記述子データ = {3}\n"
+            + TITLE + " 記述子タグ定数 = {2}\n"
+            + TITLE + " 記述子長 = {3}\n"
+            + TITLE + " 記述子データ = {4}\n"
     );
 
     @Override
     public String toString() {
-        Object[] parameters = {this.data.toString(),
+        Object[] parameters = {this.data,
+            Integer.toHexString(this.getDescriptor_tag()),
             this.getDescriptor_tag_const(),
             this.getDescriptor_length(),
             Hex.encodeHexString(this.getDescriptor_Body())};

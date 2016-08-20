@@ -5,7 +5,6 @@
  */
 package libepg.util.bytearray;
 
-
 import epgtools.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -137,7 +136,7 @@ public class ByteArraySplitterTest {
         int lengthFieldPosition = 4;
         int lengthFieldLength = 2;
         List<byte[]> expResult = new ArrayList<>();
-        expResult.add(Hex.decodeHex("0408f31020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f0010408".toCharArray()));//余計な部分が混じっている。
+        expResult.add(Hex.decodeHex("0408f31020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f0010408".toCharArray()));//長さフィールドに余計な部分が混じっている。
         expResult.add(Hex.decodeHex("0409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08".toCharArray()));
         expResult.add(Hex.decodeHex("040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe08".toCharArray()));
         expResult.add(Hex.decodeHex("0588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32".toCharArray()));
@@ -158,6 +157,9 @@ public class ByteArraySplitterTest {
                 LOG.info(s.toString());
             }
         }
+       
     }
+
+
 
 }
