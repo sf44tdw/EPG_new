@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 normal
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package libepg.epg.section;
 
@@ -18,9 +29,9 @@ import static libepg.epg.section.TABLE_ID.EIT_OTHER_STREAM_NOW_AND_NEXT;
 import static libepg.epg.section.TABLE_ID.EIT_THIS_STREAM_8_DAYS;
 import static libepg.epg.section.TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT;
 import static libepg.epg.section.TABLE_ID.OTHER_TABLE_IDS;
-import static libepg.epg.section.TABLE_ID.SDT;
 import libepg.epg.section.body.eventinformationtable.EventInformationTableBody;
 import epgtools.loggerfactory.LoggerFactory;
+import static libepg.epg.section.TABLE_ID.SDT_THIS_STREAM;
 
 /**
  *
@@ -65,7 +76,16 @@ public class TABLE_IDTest {
     @Test
     public void testValues() {
         LOG.info("values");
-        TABLE_ID[] expResult = {SDT, EIT_THIS_STREAM_8_DAYS, EIT_THIS_STREAM_NOW_AND_NEXT, EIT_OTHER_STREAM_8_DAYS, EIT_OTHER_STREAM_NOW_AND_NEXT, OTHER_TABLE_IDS};
+        TABLE_ID[] expResult = {
+            TABLE_ID.NIT_THIS_NETWORK, 
+            TABLE_ID.NIT_OTHER_NETWORK, 
+            TABLE_ID.SDT_THIS_STREAM, 
+            TABLE_ID.SDT_OTHER_STREAM, 
+            EIT_THIS_STREAM_8_DAYS, 
+            EIT_THIS_STREAM_NOW_AND_NEXT, 
+            EIT_OTHER_STREAM_8_DAYS, 
+            EIT_OTHER_STREAM_NOW_AND_NEXT, 
+            OTHER_TABLE_IDS};
         TABLE_ID[] result = TABLE_ID.values();
         assertArrayEquals(expResult, result);
     }
@@ -76,8 +96,8 @@ public class TABLE_IDTest {
     @Test
     public void testValueOf() {
         LOG.info("valueOf");
-        String name = "SDT";
-        TABLE_ID expResult = TABLE_ID.SDT;
+        String name = "SDT_THIS_STREAM";
+        TABLE_ID expResult = TABLE_ID.SDT_THIS_STREAM;
         TABLE_ID result = TABLE_ID.valueOf(name);
         assertEquals(expResult, result);
     }
@@ -101,7 +121,7 @@ public class TABLE_IDTest {
     public void testContains() {
         LOG.info("contains");
         Integer tableID = 0x42;
-        TABLE_ID instance = TABLE_ID.SDT;
+        TABLE_ID instance = TABLE_ID.SDT_THIS_STREAM;
         boolean expResult = true;
         boolean result = instance.contains(tableID);
         assertEquals(expResult, result);
@@ -146,8 +166,8 @@ public class TABLE_IDTest {
     @Test
     public void testGetTableName() {
         LOG.info("getTableName");
-        TABLE_ID instance = SDT;
-        String expResult = "サービス記述テーブル";
+        TABLE_ID instance = SDT_THIS_STREAM;
+        String expResult = "サービス記述テーブル（自ストリーム）";
         String result = instance.getTableName();
         assertEquals(expResult, result);
     }

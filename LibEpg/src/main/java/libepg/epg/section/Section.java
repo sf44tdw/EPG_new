@@ -259,7 +259,7 @@ public final class Section {
             SectionBody target = constructor.newInstance(args);
             return target;
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
-            LOG.fatal("キャスト中に問題が発生しました。問題の発生したセクション = " + Hex.encodeHexString(this.getData()), ex);
+            LOG.fatal("キャスト中に問題が発生しました。問題の発生したセクション = " + this.data, ex);
             return temp;
         }
     }
@@ -269,13 +269,14 @@ public final class Section {
      * セクションの第4 および第5バイト目になる。<br>
      *
      * @return セクションの第4 および第5 バイト目
+     * @throws IllegalStateException セクションシンタクス指示（section_syntax_indicator）の値が1以外の時。
      */
     public final synchronized int getTable_id_extension() throws IllegalStateException {
         byte[] t = new byte[2];
         System.arraycopy(this.getData(), 3, t, 0, t.length);
         int temp = ByteConverter.bytesToInt(t);
         if (this.getSection_syntax_indicator() != 1) {
-            throw new IllegalStateException("セクションシンタクス指示（section_syntax_indicator）の値が1ではありません。");
+            throw new IllegalStateException("セクションシンタクス指示（section_syntax_indicator）の値が1ではありません。セクション = "+this.data);
         }
         return temp;
     }

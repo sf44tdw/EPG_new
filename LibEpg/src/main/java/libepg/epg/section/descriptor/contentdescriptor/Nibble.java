@@ -68,7 +68,7 @@ public final class Nibble {
         temp = temp >>> 4;
         NIBBLE_LEVEL_1 n1 = NIBBLE_LEVEL_1.reverseLookUp(temp);
         if (n1 == null) {
-            throw new IllegalStateException("ジャンルが見つかりません  検索値 = " + Integer.toHexString(temp) + " バイト列 = " + Hex.encodeHexString(this.getData()));
+            throw new IllegalStateException("ジャンルが見つかりません  検索値 = " + Integer.toHexString(temp) + " バイト列 = " + this.data);
         }
         return n1;
     }
@@ -87,7 +87,7 @@ public final class Nibble {
         NIBBLE_LEVEL_1 n1 = this.getContent_nibble_level_1();
         NIBBLE_LEVEL_2 n2 = NIBBLE_LEVEL_2.reverseLookUp(n1.getCode(), temp);
         if (n2 == null) {
-            throw new IllegalStateException("ジャンルが見つかりません 上位ジャンル = " + n1 + "\n検索値 = " + Integer.toHexString(temp) + "\nバイト列 = " + Hex.encodeHexString(this.getData()));
+            throw new IllegalStateException("ジャンルが見つかりません 上位ジャンル = " + n1 + "\n検索値 = " + Integer.toHexString(temp) + "\nバイト列 = " + this.data);
         }
         return n2;
     }

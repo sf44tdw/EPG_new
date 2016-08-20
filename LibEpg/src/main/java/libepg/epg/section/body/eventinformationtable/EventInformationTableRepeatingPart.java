@@ -96,7 +96,7 @@ public final class EventInformationTableRepeatingPart {
             byte[] t = this.getStart_time();
             return (DateTimeFieldConverter.BytesToSqlDateTime(t));
         } catch (IllegalArgumentException | IndexOutOfBoundsException | ParseException ex) {
-            LOG.warn("開始時間を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
+            LOG.warn("開始時間を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + this.data, ex);
             return null;
         }
     }
@@ -127,7 +127,7 @@ public final class EventInformationTableRepeatingPart {
             x = x + this.getStart_time_Object().getTime();
             return new Timestamp(x);
         } catch (IndexOutOfBoundsException | IllegalArgumentException ex) {
-            LOG.error("終了日時を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + Hex.encodeHexString(this.getData()), ex);
+            LOG.error("終了日時を示すタイムスタンプの生成に失敗しました。 繰り返し項目 = " + this.data, ex);
             return null;
         }
     }

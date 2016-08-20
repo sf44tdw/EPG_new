@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 normal
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package libepg.epg.section;
 
@@ -49,8 +60,8 @@ public class SectionBodyTest {
         data2 = Hex.decodeHex("7fe0cd00007fe0ff0400f3002248140100110e4e484b0f416d39670e31fe0f456c357ec10184cf0701fe00f00004000401f3001e48140100110e4e484b0f416d39670e32fe0f456c357ec10184cf0302fe000580e500254814c000110e4e484b0f374842530e47fe0f456c357ec10188cf0a030e4e484b0f215d0e47".toCharArray());
 
         //強制呼び出し
-        this.testBody1 = SectionBodyTest.init(new Object[]{TABLE_ID.SDT, data1});
-        this.testBody2 = SectionBodyTest.init(new Object[]{TABLE_ID.SDT, data2});
+        this.testBody1 = SectionBodyTest.init(new Object[]{TABLE_ID.SDT_THIS_STREAM, data1});
+        this.testBody2 = SectionBodyTest.init(new Object[]{TABLE_ID.SDT_THIS_STREAM, data2});
     }
 
     private static final SectionBody init(Object[] args) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -94,7 +105,7 @@ public class SectionBodyTest {
     public void testGetTableID() {
         LOG.info("getTableID");
         SectionBody instance = this.testBody1;
-        TABLE_ID expResult = TABLE_ID.SDT;
+        TABLE_ID expResult = TABLE_ID.SDT_THIS_STREAM;
         TABLE_ID result = instance.getTableID();
         assertEquals(expResult, result);
     }
@@ -124,7 +135,7 @@ public class SectionBodyTest {
         LOG.info("hashCode");
         SectionBody instance1 = this.testBody1;
         SectionBody instance2 = this.testBody2;
-        assertTrue(instance1.hashCode() == SectionBodyTest.init(new Object[]{TABLE_ID.SDT, data1}).hashCode());
+        assertTrue(instance1.hashCode() == SectionBodyTest.init(new Object[]{TABLE_ID.SDT_THIS_STREAM, data1}).hashCode());
         assertFalse(instance1.hashCode() == instance2.hashCode());
     }
 

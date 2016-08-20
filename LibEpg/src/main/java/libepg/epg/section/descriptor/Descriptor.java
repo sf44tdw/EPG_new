@@ -56,12 +56,13 @@ public class Descriptor {
     public Descriptor(Descriptor descriptor) {
 
         this.descriptorTag = descriptor.descriptorTag;
+        this.data = descriptor.data;
         if (this.getClass() != this.descriptorTag.getDataType()) {
             MessageFormat msg1 = new MessageFormat("このクラスでは渡されたデータをパースできません。このクラスの型={0} データの型={1} データ={2}");
-            Object[] parameters1 = {this.getClass(), this.descriptorTag.getDataType(), Hex.encodeHexString(descriptor.getData())};
+            Object[] parameters1 = {this.getClass(), this.descriptorTag.getDataType(), this.data};
             throw new IllegalArgumentException(msg1.format(parameters1));
         }
-        this.data = descriptor.data;
+
     }
 
     /**
@@ -79,7 +80,7 @@ public class Descriptor {
         int lengthFromArray = this.getData().length;
         if (lengthFromData != lengthFromArray) {
             MessageFormat msg1 = new MessageFormat("渡されたデータの長さが想定と異なります。データから算出した配列長={0} 配列長={1} データ={2}");
-            Object[] parameters1 = {lengthFromData, lengthFromArray, Hex.encodeHexString(this.data.getData())};
+            Object[] parameters1 = {lengthFromData, lengthFromArray, this.data};
             throw new IllegalArgumentException(msg1.format(parameters1));
         }
 
@@ -87,7 +88,7 @@ public class Descriptor {
         this.descriptorTag = DESCRIPTOR_TAG.reverseLookUp(tag);
         if (this.descriptorTag == null) {
             MessageFormat msg = new MessageFormat("記述子タグが見つかりません。タグの値={0} データ={1}");
-            Object[] parameters = {Integer.toHexString(tag), Hex.encodeHexString(this.data.getData())};
+            Object[] parameters = {Integer.toHexString(tag), this.data};
             throw new IllegalArgumentException(msg.format(parameters));
         }
     }
@@ -171,6 +172,7 @@ public class Descriptor {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(7, 83, this);
     }
+
     /**
      * @return 下記3つのすべてに当てはまればtrue<br>
      * 1.比較対象のオブジェクトがこのオブジェクトと同じクラスのインスタンスである。<br>

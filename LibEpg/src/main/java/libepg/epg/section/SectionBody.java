@@ -17,7 +17,6 @@
 package libepg.epg.section;
 
 import java.text.MessageFormat;
-import org.apache.commons.codec.binary.Hex;
 import libepg.util.bytearray.ByteDataBlock;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -42,7 +41,7 @@ public class SectionBody {
         this.data = sectionBody.data;
         if (this.getClass() != this.tableID.getDataType()) {
             MessageFormat msg1 = new MessageFormat("このクラスでは渡されたデータをパースできません。このクラスの型={0} データの型={1} データ={2}");
-            Object[] parameters1 = {this.getClass(), this.tableID.getDataType(), Hex.encodeHexString(this.data.getData())};
+            Object[] parameters1 = {this.getClass(), this.tableID.getDataType(), this.data};
             throw new IllegalArgumentException(msg1.format(parameters1));
         }
     }

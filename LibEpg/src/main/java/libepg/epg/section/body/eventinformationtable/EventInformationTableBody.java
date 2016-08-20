@@ -118,6 +118,8 @@ public final class EventInformationTableBody extends SectionBody {
     /**
      * original_network_id(オリジナルネットワーク識別): この16
      * ビットのフィールドは、元の分配システムのネットワーク識別を規定するラベルの役割をする。
+     * 放送が別のネットワークIDに移動した場合の移動元のID。(最初にどこで放送されてたか)
+     * ARIB STD-B10 付属
      * @return 上記の値
      */
     public final synchronized int getOriginal_network_id() {

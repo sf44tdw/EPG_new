@@ -18,6 +18,9 @@ package libepg.util.bytearray;
 
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * バイト長配列の保持を行う。
@@ -64,27 +67,12 @@ public final class ByteDataBlock {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + Arrays.hashCode(this.data);
-        return hash;
+        return HashCodeBuilder.reflectionHashCode(5, 89, this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ByteDataBlock other = (ByteDataBlock) obj;
-        if (!Arrays.equals(this.data, other.data)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
 }
