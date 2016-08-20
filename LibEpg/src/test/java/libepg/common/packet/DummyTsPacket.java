@@ -47,7 +47,7 @@ public class DummyTsPacket extends TsPacket {
 //            this.Sync_byte = super.getSync_byte();
 //            this.Transport_error_indicator = super.getTransport_error_indicator();
 //            this.Transport_priority = super.getTransport_priority();
-//            this.Transport_scrambling_control = super.getTransport_scrambling_control();
+//            this.Transport_scrambling_control = super.getTransport_scrambling_control_Const();
 //            this.pid = super.getPid();
             this.isSetData = true;
         }
@@ -94,7 +94,7 @@ public class DummyTsPacket extends TsPacket {
     }
 
     @Override
-    public TRANSPORT_SCRAMBLING_CONTROL getTransport_scrambling_control() {
+    public TRANSPORT_SCRAMBLING_CONTROL getTransport_scrambling_control_Const() {
         return Transport_scrambling_control;
     }
 

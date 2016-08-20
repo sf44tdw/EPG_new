@@ -187,17 +187,18 @@ public final class ServiceDescriptionTableRepeatingPart {
         return new DescriptorsLoop(t);
     }
 
+    private static final String TITLE = "サービス記述テーブルの繰り返し項目";
     private static final MessageFormat SDT_RP_DESC = new MessageFormat(
-            "サービス記述繰り返し項目 バイト列 = {0}\n"
-            + "サービス記述繰り返し項目 サービス識別 = {1}\n"
-            + "サービス記述繰り返し項目 予約 = {2}\n"
-            + "サービス記述繰り返し項目 EIT事業者定義フラグ = {3}\n"
-            + "サービス記述繰り返し項目 EIT[スケジュール]フラグ = {4}\n"
-            + "サービス記述繰り返し項目 EIT[現在/次]フラグ = {5}\n"
-            + "サービス記述繰り返し項目 進行状態 = {6}\n"
-            + "サービス記述繰り返し項目 スクランブル = {7}\n"
-            + "サービス記述繰り返し項目 記述子ループ長 = {8}\n"
-            + "サービス記述繰り返し項目 記述子ループ = {9}\n"
+            TITLE + " バイト列 = {0}\n"
+            + TITLE + " サービス識別 = {1}\n"
+            + TITLE + " 予約 = {2}\n"
+            + TITLE + " EIT事業者定義フラグ = {3}\n"
+            + TITLE + " EIT[スケジュール]フラグ = {4}\n"
+            + TITLE + " EIT[現在/次]フラグ = {5}\n"
+            + TITLE + " 進行状態 = {6}\n"
+            + TITLE + " スクランブル = {7}\n"
+            + TITLE + " 記述子ループ長 = {8}\n"
+            + TITLE + " 記述子ループ = {9}\n"
     );
 
     @Override
@@ -219,7 +220,6 @@ public final class ServiceDescriptionTableRepeatingPart {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(7, 47, this);
     }
-
 
     @Override
     public boolean equals(Object obj) {

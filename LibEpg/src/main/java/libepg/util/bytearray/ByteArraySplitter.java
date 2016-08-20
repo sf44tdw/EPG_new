@@ -40,7 +40,7 @@ public final class ByteArraySplitter {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass();
+        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
         LOG = new LoggerFactory(myClass, ByteArraySplitter.CLASS_LOG_OUTPUT_MODE).getLOG();
     }
 

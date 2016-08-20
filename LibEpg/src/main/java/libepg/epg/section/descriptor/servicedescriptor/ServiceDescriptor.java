@@ -22,8 +22,6 @@ import libepg.epg.section.descriptor.Descriptor;
 import libepg.epg.util.Aribstr;
 import org.apache.commons.codec.binary.Hex;
 
-
-
 /**
  * サービス記述子（Service descriptor） 編成チャンネル名とその事業者名をサービス形式種別とともに文字符号で表す。
  *
@@ -122,16 +120,17 @@ public final class ServiceDescriptor extends Descriptor {
         return Aribstr.AribToString(t);
     }
 
+    private static final String TITLE = "サービス記述子";
     private static final MessageFormat SD_DESC = new MessageFormat(
-            "サービス記述子 {0}\n"
-            + "サービス記述子 サービス形式種別 = {1}\n"
-            + "サービス記述子 サービス形式種別定数 = {2}\n"
-            + "サービス記述子 事業者名長 = {3}\n"
-            + "サービス記述子 事業者名 = {4}\n"
-            + "サービス記述子 事業者名文字列 = {5}\n"
-            + "サービス記述子 サービス名長 = {6}\n"
-            + "サービス記述子 サービス名 = {7}\n"
-            + "サービス記述子 サービス名文字列 = {8}\n"
+            TITLE + " {0}\n"
+            + TITLE + " サービス形式種別 = {1}\n"
+            + TITLE + " サービス形式種別定数 = {2}\n"
+            + TITLE + " 事業者名長 = {3}\n"
+            + TITLE + " 事業者名 = {4}\n"
+            + TITLE + " 事業者名文字列 = {5}\n"
+            + TITLE + " サービス名長 = {6}\n"
+            + TITLE + " サービス名 = {7}\n"
+            + TITLE + " サービス名文字列 = {8}\n"
     );
 
     @Override

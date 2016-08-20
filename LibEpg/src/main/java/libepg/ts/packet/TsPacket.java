@@ -24,6 +24,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import epgtools.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
+import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -104,7 +105,7 @@ public class TsPacket {
      * @see TsPacket#getPayload_unit_start_indicator()
      * @see TsPacket#getTransport_priority()
      * @see TsPacket#getPid()
-     * @see TsPacket#getTransport_scrambling_control()
+     * @see TsPacket#getTransport_scrambling_control_Const()
      * @see TsPacket#getAdaptation_field_control()
      * @see TsPacket#getContinuity_counter()
      *
@@ -116,7 +117,7 @@ public class TsPacket {
             this.getPayload_unit_start_indicator();
             this.getTransport_priority();
             this.getPid();
-            this.getTransport_scrambling_control();
+            this.getTransport_scrambling_control_Const();
             this.getAdaptation_field_control();
             this.getContinuity_counter();
             return true;
@@ -254,17 +255,44 @@ public class TsPacket {
      * @throws IllegalStateException ありえない値(0x0000以上0x1FFF以下の値以外)を取得した場合。
      */
     public synchronized int getPid() throws IllegalStateException {
+        final Range<Integer> PID_RANGE = Range.between(0x0000, 0x1FFF);
         byte[] t = new byte[2];
         System.arraycopy(this.data.getData(), 1, t, 0, t.length);
         int temp = ByteConverter.bytesToInt(t);
         temp = temp & 0x1FFF;
-        if ((temp >= 0x0000) && (temp <= 0x1FFF)) {
+        if (PID_RANGE.contains(temp)) {
             return temp;
         } else {
             MessageFormat msg = new MessageFormat("PID(プログラムID)が不正な値です。値={0}");
             Object[] parameters = {temp};
             throw new IllegalStateException(msg.format(parameters));
         }
+    }
+
+    /**
+     * @return 定数として定義されたpidがあれば、それを返す。無い場合はnull
+     */
+    public synchronized RESERVED_PROGRAM_ID getPid_Const() {
+        return RESERVED_PROGRAM_ID.reverseLookUp(this.getPid());
+    }
+
+    /**
+     * transport_scrambling_control(トランスポートスクランブルコントロール)
+     *
+     * @return 上記の値
+     * @throws IllegalStateException ありえない値(0以上3以下の整数)のとき
+     */
+    public synchronized int getTransport_scrambling_control() throws IllegalStateException {
+        final Range<Integer> TSC_RANGE = Range.between(0, 3);
+        int temp;
+        temp = ByteConverter.byteToInt(this.data.getData()[3]);
+        temp = temp >>> 6;
+        if (!TSC_RANGE.contains(temp)) {
+            MessageFormat msg = new MessageFormat("トランスポートスクランブルコントロールが不正な値です。値={0}");
+            Object[] parameters = {temp};
+            throw new IllegalStateException(msg.format(parameters));
+        }
+        return temp;
     }
 
     /**
@@ -303,16 +331,13 @@ public class TsPacket {
     }
 
     /**
-     * transport_scrambling_control(トランスポートスクランブルコントロール)
+     * transport_scrambling_control(トランスポートスクランブルコントロール)の定数。無い場合はnull
      *
-     * @return  上記の値
+     * @return 上記の値
      * @throws IllegalStateException ありえない値(0以上3以下の整数)のとき
      */
-    public synchronized TRANSPORT_SCRAMBLING_CONTROL getTransport_scrambling_control() throws IllegalStateException {
-        int temp;
-        temp = ByteConverter.byteToInt(this.data.getData()[3]);
-        temp = temp >>> 6;
-        switch (temp) {
+    public synchronized TRANSPORT_SCRAMBLING_CONTROL getTransport_scrambling_control_Const() throws IllegalStateException {
+        switch (this.getTransport_scrambling_control()) {
             case 0:
                 return TsPacket.TRANSPORT_SCRAMBLING_CONTROL.NOT_SCRAMBLED;
             case 1:
@@ -322,10 +347,7 @@ public class TsPacket {
             case 3:
                 return TsPacket.TRANSPORT_SCRAMBLING_CONTROL.SCRAMBLED_BY_ODD_KEY;
         }
-        MessageFormat msg = new MessageFormat("トランスポートスクランブルコントロールが不正な値です。値={0}");
-        Object[] parameters = {temp};
-        throw new IllegalStateException(msg.format(parameters));
-
+        return null;
     }
 
     /**
@@ -522,27 +544,31 @@ public class TsPacket {
         }
 
     }
+
+    private static final String TITLE = "パケット";
+    private static final MessageFormat PACKET_DESC = new MessageFormat(
+            TITLE + " 内容 = {0}\n"
+            + TITLE + " 同期ワード = {1}\n"
+            + TITLE + " トランスポートエラーインジケータ = {2}\n"
+            + TITLE + " ペイロードユニットスタートインジケータ = {3}\n"
+            + TITLE + " トランスポート優先度 = {4}\n"
+            + TITLE + " プログラムID = {5}\n"
+            + TITLE + " プログラムID(定数) = {6}\n"
+            + TITLE + " トランスポートスクランブルコントロール = {7}\n"
+            + TITLE + " トランスポートスクランブルコントロール(定数) = {8}\n"
+            + TITLE + " アダプテーションフィールドコントロール = {9}\n"
+            + TITLE + " 巡回カウンター = {10}\n"
+            + TITLE + " アダプテーションフィールド長 = {11}\n"
+            + TITLE + " アダプテーションフィールド = {12}\n"
+            + TITLE + " ペイロード = {13}\n"
+            + TITLE + " ハッシュ = {14}\n"
+    );
+
     /**
      * ヘッダの解析結果とパケットのダンプを返す。
      *
      * @return このパケットの内容
      */
-    private static final MessageFormat PACKET_DESC = new MessageFormat(
-            "パケットの内容 = {0}\n"
-            + "同期ワード = {1}\n"
-            + "トランスポートエラーインジケータ = {2}\n"
-            + "ペイロードユニットスタートインジケータ = {3}\n"
-            + "トランスポート優先度 = {4}\n"
-            + "プログラムID = {5}\n"
-            + "トランスポートスクランブルコントロール = {6}\n"
-            + "アダプテーションフィールドコントロール = {7}\n"
-            + "巡回カウンター = {8}\n"
-            + "アダプテーションフィールド長 = {9}\n"
-            + "アダプテーションフィールド = {10}\n"
-            + "ペイロード = {11}\n"
-            + "ハッシュ = {12}\n"
-    );
-
     @Override
     public String toString() {
         Object[] parameters = {this.data.toString(),
@@ -551,7 +577,9 @@ public class TsPacket {
             this.getPayload_unit_start_indicator(),
             this.getTransport_priority(),
             Integer.toHexString(this.getPid()),
+            this.getPid_Const(),
             this.getTransport_scrambling_control(),
+            this.getTransport_scrambling_control_Const(),
             this.getAdaptation_field_control(),
             this.getContinuity_counter(),
             this.getAdaptation_length(),

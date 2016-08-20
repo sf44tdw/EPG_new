@@ -260,19 +260,20 @@ public class SeriesDescriptor extends Descriptor {
         return Aribstr.AribToString(this.getSeries_name_char());
 
     }
+    private static final String TITLE = "シリーズ記述子";
     private static final MessageFormat SL_DESC = new MessageFormat(
-            "シリーズ記述子 {0}\n"
-            + "シリーズ記述子 シリーズ識別 = {1}\n"
-            + "シリーズ記述子 再放送ラベル = {2}\n"
-            + "シリーズ記述子 編成パターン = {3}\n"
-            + "シリーズ記述子 編成パターン(定数) = {4}\n"
-            + "シリーズ記述子 有効期限フラグ = {5}\n"
-            + "シリーズ記述子 有効期限 = {6}\n"
-            + "シリーズ記述子 有効期限(タイムスタンプ) = {7}\n"
-            + "シリーズ記述子 話数 = {8}\n"
-            + "シリーズ記述子 番組総数 = {9}\n"
-            + "シリーズ記述子 シリーズ名 = {10}\n"
-            + "シリーズ記述子 シリーズ名(文字列) = {11}\n"
+            TITLE + " {0}\n"
+            + TITLE + " シリーズ識別 = {1}\n"
+            + TITLE + " 再放送ラベル = {2}\n"
+            + TITLE + " 編成パターン = {3}\n"
+            + TITLE + " 編成パターン(定数) = {4}\n"
+            + TITLE + " 有効期限フラグ = {5}\n"
+            + TITLE + " 有効期限 = {6}\n"
+            + TITLE + " 有効期限(タイムスタンプ) = {7}\n"
+            + TITLE + " 話数 = {8}\n"
+            + TITLE + " 番組総数 = {9}\n"
+            + TITLE + " シリーズ名 = {10}\n"
+            + TITLE + " シリーズ名(文字列) = {11}\n"
     );
 
     @Override

@@ -48,12 +48,6 @@ public final class Nibble {
     public synchronized byte[] getData() {
         return data.getData();
     }
-    
-    
-    
-    
-    
-    
 
     /**
      * content_nibble_level_1（ジャンル1）：この4 ビットのフィールドは、コンテント識別の
@@ -141,12 +135,13 @@ public final class Nibble {
         return true;
     }
 
+    private static final String TITLE = "ジャンルコード";
     private static final MessageFormat NIBBLE_DESC = new MessageFormat(
-            "ジャンルコード バイト列 = {0}\n"
-            + "ジャンルコード ジャンル1 = {1}\n"
-            + "ジャンルコード ジャンル2 = {2}\n"
-            + "ジャンルコード ユーザジャンル1 = {3}\n"
-            + "ジャンルコード ユーザジャンル2 = {4}\n"
+            TITLE + " バイト列 = {0}\n"
+            + TITLE + " ジャンル1 = {1}\n"
+            + TITLE + " ジャンル2 = {2}\n"
+            + TITLE + " ユーザジャンル1 = {3}\n"
+            + TITLE + " ユーザジャンル2 = {4}\n"
     );
 
     @Override

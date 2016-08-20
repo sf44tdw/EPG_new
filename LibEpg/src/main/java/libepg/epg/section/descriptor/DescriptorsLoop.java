@@ -93,9 +93,10 @@ public class DescriptorsLoop {
         return Collections.unmodifiableList(dest);
     }
 
+    private static final String TITLE = "記述子ループ";
     private static final MessageFormat DESC = new MessageFormat(
-            "記述子ループ バイト列 = {0}\n"
-            + "記述子ループ 記述子 = {1}\n"
+            TITLE + " バイト列 = {0}\n"
+            + TITLE + " 記述子 = {1}\n"
     );
 
     @Override

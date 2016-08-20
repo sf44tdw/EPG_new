@@ -58,7 +58,7 @@ public class DateTimeFieldConverter {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass();
+        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
         LOG = new LoggerFactory(myClass, DateTimeFieldConverter.CLASS_LOG_OUTPUT_MODE).getLOG();
     }
 

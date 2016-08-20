@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package libepg.epg.section;
+package libepg.epg.section.body;
 
 import java.text.MessageFormat;
+import libepg.epg.section.TABLE_ID;
 import libepg.util.bytearray.ByteDataBlock;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -29,6 +30,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class SectionBody {
 
     private final TABLE_ID tableID;
+
     private final ByteDataBlock data;
 
     /**
@@ -52,7 +54,7 @@ public class SectionBody {
      * @param tableID
      * @param data
      */
-    SectionBody(TABLE_ID tableID, byte[] data) {
+    public SectionBody(TABLE_ID tableID, byte[] data) {
         this.tableID = tableID;
         this.data = new ByteDataBlock(data);
     }
@@ -85,9 +87,10 @@ public class SectionBody {
         return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
+    private static final String TITLE = "セクション本体";
     private static final MessageFormat SECTION_BODY_DESC = new MessageFormat(
-            "セクション本体 テーブル識別値 = {0}\n"
-            + "セクション本体 バイト列 = {1}\n"
+            TITLE + " テーブル識別値 = {0}\n"
+            + TITLE + " バイト列 = {1}\n"
     );
 
     @Override

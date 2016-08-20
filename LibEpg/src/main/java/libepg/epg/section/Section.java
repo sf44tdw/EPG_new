@@ -16,6 +16,7 @@
  */
 package libepg.epg.section;
 
+import libepg.epg.section.body.SectionBody;
 import libepg.util.bytearray.ByteConverter;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -106,8 +107,8 @@ public final class Section {
             LOG.trace("b2 = " + Integer.toHexString(sectionLength));
         }
 
-        //セクション長フィールドの値が指定された値を超えた場合。
-        if (sectionLength > tableId.getMaxSectionLength().getMaxSectionBodyLength()) {
+        //セクション長フィールドの値が指定された値以上になった場合。
+        if (sectionLength >= tableId.getMaxSectionLength().getMaxSectionBodyLength()) {
             MessageFormat msg3 = new MessageFormat("セクション長フィールドの値が大きすぎます。セクション長フィールドの最大値={0} セクション長フィールドの値={1} 渡された配列={2}");
             Object[] parameters3 = {tableId.getMaxSectionLength().getMaxSectionBodyLength(), sectionLength, hexValue};
             if (LOG.isTraceEnabled()) {
@@ -118,9 +119,10 @@ public final class Section {
 
         //セクション長フィールドの長さに合わせて渡された配列を切り詰める。
         int targetLength = Integer.MIN_VALUE;
+        byte[] sectionByteArray = null;
         try {
             targetLength = sectionLength + 3;
-            byte[] sectionByteArray = new byte[targetLength];
+            sectionByteArray = new byte[targetLength];
             if (LOG.isTraceEnabled()) {
                 LOG.trace("セクション長フィールドからの全長算出値(targetLength) = " + targetLength);
                 LOG.trace("切り詰め前の配列(temp)全長 = " + temp.length);
@@ -137,7 +139,9 @@ public final class Section {
             throw new IllegalArgumentException("配列切り詰め中に問題発生。"
                     + "\nセクション長フィールドからの全長算出値(targetLength) = " + targetLength
                     + "\n切り詰め前の配列(temp)全長 = " + temp.length
-                    + "\n切り詰め前の配列 = " + Hex.encodeHexString(temp), ex);
+                    + "\n切り詰め前の配列 = " + Hex.encodeHexString(temp)
+                    + "\n切り詰め後の配列(sectionByteArray)全長 = " + sectionByteArray.length
+                    + "\n切り詰め後の配列(sectionByteArray) = " + Hex.encodeHexString(sectionByteArray), ex);
         }
     }
 
@@ -269,14 +273,15 @@ public final class Section {
      * セクションの第4 および第5バイト目になる。<br>
      *
      * @return セクションの第4 および第5 バイト目
-     * @throws IllegalStateException セクションシンタクス指示（section_syntax_indicator）の値が1以外の時。
+     * @throws IllegalStateException
+     * セクションシンタクス指示（section_syntax_indicator）の値が1以外の時。
      */
     public final synchronized int getTable_id_extension() throws IllegalStateException {
         byte[] t = new byte[2];
         System.arraycopy(this.getData(), 3, t, 0, t.length);
         int temp = ByteConverter.bytesToInt(t);
         if (this.getSection_syntax_indicator() != 1) {
-            throw new IllegalStateException("セクションシンタクス指示（section_syntax_indicator）の値が1ではありません。セクション = "+this.data);
+            throw new IllegalStateException("セクションシンタクス指示（section_syntax_indicator）の値が1ではありません。セクション = " + this.data);
         }
         return temp;
     }
@@ -341,19 +346,20 @@ public final class Section {
         }
     }
 
+    private static final String TITLE = "セクション";
     private static final MessageFormat TABLE_DESC = new MessageFormat(
             "\n"
-            + "セクション バイト列 = {0}\n"
-            + "セクション テーブル識別値定数 = {1}\n"
-            + "セクション テーブル識別値 = {2}\n"
-            + "セクション section_syntax_indicator = {3}\n"
-            + "セクション 予約1 = {4}\n"
-            + "セクション 予約2 = {5}\n"
-            + "セクション セクション長 = {6}\n"
-            + "セクション セクション = {7}\n"
-            + "セクション テーブル識別拡張 = {8}\n"
-            + "セクション CRC = {9}\n"
-            + "セクション CRC検査結果 = {10}\n"
+            + TITLE + " バイト列 = {0}\n"
+            + TITLE + " テーブル識別値定数 = {1}\n"
+            + TITLE + " テーブル識別値 = {2}\n"
+            + TITLE + " section_syntax_indicator = {3}\n"
+            + TITLE + " 予約1 = {4}\n"
+            + TITLE + " 予約2 = {5}\n"
+            + TITLE + " セクション長 = {6}\n"
+            + TITLE + " セクション = {7}\n"
+            + TITLE + " テーブル識別拡張 = {8}\n"
+            + TITLE + " CRC = {9}\n"
+            + TITLE + " CRC検査結果 = {10}\n"
     );
 
     @Override

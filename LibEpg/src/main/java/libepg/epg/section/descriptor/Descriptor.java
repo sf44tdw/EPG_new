@@ -149,11 +149,12 @@ public class Descriptor {
         return t;
     }
 
+    private static final String TITLE = "記述子";
     private static final MessageFormat DESC = new MessageFormat(
-            "記述子 バイト列 = {0}\n"
-            + "記述子 記述子タグ = {1}\n"
-            + "記述子 記述子長 = {2}\n"
-            + "記述子 記述子データ = {3}\n"
+            TITLE + " バイト列 = {0}\n"
+            + TITLE + " 記述子タグ = {1}\n"
+            + TITLE + " 記述子長 = {2}\n"
+            + TITLE + " 記述子データ = {3}\n"
     );
 
     @Override

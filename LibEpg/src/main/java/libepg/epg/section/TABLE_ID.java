@@ -5,6 +5,7 @@
  */
 package libepg.epg.section;
 
+import libepg.epg.section.body.SectionBody;
 import epgtools.reverselookupmapfactory.ReverseLookUpMapFactory;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import libepg.epg.section.body.eventinformationtable.EventInformationTableBody;
+import libepg.epg.section.body.networkinformationtable.NetworkInformationTableBody;
 import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableBody;
 import org.apache.commons.lang3.Range;
 
@@ -34,11 +36,10 @@ public enum TABLE_ID {
      * は固有のネットワーク識別を割り当てられ、それがネットワークの固有識別符号として機
      * 能する。ネットワーク識別の値は標準化機関の規定による。また、トランスポート識別の
      * 値は事業者が独自に選定することができる。トランスポートストリームが発生したネット ワークにおいてNIT
-     * が伝送された場合には、ネットワーク識別とオリジナルネットワーク 識別は同一値である。
-     * ARIB STD-B10 第２部 P79
+     * が伝送された場合には、ネットワーク識別とオリジナルネットワーク 識別は同一値である。 ARIB STD-B10 第２部 P79
      */
-    NIT_THIS_NETWORK("NIT（自ネットワーク", MAX_SECTION_LENGTH.BYTE_1021, SectionBody.class, 0x40),
-        /**
+    NIT_THIS_NETWORK("NIT（自ネットワーク", MAX_SECTION_LENGTH.BYTE_1021, NetworkInformationTableBody.class, 0x40),
+    /**
      * ネットワーク情報テーブル（NIT）（Network Information Table） NIT（表5－3
      * 参照）は、ネットワークにより運ばれる多重／トランスポートストリーム
      * の物理的構成に関する情報、およびネットワーク自身の特性を表わす。オリジナルネット
@@ -47,10 +48,9 @@ public enum TABLE_ID {
      * は固有のネットワーク識別を割り当てられ、それがネットワークの固有識別符号として機
      * 能する。ネットワーク識別の値は標準化機関の規定による。また、トランスポート識別の
      * 値は事業者が独自に選定することができる。トランスポートストリームが発生したネット ワークにおいてNIT
-     * が伝送された場合には、ネットワーク識別とオリジナルネットワーク 識別は同一値である。
-     * ARIB STD-B10 第２部 P79
+     * が伝送された場合には、ネットワーク識別とオリジナルネットワーク 識別は同一値である。 ARIB STD-B10 第２部 P79
      */
-    NIT_OTHER_NETWORK("NIT（他ネットワーク", MAX_SECTION_LENGTH.BYTE_1021, SectionBody.class, 0x41),
+    NIT_OTHER_NETWORK("NIT（他ネットワーク", MAX_SECTION_LENGTH.BYTE_1021, NetworkInformationTableBody.class, 0x41),
     /**
      * サービス記述テーブルSDT（Service Description Table）<br>
      * 編成チャンネルの名称、放送事業者の名称など、編成チャンネルに関する情報を伝送する。<br>
@@ -103,7 +103,7 @@ public enum TABLE_ID {
         /**
          * セクション長フィールド直後からCRC3バイトまでの最大長。1021バイトもしくは4093バイトを超えてはならない。
          *
-         * @return セクション長の最大値
+         * @return セクション長の最大値+1
          */
         public int getMaxSectionBodyLength() {
             return maxSectionLength;
@@ -112,7 +112,7 @@ public enum TABLE_ID {
         /**
          * セクションを表すバイト列の最大長。1024バイトもしくは4096バイトを超えてはならない。
          *
-         * @return 全セクション長の最大値
+         * @return 全セクション長の最大値+1
          */
         public int getMaxSectionLength() {
             return maxSectionLength + 3;

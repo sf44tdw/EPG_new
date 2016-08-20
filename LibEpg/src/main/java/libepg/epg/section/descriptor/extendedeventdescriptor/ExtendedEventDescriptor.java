@@ -174,17 +174,18 @@ public class ExtendedEventDescriptor extends Descriptor {
         return sb.toString();
     }
 
-    private static final MessageFormat DESC = new MessageFormat(""
-            + "拡張形式イベント記述子 {0}"
-            + "拡張形式イベント記述子 記述子番号 = {1}\n"
-            + "拡張形式イベント記述子 最終記述子番号 = {2}\n"
-            + "拡張形式イベント記述子 言語コード = {3}\n"
-            + "拡張形式イベント記述子 項目長 = {4}\n"
-            + "拡張形式イベント記述子 項目 = {5}\n"
-            + "拡張形式イベント記述子 項目内容 = {6}"
-            + "拡張形式イベント記述子 拡張記述長 = {7}\n"
-            + "拡張形式イベント記述子 拡張記述 = {8}\n"
-            + "拡張形式イベント記述子 下記長記述文字列 = {9}\n"
+    private static final String TITLE = "拡張形式イベント記述子";
+    private static final MessageFormat DESC = new MessageFormat(
+            TITLE + " {0}"
+            + TITLE + " 記述子番号 = {1}\n"
+            + TITLE + " 最終記述子番号 = {2}\n"
+            + TITLE + " 言語コード = {3}\n"
+            + TITLE + " 項目長 = {4}\n"
+            + TITLE + " 項目 = {5}\n"
+            + TITLE + " 項目内容 = {6}"
+            + TITLE + " 拡張記述長 = {7}\n"
+            + TITLE + " 拡張記述 = {8}\n"
+            + TITLE + " 下記長記述文字列 = {9}\n"
     );
 
     @Override

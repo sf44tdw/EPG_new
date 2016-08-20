@@ -146,7 +146,7 @@ public class NibbleTest {
     public void testHashCode() throws Throwable {
         LOG.info("hashCode");
         Nibble instance = NIbbleMaker.init(this.data);
-        int expResult = 2019;
+        int expResult = 41204;
         int result = instance.hashCode();
         assertEquals(expResult, result);
     }

@@ -67,7 +67,7 @@ public final class SectionReconstructor {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass();
+        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
         LOG = new LoggerFactory(myClass, SectionReconstructor.CLASS_LOG_OUTPUT_MODE).getLOG();
     }
 
@@ -76,22 +76,29 @@ public final class SectionReconstructor {
 
     /**
      * @param parcels 欠落チェック済みのパケット
-     * @param pid 特定のpid
-     * @throws IllegalArgumentException 設定されたpid以外のpidを持つパケットが混じっていた場合。
+     * @param pid 特定のpid 注:設定されたpid以外のpidを持つパケットが混じっていた場合、そのパケットは無視される。
      */
-    public SectionReconstructor(List<TsPacketParcel> parcels, int pid) throws IllegalArgumentException {
+    public SectionReconstructor(List<TsPacketParcel> parcels, int pid) {
         this.pid = pid;
         List<TsPacketParcel> tempParcels = new ArrayList<>();
-        tempParcels.addAll(parcels);
-        for (TsPacketParcel parcel : tempParcels) {
-            if (this.pid == parcel.getPacket().getPid()) {
+        for (TsPacketParcel parcel : parcels) {
+            int ppid= parcel.getPacket().getPid();
+            if (this.pid ==ppid) {
+                tempParcels.add(parcel);
             } else {
-                MessageFormat WRONG_PID = new MessageFormat("指定されたPid以外のPidを持つパケットが混じっています。指定されたPid={0} パケット={1}");
-                Object[] parameters = {Integer.toHexString(this.getPid()), parcel.getPacket().toString()};
-                throw new IllegalArgumentException(WRONG_PID.format(parameters));
+                MessageFormat WRONG_PID = new MessageFormat("指定されたPid以外のPidを持つパケットが混じっています。このパケットは除外されます。指定されたPid = {0} パケットのpid = {1} パケット = {2}");
+                Object[] parameters = {Integer.toHexString(this.getPid()),Integer.toHexString(ppid),Hex.encodeHexString(parcel.getPacket().getData())};
+                LOG.error(WRONG_PID.format(parameters));
             }
         }
         this.parcels = Collections.unmodifiableList(tempParcels);
+    }
+
+    /**
+     * @return 最終的に受け入れられた処理対象パケットの数。
+     */
+    public int getPacketListSize() {
+        return this.parcels.size();
     }
 
     public int getPid() {
@@ -112,7 +119,7 @@ public final class SectionReconstructor {
             try {
                 s_t = new Section(b);
             } catch (IllegalArgumentException e) {
-                LOG.warn("セクションの構築中に問題が発生しました。このセクションは無視されます。", e);
+                LOG.error("セクションの構築中に問題が発生しました。このセクションは無視されます。", e);
                 s_t = null;
             } finally {
                 sec = s_t;
@@ -121,13 +128,16 @@ public final class SectionReconstructor {
                 if (sec.checkCRC() == CRC_STATUS.NO_CRC_ERROR) {
                     ret.add(sec);
                 } else {
-                    LOG.warn("CRCが正しくありません。このセクションは無視されます。");
+                    LOG.error("CRCが正しくありません。このセクションは無視されます。");
                 }
             }
         }
         return Collections.unmodifiableSet(ret);
     }
 
+    /**
+     * バッファへの配列追加と、バッファ状態のログへの出力を行う。(traceレベルのみ)
+     */
     private void put(ByteBuffer buf, byte[] putData) {
         if (LOG.isTraceEnabled()) {
             LOG.trace(
@@ -138,7 +148,6 @@ public final class SectionReconstructor {
                     + "\n追加予定データ長 = " + putData.length
                     + "\n追加予定データ = " + Hex.encodeHexString(putData));
         }
-
         buf.put(putData);
     }
 

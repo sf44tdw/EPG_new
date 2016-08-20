@@ -32,7 +32,6 @@ import libepg.ts.packet.TsPacketParcel;
 import epgtools.loggerfactory.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import org.junit.Rule;
-import testtool.testrule.regexmessagerule.ExpectedExceptionMessage;
 import testtool.testrule.regexmessagerule.ExpectedExceptionRule;
 
 /**
@@ -98,7 +97,6 @@ public class SectionReconstructorTest {
     public ExpectedExceptionRule rule = new ExpectedExceptionRule();
 
     @Test
-    @ExpectedExceptionMessage("指定されたPid以外のPidを持つパケットが混じっています")
     public void con_NG_multi_pid_list() throws DecoderException {
         LOG.info("con_NG");
 
@@ -114,6 +112,8 @@ public class SectionReconstructorTest {
         List<TsPacketParcel> p = al.getPackets();
 
         SectionReconstructor instance = new SectionReconstructor(p, 18);
+        
+        assertEquals(0,instance.getPacketListSize());
 
     }
 

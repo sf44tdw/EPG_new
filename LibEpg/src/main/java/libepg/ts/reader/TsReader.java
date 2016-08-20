@@ -41,7 +41,7 @@ public class TsReader {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass();
+        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
         LOG = new LoggerFactory(myClass, TsReader.CLASS_LOG_OUTPUT_MODE).getLOG();
         if (NOT_DETERRENT_READ_TRACE_LOG == false) {
             LOG.info("読み込みログ抑止中。");

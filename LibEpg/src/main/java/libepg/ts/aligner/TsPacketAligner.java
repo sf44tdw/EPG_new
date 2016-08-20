@@ -54,7 +54,7 @@ public final class TsPacketAligner {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass();
+        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
         LOG = new LoggerFactory(myClass, TsPacketAligner.CLASS_LOG_OUTPUT_MODE).getLOG();
         if (NOT_DETERRENT_CHECK_TRACE_LOG == false) {
             LOG.info("チェックログ抑止中。");

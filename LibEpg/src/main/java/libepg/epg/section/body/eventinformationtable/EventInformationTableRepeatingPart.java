@@ -3,17 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/**
- * event_id 16 uimsbf
- * start_time 40 bslbf
- * duration 24 uimsbf
- * running_status 3 uimsbf
- * free_CA_mode 1 bslbf
- * descriptors_loop_length 12 uimsbf
- * for(i=0;i<N;i++){
- * descriptor()
- * }
- */
 package libepg.epg.section.body.eventinformationtable;
 
 import libepg.util.bytearray.ByteConverter;
@@ -24,8 +13,6 @@ import java.text.ParseException;
 import java.util.Objects;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import libepg.epg.section.descriptor.DescriptorsLoop;
 import libepg.epg.util.datetime.DateTimeFieldConverter;
 import epgtools.loggerfactory.LoggerFactory;
@@ -190,17 +177,18 @@ public final class EventInformationTableRepeatingPart {
         return new DescriptorsLoop(t);
     }
 
+    private static final String TITLE = "イベント記述テーブルの繰り返し項目";
     private static final MessageFormat EIT_RP_DESC = new MessageFormat(
-            "イベント記述繰り返し項目 バイト列 = {0}\n"
-            + "イベント記述繰り返し項目 イベント識別 = {1}\n"
-            + "イベント記述繰り返し項目 開始時間 = {2}\n"
-            + "イベント記述繰り返し項目 開始時間(タイムスタンプ) = {3}\n"
-            + "イベント記述繰り返し項目 継続時間 = {4}\n"
-            + "イベント記述繰り返し項目 終了時間(タイムスタンプ) = {5}\n"
-            + "イベント記述繰り返し項目 進行状態 = {6}\n"
-            + "イベント記述繰り返し項目 スクランブル = {7}\n"
-            + "イベント記述繰り返し項目 記述子ループ長 = {8}\n"
-            + "イベント記述繰り返し項目 記述子ループ = {9}\n"
+            TITLE + " バイト列 = {0}\n"
+            + TITLE + " イベント識別 = {1}\n"
+            + TITLE + " 開始時間 = {2}\n"
+            + TITLE + " 開始時間(タイムスタンプ) = {3}\n"
+            + TITLE + " 継続時間 = {4}\n"
+            + TITLE + " 終了時間(タイムスタンプ) = {5}\n"
+            + TITLE + " 進行状態 = {6}\n"
+            + TITLE + " スクランブル = {7}\n"
+            + TITLE + " 記述子ループ長 = {8}\n"
+            + TITLE + " 記述子ループ = {9}\n"
     );
 
     @Override

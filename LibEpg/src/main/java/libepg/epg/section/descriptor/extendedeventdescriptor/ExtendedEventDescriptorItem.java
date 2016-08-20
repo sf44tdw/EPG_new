@@ -129,8 +129,8 @@ public class ExtendedEventDescriptorItem {
     }
 
     /**
-     * 項目名と項目を文字列に連結して返す。
-     * どちらかがnullの場合は空文字列。
+     * 項目名と項目を文字列に連結して返す。 どちらかがnullの場合は空文字列。
+     *
      * @return 項目名 項目の内容。
      */
     public final synchronized String getStoredString() {
@@ -153,14 +153,15 @@ public class ExtendedEventDescriptorItem {
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj, true);
     }
+    private static final String TITLE = "拡張形式イベント記述子";
     private static final MessageFormat ITEM_DESC = new MessageFormat(
-            "拡張形式イベント記述子の項目 バイト列 = {0}\n"
-            + "拡張形式イベント記述子の項目 項目名長 = {1}\n"
-            + "拡張形式イベント記述子の項目 項目名 = {2}\n"
-            + "拡張形式イベント記述子の項目 項目名(テキスト) = {3}\n"
-            + "拡張形式イベント記述子の項目 項目記述長 = {4}\n"
-            + "拡張形式イベント記述子の項目 項目記述 = {5}\n"
-            + "拡張形式イベント記述子の項目 項目記述(テキスト) = {6}\n"
+            TITLE + " バイト列 = {0}\n"
+            + TITLE + " 項目名長 = {1}\n"
+            + TITLE + " 項目名 = {2}\n"
+            + TITLE + " 項目名(テキスト) = {3}\n"
+            + TITLE + " 項目記述長 = {4}\n"
+            + TITLE + " 項目記述 = {5}\n"
+            + TITLE + " 項目記述(テキスト) = {6}\n"
     );
 
     @Override

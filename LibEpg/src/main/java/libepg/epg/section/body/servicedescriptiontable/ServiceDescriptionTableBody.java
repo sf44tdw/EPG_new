@@ -21,7 +21,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import libepg.epg.section.SectionBody;
+import libepg.epg.section.body.SectionBody;
+import libepg.epg.section.body.util.SubTableSectionCommonFields;
 import libepg.epg.section.ranges.SectionValueRangeChecker;
 import libepg.util.bytearray.ByteArraySplitter;
 import org.apache.commons.codec.binary.Hex;
@@ -36,17 +37,18 @@ public final class ServiceDescriptionTableBody extends SectionBody {
         super(sectionBody);
     }
 
+    private final SubTableSectionCommonFields commonFields = new SubTableSectionCommonFields(this);
+
     /**
      * トランスポートストリーム識別<br>
      * 16bit。<br>
      * SDTが示すトランスポートストリームをその分配システム内の他の多重から識別するラベルの役割をする<br>
+     *
      * @return 上記の値
      * @throws IllegalStateException 0x0000もしくは0xffffのとき。
      */
     public final synchronized int getTransport_stream_id() throws IllegalStateException {
-        byte[] t = new byte[2];
-        System.arraycopy(this.getData(), 0, t, 0, t.length);
-        int x = ByteConverter.bytesToInt(t);
+        int x = this.commonFields.getFirst16Bit();
         if (!SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE.contains(x)) {
             throw new IllegalStateException("トランスポートストリーム識別が範囲外です。 値 = " + Integer.toHexString(x));
         }
@@ -59,10 +61,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * @return 上記の値
      */
     public final synchronized int getReserved2() {
-        int temp;
-        temp = ByteConverter.byteToInt(this.getData()[2]);
-        temp = temp >>> 6;
-        return temp;
+        return this.commonFields.getSecond2Bit();
     }
 
     /**
@@ -74,11 +73,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * @return 上記の値
      */
     public final synchronized int getVersion_number() {
-        int temp;
-        temp = ByteConverter.byteToInt(this.getData()[2]);
-        temp = temp & 0x3E;
-        temp = temp >>> 1;
-        return temp;
+        return this.commonFields.getTherd5Bit();
     }
 
     /**
@@ -89,10 +84,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      * @return 上記の値
      */
     public final synchronized int getCurrent_next_indicator() {
-        int temp;
-        temp = ByteConverter.byteToInt(this.getData()[2]);
-        temp = temp & 0x1;
-        return temp;
+        return this.commonFields.getFourth1Bit();
     }
 
     /**
@@ -104,9 +96,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      */
 //    int section_number;
     public final synchronized int getSection_number() {
-        int temp;
-        temp = ByteConverter.byteToInt(this.getData()[3]);
-        return temp;
+        return this.commonFields.getFifth8Bit();
     }
 
     /**
@@ -117,9 +107,7 @@ public final class ServiceDescriptionTableBody extends SectionBody {
      */
 //    int last_section_number;
     public final synchronized int getLast_section_number() {
-        int temp;
-        temp = ByteConverter.byteToInt(this.getData()[4]);
-        return temp;
+        return this.commonFields.getSixth8Bit();
     }
 
     /**
@@ -172,18 +160,19 @@ public final class ServiceDescriptionTableBody extends SectionBody {
         return Collections.unmodifiableList(dest);
     }
 
+    private static final String TITLE = "サービス記述テーブル";
     private static final MessageFormat TABLE_DESC = new MessageFormat(
-            "サービス記述テーブル {0}\n"
-            + "サービス記述テーブル トランスポートストリーム識別 = {1}\n"
-            + "サービス記述テーブル Reserved2 = {2}\n"
-            + "サービス記述テーブル バージョン番号 = {3}\n"
-            + "サービス記述テーブル カレントネクスト指示 = {4}\n"
-            + "サービス記述テーブル セクション番号 = {5}\n"
-            + "サービス記述テーブル 最終セクション番号 = {6}\n"
-            + "サービス記述テーブル オリジナルネットワーク識別 = {7}\n"
-            + "サービス記述テーブル Reserved_future_use2 = {8}\n"
-            + "サービス記述テーブル 繰り返し項目 = {9}\n"
-            + "サービス記述テーブル 繰り返し項目の解析結果={10}\n"
+            TITLE + " {0}\n"
+            + TITLE + " トランスポートストリーム識別 = {1}\n"
+            + TITLE + " Reserved2 = {2}\n"
+            + TITLE + " バージョン番号 = {3}\n"
+            + TITLE + " カレントネクスト指示 = {4}\n"
+            + TITLE + " セクション番号 = {5}\n"
+            + TITLE + " 最終セクション番号 = {6}\n"
+            + TITLE + " オリジナルネットワーク識別 = {7}\n"
+            + TITLE + " Reserved_future_use2 = {8}\n"
+            + TITLE + " 繰り返し項目 = {9}\n"
+            + TITLE + " 繰り返し項目の解析結果={10}\n"
     );
 
     @Override

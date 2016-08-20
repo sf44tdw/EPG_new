@@ -45,8 +45,6 @@ public class ContentDescriptor extends Descriptor {
         return Collections.unmodifiableList(tn);
     }
 
-    
-    
     @Override
     public String toString() {
         List<Nibble> tn = this.getNibbles();
@@ -54,7 +52,7 @@ public class ContentDescriptor extends Descriptor {
         for (Nibble nb : tn) {
             s.append(nb);
         }
-        return "コンテント記述子 ジャンルコード = " + s.toString() + "\n";
+        return "コンテント記述子" + " ジャンルコード = " + s.toString() + "\n";
     }
 
 }

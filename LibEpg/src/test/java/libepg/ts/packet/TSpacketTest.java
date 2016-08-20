@@ -19,6 +19,8 @@ import libepg.common.packet.TestPacket_SDT;
 import libepg.common.packet.TestPacket_pid0x11_count_d_0_0;
 import libepg.common.packet.TsPacket_error_indicator;
 import epgtools.loggerfactory.LoggerFactory;
+import static libepg.ts.packet.RESERVED_PROGRAM_ID.SDT_OR_BAT;
+import libepg.ts.packet.TsPacket.TRANSPORT_SCRAMBLING_CONTROL;
 import testtool.EqualsChecker;
 
 /**
@@ -133,30 +135,6 @@ public class TSpacketTest {
     }
 
     /**
-     * Test of getPid method, of class TsPacket.
-     */
-    @Test
-    public void testGetPid() {
-        LOG.info("getPid");
-        TsPacket instance = this.target00;
-        int expResult = 0x11;
-        int result = instance.getPid();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getTransport_scrambling_control method, of class TsPacket.
-     */
-    @Test
-    public void testGetTransport_scrambling_control() {
-        LOG.info("getTransport_scrambling_control");
-        TsPacket instance = this.target00;
-        int expResult = 0;
-        int result = instance.getTransport_scrambling_control().getValue();
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of getAdaptation_field_control method, of class TsPacket.
      */
     @Test
@@ -262,6 +240,66 @@ public class TSpacketTest {
         LOG.info("toString");
         TsPacket instance = new TestPacket_SDT().getTarget100();
         LOG.info(instance);
+    }
+
+    /**
+     * Test of getData method, of class TsPacket.
+     */
+    @Test
+    public void testGetData() throws DecoderException {
+        System.out.println("getData");
+        TsPacket instance = this.target00;
+        byte[] expResult = Hex.decodeHex(this.pd.p10);
+        byte[] result = instance.getData();
+        assertArrayEquals(expResult, result);
+    }
+
+    /**
+     * Test of getPid method, of class TsPacket.
+     */
+    @Test
+    public void testGetPid() {
+        LOG.info("");
+        TsPacket instance = this.target00;
+        int expResult = 0x11;
+        int result = instance.getPid();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getPid_Const method, of class TsPacket.
+     */
+    @Test
+    public void testGetPid_Const() {
+        LOG.info("");
+        TsPacket instance = this.target00;
+        RESERVED_PROGRAM_ID expResult = SDT_OR_BAT;
+        RESERVED_PROGRAM_ID result = instance.getPid_Const();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getTransport_scrambling_control_Const method, of class TsPacket.
+     */
+    @Test
+    public void testGetTransport_scrambling_control() {
+        LOG.info("");
+        TsPacket instance = this.target00;
+        int expResult = 0;
+        int result = instance.getTransport_scrambling_control();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getTransport_scrambling_control_Const method, of class TsPacket.
+     */
+    @Test
+    public void testGetTransport_scrambling_control_Const() {
+        LOG.info("");
+        TsPacket instance = this.target00;
+        TsPacket.TRANSPORT_SCRAMBLING_CONTROL expResult = TRANSPORT_SCRAMBLING_CONTROL.NOT_SCRAMBLED;
+        TsPacket.TRANSPORT_SCRAMBLING_CONTROL result = instance.getTransport_scrambling_control_Const();
+        assertEquals(expResult, result);
     }
 
 }

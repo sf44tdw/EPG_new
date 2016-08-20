@@ -22,8 +22,6 @@ import libepg.epg.section.descriptor.Descriptor;
 import libepg.epg.util.Aribstr;
 import org.apache.commons.codec.binary.Hex;
 
-
-
 /**
  * 短形式イベント記述子（Short event descriptor） 短形式イベント記述子はイベント名およびそのイベントの短い記述をテキスト形式で表す。
  *
@@ -119,15 +117,16 @@ public final class ShortEventDescriptor extends Descriptor {
         return Aribstr.AribToString(t);
     }
 
+    private static final String TITLE = "短形式イベント記述子";
     private static final MessageFormat DESC = new MessageFormat(
-            "短形式イベント記述子 {0}\n"
-            + "短形式イベント記述子 言語コード = {1}\n"
-            + "短形式イベント記述子 番組名長 = {2}\n"
-            + "短形式イベント記述子 番組名 = {3}\n"
-            + "短形式イベント記述子 番組名テキスト = {4}\n"
-            + "短形式イベント記述子 番組記述長 = {5}\n"
-            + "短形式イベント記述子 番組記述 = {6}\n"
-            + "短形式イベント記述子 番組記述テキスト = {7}\n"
+            TITLE+" {0}\n"
+            + TITLE+" 言語コード = {1}\n"
+            + TITLE+" 番組名長 = {2}\n"
+            + TITLE+" 番組名 = {3}\n"
+            + TITLE+" 番組名テキスト = {4}\n"
+            + TITLE+" 番組記述長 = {5}\n"
+            + TITLE+" 番組記述 = {6}\n"
+            + TITLE+" 番組記述テキスト = {7}\n"
     );
 
     @Override
