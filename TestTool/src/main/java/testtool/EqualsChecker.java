@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * また、異なるクラスのオブジェクトを混ぜて渡した場合、例外を発生させる。
  *
  * @author normal
- * @param <T>
+ * @param <T> チェック対象の型
  */
 public class EqualsChecker<T> {
 
@@ -40,16 +40,16 @@ public class EqualsChecker<T> {
     }
 
     /**
-     * @param target1
-     * @param target2
-     * @param target3
+     * @param target1 対象
+     * @param target2 対象
+     * @param target3 対象
      * @return
      * target1、target2、target3の全てがnullではない同一のクラスから作成されたオブジェクトで、反射性を守っている。<br>
      * かつ、3つのうち少なくとも1つが他と異なっている(3つの中から選んだ2つのうちどれか１つに対してa.equals(b)==falseが成立する)とき、<br>
      * 推移性チェックがfalseならばtrue<br>
      *
-     * @see java.lang.Object.equals
-     * @see EqualsChecker.transitive_testEquals
+     * @see java.lang.Object#equals
+     * @see EqualsChecker#transitive_testEquals
      */
     public boolean check_not_same(final T target1, final T target2, final T target3) {
         boolean ret;
@@ -79,13 +79,13 @@ public class EqualsChecker<T> {
     }
 
     /**
-     * @param target1
-     * @param target2
-     * @param target3
+     * @param target1 対象
+     * @param target2 対象
+     * @param target3 対象
      * @return
      * target1、target2、target3の全てがnullではない同一のクラスから作成されたオブジェクトで、、3つの中から選んだどの2つに対してもa.equals(b)==trueが成立するならtrue。<br>
      *
-     * @see java.lang.Object.equals
+     * @see java.lang.Object#equals
      */
     public boolean check_same(final T target1, final T target2, final T target3) {
         boolean ret;
@@ -177,8 +177,8 @@ public class EqualsChecker<T> {
     /**
      * xとyが同じクラスから作成されたオブジェクトならば何もしない。そうでない場合は例外を発生させる<br>
      *
-     * @param x
-     * @param y
+     * @param x 対象
+     * @param y 対象
      */
     public void isSameClass(T x, T y) throws IllegalArgumentException {
         Class<?> xC = x.getClass();

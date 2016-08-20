@@ -5,8 +5,6 @@
  */
 package testtool;
 
-import java.util.Collection;
-
 /**
  *
  * @author normal
@@ -18,13 +16,16 @@ public final class TestUtil {
 
     /**
      * このメソッドを呼び出したメソッドの名前を返す。
+     * @return メソッド名
      */
     public static String methodName() {
         return Thread.currentThread().getStackTrace()[2].getMethodName();
     }
 
     /**
-     * コレクションの中身をダンプする。
+     * イテレータが使用できるオブジェクトの中身をダンプする。
+     * @param target イテレータが使用できるオブジェクト。
+     * @return コレクションの中身。
      */
     public static String dumpCollection(Iterable<?> target) {
         StringBuilder sb = new StringBuilder();
