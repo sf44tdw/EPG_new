@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import libepg.epg.section.body.SectionBody;
 import libepg.epg.section.body.util.SubTableSectionCommonFields;
-import libepg.epg.section.ranges.SectionValueRangeChecker;
+import libepg.epg.section.range.SectionValueRangeChecker;
 import libepg.util.bytearray.ByteArraySplitter;
 import org.apache.commons.codec.binary.Hex;
 

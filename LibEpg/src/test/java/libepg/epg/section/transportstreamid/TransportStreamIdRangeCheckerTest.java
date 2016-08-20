@@ -5,7 +5,7 @@
  */
 package libepg.epg.section.transportstreamid;
 
-import static libepg.epg.section.ranges.SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE;
+import static libepg.epg.section.range.SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

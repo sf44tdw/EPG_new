@@ -20,7 +20,7 @@ import epgtools.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
 import libepg.epg.section.descriptor.DescriptorsLoop;
-import libepg.epg.section.ranges.SectionValueRangeChecker;
+import libepg.epg.section.range.SectionValueRangeChecker;
 import libepg.util.bytearray.ByteConverter;
 import libepg.util.bytearray.ByteDataBlock;
 import org.apache.commons.lang3.builder.EqualsBuilder;
