@@ -34,4 +34,68 @@ transport_stream_id=EventInformationTableBody.getTransport_stream_id
 original_network_id=EventInformationTableBody.getOriginal_network_id
 service_id=EventInformationTableBody.getService_id
 
-暗号化された放送でも、EPGは平文。
+暗号化された放送でも、EPG(SDTだけ)は平文。
+
+ネットワーク名記述子
+6.2.11 ネットワーク名記述子（Network name descriptor）
+ネットワーク名記述子は文字符号によりネットワーク名を記述する。表6－21 参照。
+表6－21 ネットワーク名記述子
+データ構造 ビット
+数
+ビット列
+表記
+network_name_descriptor(){
+descriptor_tag 8 uimsbf
+descriptor_length 8 uimsbf
+for (i=0;i<N;i++){
+char 8 uimsbf
+}
+}
+ネットワーク名記述子の意味:
+char（文字符号）： これは８ビットのフィールドである。一連の文字符号フィールドでは、
+NIT で通知される分配システムの名称が記述される。文書情報の符号化に関しては、付録
+Ａを参照。
+
+
+サービスリスト記述子*1
+6.2.14 サービスリスト記述子（Service list descriptor）
+サービスリスト記述子（表6－26 参照）は、サービス識別とサービス形式種別によるサ
+ービスの一覧を提供する。
+表6－26 サービスリスト記述子
+データ構造 ビット
+数
+ビット列
+表記
+service_list_descriptor(){
+descriptor_tag 8 uimsbf
+descriptor_length 8 uimsbf
+for (i=0;i<N;i++){
+service_id 16 uimsbf
+service_type 8 uimsbf
+}
+}
+サービスリスト記述子の意味：
+service_id（サービス識別）：これは16 ビットのフィールドで、そのトランスポートスト
+リーム内の情報サービスをユニークに識別する。サービス識別は、対応するプログラムマ
+ップセクション内の放送番組番号識別（program_number）に等しい。
+service_type（サービス形式種別）：これは８ビットのフィールドで、表6－25 に従って
+サービスの種類を表す。
+
+実装の必要があるかもしれない記述子タグ
+40
+c1
+41
+43
+c4
+c7
+48
+4a
+cb
+4d
+4e
+50
+54
+d5
+55
+d6
+fe

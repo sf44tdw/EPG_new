@@ -33,24 +33,25 @@ public final class PhysicalChannelNumberRecord {
      * 物理チャンネル番号
      */
     @CsvColumn(position = 0, name = " 物理チャンネル番号")
+    
     public int physical_channel_number;
+    /**
+     * サービス識別
+     */
+    @CsvColumn(position = 1, name = " サービス識別")
+    public int service_id;
+    
     /**
      * トランスポートストリーム識別
      */
-    @CsvColumn(position = 1, name = " トランスポートストリーム識別")
+    @CsvColumn(position = 2, name = " トランスポートストリーム識別")
     public int transport_stream_id;
 
     /**
      * オリジナルネットワーク識別
      */
-    @CsvColumn(position = 2, name = " オリジナルネットワーク識別")
+    @CsvColumn(position = 3, name = " オリジナルネットワーク識別")
     public int original_network_id;
-
-    /**
-     * サービス識別
-     */
-    @CsvColumn(position = 3, name = " サービス識別")
-    public int service_id;
 
     /**
      * サービス名
@@ -126,6 +127,5 @@ public final class PhysicalChannelNumberRecord {
     public void setService_name(String service_name) {
         this.service_name = service_name;
     }
-    
-    
+
 }

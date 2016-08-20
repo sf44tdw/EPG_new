@@ -113,9 +113,6 @@ public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
                     Channel ch = new Channel(transport_stream_id, original_network_id, service_id, service_name_String);
 //                    LOG.info("追加前のチャンネル情報 = " + ch);
                     boolean addret = this.getDataSet().add(ch);
-                    
-                    if (addret = false) {
-                    }
                 }
             }
         }

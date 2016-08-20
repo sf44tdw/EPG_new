@@ -1,0 +1,8 @@
+#surefire
+#Fri Aug 19 16:44:26 JST 2016
+maven.ext.class.path=C\:\\Program Files\\NetBeans 8.1\\java\\maven-nblib\\netbeans-eventspy.jar;C\:\\Program Files\\NetBeans 8.1\\java\\maven-nblib\\netbeans-cos.jar
+user.dir=H\:\\data007\\Programs\\NetBeansProjects\\EPG\\DumpEpgFromTs
+file.encoding=UTF-8
+localRepository=C\:\\Users\\normal\\.m2\\repository
+basedir=H\:\\data007\\Programs\\NetBeansProjects\\EPG\\DumpEpgFromTs
+test=epgtools.dumpepgfromts.subtool.ChannelListMakerTest

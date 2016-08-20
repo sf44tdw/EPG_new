@@ -43,7 +43,6 @@ public final class Programme extends DataObject {
     private final long stop_Time;
     private final String event_name;
     private final String description;
-    private final String additional_description;
     private final List<Nibble> nibbles;
     private final boolean this_or_other;
 
@@ -64,14 +63,13 @@ public final class Programme extends DataObject {
      * @see DataObject {
      *
      */
-    public Programme(int event_id, Timestamp start_Time, Timestamp stop_Time, String event_name, String description, String additional_description, List<Nibble> nibbles, int transport_stream_id, int original_network_id, int service_id, boolean this_or_other) {
+    public Programme(int event_id, Timestamp start_Time, Timestamp stop_Time, String event_name, String description, List<Nibble> nibbles, int transport_stream_id, int original_network_id, int service_id, boolean this_or_other) {
         super(transport_stream_id, original_network_id, service_id);
         this.event_id = event_id;
         this.start_Time = start_Time.getTime();
         this.stop_Time = stop_Time.getTime();
         this.event_name = replaceNull(event_name);
         this.description = replaceNull(description);
-        this.additional_description = replaceNull(additional_description);
         this.nibbles = nibbles;
         this.this_or_other = this_or_other;
 
@@ -113,13 +111,6 @@ public final class Programme extends DataObject {
     }
 
     /**
-     * @return 拡張形式イベント記述子の内容
-     */
-    public String getAdditional_description() {
-        return additional_description;
-    }
-
-    /**
      * @return 自局の番組ならtrue そうでないならfalse
      */
     public boolean isThis_or_other() {
@@ -148,7 +139,6 @@ public final class Programme extends DataObject {
         sb.append("終了時刻 = ").append(this.getStop_Time()).append("\n");
         sb.append("番組名 = ").append(this.getEvent_name()).append("\n");
         sb.append("番組内容 = ").append(this.getDescription()).append("\n");
-        sb.append("補足 = ").append(this.getAdditional_description()).append("\n");
         sb.append("自局フラグ = ").append(this.isThis_or_other()).append("\n");
         sb.append("ジャンル = \n");
         if (this.getNibble() == null) {

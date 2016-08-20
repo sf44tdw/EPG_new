@@ -41,7 +41,6 @@ import org.apache.commons.codec.binary.Hex;
  * EventInformationTableRepeatingPart.getStart_time_Object
  * EventInformationTableRepeatingPart.getStopTime_Object
  * ShortEventDescriptor.getEvent_name_String ShortEventDescriptor.getText_String
- * ExtendedEventDescriptor.getStoredText ContentDescriptor.getNibbles
  *
  * @author normal
  */
@@ -86,13 +85,12 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
 
         String description = null;
 
-        String additional_description = null;
-
         List<Nibble> nibbles = null;
 
         final List<EventInformationTableRepeatingPart> rp = b.getEITRepeatingPartList();
 
         for (EventInformationTableRepeatingPart rpart : rp) {
+            boolean sdtFlag = false;
             REPEATING_PART:
             {
                 event_id = rpart.getEvent_id();
@@ -116,7 +114,6 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
                 }
 
                 for (Descriptor desc : rpart.getDescriptors_loop().getDescriptors_loopList()) {
-
                     //短形イベント記述子の処理(複数は存在しない想定)
                     if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.SHORT_EVENT_DESCRIPTOR) {
 
@@ -132,12 +129,7 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
                         if (LOG.isInfoEnabled() && isPutMessage) {
                             LOG.info(description);
                         }
-                    }
-
-                    //拡張イベント記述子の処理(複数ある場合は文字列を連結する。)
-                    if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.EXTENDED_EVENT_DESCRIPTOR) {
-                        ExtendedEventDescriptor eevtdesc = (ExtendedEventDescriptor) desc;
-                        additional_description = eevtdesc.getStoredText();
+                        sdtFlag = true;
                     }
 
                     //コンテント記述子の処理
@@ -154,28 +146,30 @@ public class ProgrammeDataExtractor extends AbstractDataExtractor<Programme> {
 
                 }
 
-                //番組情報を生成。
-                final Programme p = new Programme(
-                        event_id,
-                        start_Time,
-                        stop_Time,
-                        event_name,
-                        description,
-                        additional_description,
-                        nibbles,
-                        transport_stream_id,
-                        original_network_id,
-                        service_id,
-                        this_or_other
-                );
+                //sdtが無いEITは拡張形式イベント記述による補足情報の伝達に使用されていると思われるので、無視。
+                if (sdtFlag == true) {
+                    //番組情報を生成。
+                    final Programme p = new Programme(
+                            event_id,
+                            start_Time,
+                            stop_Time,
+                            event_name,
+                            description,
+                            nibbles,
+                            transport_stream_id,
+                            original_network_id,
+                            service_id,
+                            this_or_other
+                    );
 
-                if (p != null) {
-                    boolean ret = this.getDataSet().add(p);
-                    if ((ret == false) && LOG.isInfoEnabled() && isPutMessage) {
-                        LOG.info("重複\n" + p);
+                    if (p != null) {
+                        boolean ret = this.getDataSet().add(p);
+                        if ((ret == false) && LOG.isInfoEnabled() && isPutMessage) {
+                            LOG.info("重複\n" + p);
+                        }
+                    } else {
+                        LOG.error("番組情報がnullです。 セクション = " + Hex.encodeHexString(s.getData()));
                     }
-                } else {
-                    LOG.error("番組情報がnullです。 セクション = " + Hex.encodeHexString(s.getData()));
                 }
             }
         }
