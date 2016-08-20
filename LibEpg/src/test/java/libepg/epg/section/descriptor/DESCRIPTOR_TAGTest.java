@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 import static libepg.epg.section.descriptor.DESCRIPTOR_TAG.CONTENT_DESCRIPTOR;
 import libepg.epg.section.descriptor.contentdescriptor.ContentDescriptor;
 import epgtools.loggerfactory.LoggerFactory;
+import static libepg.epg.section.descriptor.DESCRIPTOR_TAG.NETWORK_NAME_DESCRIPTOR;
 
 /**
  *
@@ -61,6 +62,7 @@ public class DESCRIPTOR_TAGTest {
     public void testValues() {
         LOG.info("values");
         DESCRIPTOR_TAG[] expResult = {
+            NETWORK_NAME_DESCRIPTOR,
             DESCRIPTOR_TAG.SERVICE_DESCRIPTOR,
             DESCRIPTOR_TAG.SHORT_EVENT_DESCRIPTOR,
             DESCRIPTOR_TAG.EXTENDED_EVENT_DESCRIPTOR,
