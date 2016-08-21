@@ -16,7 +16,6 @@
  */
 package libepg.epg.section;
 
-import libepg.epg.section.body.SectionBody;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

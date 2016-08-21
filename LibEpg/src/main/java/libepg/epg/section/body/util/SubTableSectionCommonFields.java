@@ -16,7 +16,7 @@
  */
 package libepg.epg.section.body.util;
 
-import libepg.epg.section.body.SectionBody;
+import libepg.epg.section.SectionBody;
 import libepg.util.bytearray.ByteConverter;
 
 /**

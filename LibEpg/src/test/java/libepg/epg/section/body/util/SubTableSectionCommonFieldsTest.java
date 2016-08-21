@@ -18,8 +18,10 @@ package libepg.epg.section.body.util;
 
 import epgtools.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.InvocationTargetException;
+import libepg.common.SectionBodyMaker;
 import libepg.epg.section.TABLE_ID;
-import libepg.epg.section.body.SectionBody;
+import libepg.epg.section.SectionBody;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
@@ -51,9 +53,9 @@ public class SubTableSectionCommonFieldsTest {
     private final SectionBody dummyBody;
     private final SubTableSectionCommonFields target;
 
-    public SubTableSectionCommonFieldsTest() throws DecoderException {
+    public SubTableSectionCommonFieldsTest() throws DecoderException, InvocationTargetException {
         x = Hex.decodeHex("ffff3eff00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toCharArray());
-        dummyBody = new SectionBody(TABLE_ID.OTHER_TABLE_IDS, this.x);
+        dummyBody = SectionBodyMaker.init(TABLE_ID.OTHER_TABLE_IDS, this.x);
         this.target = new SubTableSectionCommonFields(this.dummyBody);
     }
 

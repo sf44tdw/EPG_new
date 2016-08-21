@@ -27,8 +27,6 @@ import java.util.Arrays;
 import libepg.epg.section.descriptor.Descriptor;
 import epgtools.loggerfactory.LoggerFactory;
 
-
-
 /**
  *
  * @author normal
@@ -60,6 +58,10 @@ public class Descriptors {
     private final String SERVICE_DESCRIPTOR_STRING = "481201000f0e4e484b451d461d6c310f456c357e";
     private final byte[] SERVICE_DESCRIPTOR_BYTE;
 
+    //サービスリスト記述子
+    private final String SERVICE_LIST_DESCRIPTOR_STRING = "411500970100980100990102f1c002f3c002f4c002f5c0";
+    private final byte[] SERVICE_LIST_DESCRIPTOR_BYTE;
+
     //デジタルコピー制御記述子(使わない)
     private final String DIGITAL_COPY_CONTROL_DESCRIPTOR_STRING = "c10184";
     private final byte[] DIGITAL_COPY_CONTROL_DESCRIPTOR_BYTE;
@@ -89,6 +91,7 @@ public class Descriptors {
 
     public Descriptors() throws DecoderException {
         this.SERVICE_DESCRIPTOR_BYTE = Hex.decodeHex(this.SERVICE_DESCRIPTOR_STRING.toCharArray());
+        this.SERVICE_LIST_DESCRIPTOR_BYTE = Hex.decodeHex(this.SERVICE_LIST_DESCRIPTOR_STRING.toCharArray());
         this.DIGITAL_COPY_CONTROL_DESCRIPTOR_BYTE = Hex.decodeHex(this.DIGITAL_COPY_CONTROL_DESCRIPTOR_STRING.toCharArray());
         this.LOGO_TRANSMISSION_DESCRIPTOR_BYTE = Hex.decodeHex(this.LOGO_TRANSMISSION_DESCRIPTOR_STRING.toCharArray());
         this.SHORT_EVENT_DESCRIPTOR_BYTE = Hex.decodeHex(this.SHORT_EVENT_DESCRIPTOR_STRING.toCharArray());
@@ -151,6 +154,15 @@ public class Descriptors {
         return null;
     }
 
+    public Descriptor getSERVICE_LIST_DESCRIPTOR() {
+        try {
+            return init(this.SERVICE_LIST_DESCRIPTOR_BYTE);
+        } catch (InvocationTargetException ex) {
+            LOG.fatal(ex.getCause());
+        }
+        return null;
+    }
+
     private byte[] copyIt(byte[] src) {
         return Arrays.copyOf(src, src.length);
     }
@@ -177,6 +189,10 @@ public class Descriptors {
 
     public byte[] getCONTENT_DESCRIPTOR_BYTE() {
         return copyIt(CONTENT_DESCRIPTOR_BYTE);
+    }
+
+    public byte[] getSERVICE_LIST_DESCRIPTOR_BYTE() {
+        return copyIt(SERVICE_LIST_DESCRIPTOR_BYTE);
     }
 
 }

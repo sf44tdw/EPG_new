@@ -20,9 +20,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import libepg.epg.section.descriptor.Descriptor;
-import libepg.epg.section.descriptor.extendedeventdescriptor.ExtendedEventDescriptorItem;
 import libepg.util.bytearray.ByteArraySplitter;
-import org.apache.commons.codec.binary.Hex;
 
 //service_list_descriptor(){
 //descriptor_tag 8 uimsbf

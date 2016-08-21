@@ -16,7 +16,6 @@
  */
 package libepg.epg.section;
 
-import libepg.epg.section.body.SectionBody;
 import libepg.util.bytearray.ByteConverter;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -108,7 +107,7 @@ public final class Section {
         }
 
         //セクション長フィールドの値が指定された値以上になった場合。
-        if (sectionLength >= tableId.getMaxSectionLength().getMaxSectionBodyLength()) {
+        if (sectionLength > tableId.getMaxSectionLength().getMaxSectionBodyLength()) {
             MessageFormat msg3 = new MessageFormat("セクション長フィールドの値が大きすぎます。セクション長フィールドの最大値={0} セクション長フィールドの値={1} 渡された配列={2}");
             Object[] parameters3 = {tableId.getMaxSectionLength().getMaxSectionBodyLength(), sectionLength, hexValue};
             if (LOG.isTraceEnabled()) {

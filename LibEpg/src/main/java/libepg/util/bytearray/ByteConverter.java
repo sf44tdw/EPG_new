@@ -26,18 +26,20 @@ public class ByteConverter {
     }
 
     /**
-     * byte(8bit)のシフト演算は、内部でint(32bit)に変換されてから処理されるらしい。 このため、最上位（符号）ビットが 1 （負）
+     * byte(8bit)のシフト演算は、内部でint(32bit)に変換されてから処理される。 このため、最上位（符号）ビットが 1 （負）
      * の場合は、byte のままシフト演算できないため、 数値変換した後で下位8bit以外を0にする。
      *
-     *{@literal byte b = (byte)0x55 1010 1010 b = b >>> 1;
-     * 
+     * {@literal byte b = (byte)0x55 1010 1010 b = b >>> 1;
+     *
      * は、右側の式 b >>> 1 が評価される際に、 b が int 型に変換され、 1111 1111 1111 1111 1111 1111
      * 1010 1010 となる。
      *
      * これを符号なし右シフトすると 0111 1111 1111 1111 1111 1111 1101 0101 となる。
-     *}
+     * }
+     *
      * @param src 変換したいbyte型変数
      * @return 変換した数値(符号なしint)
+     * @see Byte#toUnsignedInt(byte)
      */
     public static int byteToInt(byte src) {
         return Byte.toUnsignedInt(src);
@@ -48,6 +50,7 @@ public class ByteConverter {
      *
      * @param src 変換したいbyte型変数
      * @return 変換した数値。
+     * @throws IndexOutOfBoundsException 4バイトより大きな配列を渡したとき。
      */
     public static int bytesToInt(byte[] src) throws IndexOutOfBoundsException {
         int temp = 0;
@@ -55,7 +58,7 @@ public class ByteConverter {
             throw new IndexOutOfBoundsException("配列が大きすぎます。4バイトを超える配列には対応していません。");
         }
         for (byte b : src) {
-            temp = (temp << 8) + (b & 0xff);
+            temp = (temp << 8) + (ByteConverter.byteToInt(b));
         }
         return temp;
     }

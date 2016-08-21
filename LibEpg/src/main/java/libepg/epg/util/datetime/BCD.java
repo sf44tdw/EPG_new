@@ -18,6 +18,9 @@ package libepg.epg.util.datetime;
 
 import java.text.MessageFormat;
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * 0以上99以下の10進整数に相当するBCDコードを保持する。
@@ -30,7 +33,12 @@ public class BCD {
     private final int high;
     private final int low;
 
-    public BCD(byte bcd) {
+    /**
+     *
+     * @param bcd BCD2桁分の値のbyte型変数
+     * @throws IllegalArgumentException 渡された変数の上位か下位の4ビットが0x0以上0x9以下ではない場合。
+     */
+    public BCD(byte bcd) throws IllegalArgumentException{
         
         high = bcd >>> 4;
         low = bcd & 0x0f;
@@ -68,37 +76,18 @@ public class BCD {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + this.high;
-        hash = 59 * hash + this.low;
-        return hash;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj, true);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final BCD other = (BCD) obj;
-        if (this.high != other.high) {
-            return false;
-        }
-        if (this.low != other.low) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(5, 53, this);
     }
 
     @Override
     public String toString() {
-        return "BCD{" + "high=" + Integer.toHexString(high) + ", low=" + Integer.toHexString(low) + ", decimal=" + this.getDecimal() + '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

@@ -5,7 +5,6 @@
  */
 package libepg.epg.section;
 
-import libepg.epg.section.body.SectionBody;
 import epgtools.reverselookupmapfactory.ReverseLookUpMapFactory;
 import java.text.MessageFormat;
 import java.util.ArrayList;

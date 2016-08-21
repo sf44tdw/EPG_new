@@ -16,7 +16,6 @@
  */
 package libepg.epg.section;
 
-import libepg.epg.section.body.SectionBody;
 import java.lang.invoke.MethodHandles;
 import org.apache.commons.logging.Log;
 import org.junit.After;

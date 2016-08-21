@@ -21,7 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import libepg.epg.section.body.SectionBody;
+import libepg.epg.section.SectionBody;
 import libepg.epg.section.body.util.SubTableSectionCommonFields;
 import libepg.epg.section.descriptor.DescriptorsLoop;
 import libepg.util.bytearray.ByteArraySplitter;

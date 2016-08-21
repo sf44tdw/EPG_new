@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import libepg.util.bytearray.ByteConverter;
 
 /**
  *
@@ -68,10 +67,22 @@ public class ByteConverterTest {
      * Test of byteToInt method, of class ByteConverter.
      */
     @Test
-    public void testByteToInt() {
-        System.out.println("byteToInt");
+    public void testByteToInt1() {
+        LOG.info("byteToInt");
         byte src = (byte) 0xff;
         int expResult = 0xff;
+        int result = ByteConverter.byteToInt(src);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of byteToInt method, of class ByteConverter.
+     */
+    @Test
+    public void testByteToInt2() {
+        LOG.info("byteToInt");
+        byte src = (byte) 0x0;
+        int expResult = 0x0;
         int result = ByteConverter.byteToInt(src);
         assertEquals(expResult, result);
     }
@@ -80,12 +91,46 @@ public class ByteConverterTest {
      * Test of bytesToInt method, of class ByteConverter.
      */
     @Test
-    public void testBytesToInt() {
-        System.out.println("bytesToInt");
+    public void testBytesToInt1() {
+        LOG.info("bytesToInt");
+        byte[] src = {0x00, 0x00, 0x00, 0x00};
+        int expResult = 0x00000000;
+        int result = ByteConverter.bytesToInt(src);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of bytesToInt method, of class ByteConverter.
+     */
+    @Test
+    public void testBytesToInt2() {
+        LOG.info("bytesToInt");
         byte[] src = {0x12, 0x34};
         int expResult = 0x1234;
         int result = ByteConverter.bytesToInt(src);
         assertEquals(expResult, result);
     }
 
+    /**
+     * Test of bytesToInt method, of class ByteConverter.
+     */
+    @Test
+    public void testBytesToInt3() {
+        LOG.info("bytesToInt");
+        byte[] src = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+        int expResult = 0xffffffff;
+        int result = ByteConverter.bytesToInt(src);
+        assertEquals(expResult, result);
+    }
+
+    
+    /**
+     * Test of bytesToInt method, of class ByteConverter.
+     */
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testBytesToInt4() {
+        LOG.info("bytesToInt");
+        byte[] src = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,(byte)0xff};
+        int result = ByteConverter.bytesToInt(src);
+    }
 }
