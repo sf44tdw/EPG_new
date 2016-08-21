@@ -19,8 +19,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import java.util.HashSet;
-import java.util.Set;
 import libepg.common.packet.TestPacket_EIT;
 import libepg.common.packet.TestPacket_SDT;
 import libepg.epg.section.Section;
@@ -137,15 +135,15 @@ public class SectionReconstructorTest {
 
     }
 
-    private Set<byte[]> makeEITList() {
+    private List<byte[]> makeEITList() {
 
-        Set<byte[]> ret = new HashSet<>();
+        List<byte[]> ret = new ArrayList<>();
 
         for (int pid : pids.getPids()) {
             ret.addAll(new SectionReconstructor(this.getParcels().get(pid), pid).getSectionByteArrays());
         }
 
-        return Collections.unmodifiableSet(ret);
+        return Collections.unmodifiableList(ret);
     }
 
 //    /**
@@ -168,7 +166,7 @@ public class SectionReconstructorTest {
     public void testGetSectionByteArrays() {
 
         LOG.info("getSectionByteArrays");
-        Set<byte[]> result = makeEITList();
+        List<byte[]> result = makeEITList();
 
         StringBuilder sbl = new StringBuilder();
         sbl.append("要素数=");
@@ -186,6 +184,7 @@ public class SectionReconstructorTest {
         }
         LOG.info(sbl.toString());
     }
+
 
 
 }

@@ -67,7 +67,7 @@ public final class SectionReconstructor {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
+        final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, SectionReconstructor.CLASS_LOG_OUTPUT_MODE).getLOG();
     }
 
@@ -82,12 +82,12 @@ public final class SectionReconstructor {
         this.pid = pid;
         List<TsPacketParcel> tempParcels = new ArrayList<>();
         for (TsPacketParcel parcel : parcels) {
-            int ppid= parcel.getPacket().getPid();
-            if (this.pid ==ppid) {
+            int ppid = parcel.getPacket().getPid();
+            if (this.pid == ppid) {
                 tempParcels.add(parcel);
             } else {
                 MessageFormat WRONG_PID = new MessageFormat("指定されたPid以外のPidを持つパケットが混じっています。このパケットは除外されます。指定されたPid = {0} パケットのpid = {1} パケット = {2}");
-                Object[] parameters = {Integer.toHexString(this.getPid()),Integer.toHexString(ppid),Hex.encodeHexString(parcel.getPacket().getData())};
+                Object[] parameters = {Integer.toHexString(this.getPid()), Integer.toHexString(ppid), Hex.encodeHexString(parcel.getPacket().getData())};
                 LOG.error(WRONG_PID.format(parameters));
             }
         }
@@ -110,9 +110,9 @@ public final class SectionReconstructor {
      *
      * @return セクションのリスト。
      */
-    public synchronized Set<Section> getSections() {
-        Set<byte[]> section_byte = this.getSectionByteArrays();
-        Set<Section> ret = new HashSet<>();
+    public synchronized List<Section> getSections() {
+        List<byte[]> section_byte = this.getSectionByteArrays();
+        List<Section> ret = new ArrayList<>();
         for (byte[] b : section_byte) {
             final Section sec;
             Section s_t = null;
@@ -132,7 +132,7 @@ public final class SectionReconstructor {
                 }
             }
         }
-        return Collections.unmodifiableSet(ret);
+        return Collections.unmodifiableList(ret);
     }
 
     /**
@@ -157,9 +157,10 @@ public final class SectionReconstructor {
      * @return セクションを表すバイト列のリスト
      *
      */
-    public synchronized Set<byte[]> getSectionByteArrays() {
+    public synchronized List<byte[]> getSectionByteArrays() {
 
-        Set<byte[]> ret = new TreeSet<>((byte[] left, byte[] right) -> {
+        //重複排除したい。
+        Set<byte[]> dic = new TreeSet<>((byte[] left, byte[] right) -> {
             for (int i = 0, j = 0; i < left.length && j < right.length; i++, j++) {
                 int a = (left[i] & 0xff);
                 int b = (right[j] & 0xff);
@@ -169,6 +170,9 @@ public final class SectionReconstructor {
             }
             return left.length - right.length;
         });
+
+        //サブテーブルの関係上。読み込み順にしたい。
+        List<byte[]> ret = new ArrayList<>();
 
         boolean first_start_indicator_found = false;
 
@@ -229,7 +233,7 @@ public final class SectionReconstructor {
                                 LOG.trace("前のパケットのペイロードのちょうど最後でセクションが終わっていた場合。");
                             }
 
-                            this.addToReturnObject(buf, ret);
+                            this.addToReturnObject(buf, dic, ret);
 
                             buf.clear();
 
@@ -243,7 +247,7 @@ public final class SectionReconstructor {
                             temp_array = t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.PREV_POINTER);
                             this.put(buf, temp_array);
 
-                            this.addToReturnObject(buf, ret);
+                            this.addToReturnObject(buf, dic, ret);
 
                             buf.clear();
 
@@ -258,7 +262,7 @@ public final class SectionReconstructor {
                     this.put(buf, t_map.get(PayLoadSplitter.PAYLOAD_PART_KEY.ALL_PAYLOAD));
                 }
             }
-            return Collections.unmodifiableSet(ret);
+            return Collections.unmodifiableList(ret);
         } catch (BufferOverflowException ex) {
             LOG.fatal(ex);
             throw ex;
@@ -270,7 +274,7 @@ public final class SectionReconstructor {
      * ByteBufferのarray()をそのまま使うと、無条件でバッファ長分の配列を受け取ることになる。
      *
      */
-    private synchronized void addToReturnObject(ByteBuffer buf, Set<byte[]> dest) {
+    private synchronized void addToReturnObject(ByteBuffer buf, Set<byte[]> dict, List<byte[]> dest) {
         byte[] BeforeCutDown = buf.array();
         byte[] AfterCutDown = new byte[buf.position()];
         System.arraycopy(BeforeCutDown, 0, AfterCutDown, 0, AfterCutDown.length);
@@ -279,7 +283,8 @@ public final class SectionReconstructor {
             Object[] parameters1 = {Hex.encodeHexString(BeforeCutDown), Hex.encodeHexString(AfterCutDown)};
             LOG.trace(msg1.format(parameters1));
         }
-        if (dest.add(AfterCutDown)) {
+        if (dict.add(AfterCutDown)) {
+            dest.add(AfterCutDown);
             if (LOG.isTraceEnabled()) {
                 MessageFormat msg2 = new MessageFormat("\n追加されたバイト列={0}");
                 Object[] parameters2 = {Hex.encodeHexString(AfterCutDown)};
