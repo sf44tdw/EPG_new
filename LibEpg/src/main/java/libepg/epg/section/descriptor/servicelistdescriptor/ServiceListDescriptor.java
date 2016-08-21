@@ -34,6 +34,11 @@ import libepg.util.bytearray.ByteArraySplitter;
  * サービスリスト記述子（Service list descriptor） サービスリスト記述子（表6－26 参照）は、サービス識別とサービス形式種別によるサ
  * ービスの一覧を提供する。
  *
+ * この記述子は、各トランスポートストリーム内のサービスおよびサービス形式種別の一 覧を提供する。サービスはサービス識別（=MPEG-2
+ * プログラム番号）によって識別され 一覧される。トランスポートストリーム識別とオリジナルネットワーク識別は、サービス
+ * を一意に識別するために必要なものであり、記述子ループの最初に提示される。 サービスリスト記述子は各ループに1 度のみ使用することができる。この記述子の伝送
+ * は他ネットワークではオプションである。しかし伝送される場合は完全なものでなければ ならない
+ *
  * @author normal
  */
 public class ServiceListDescriptor extends Descriptor {
@@ -43,7 +48,7 @@ public class ServiceListDescriptor extends Descriptor {
     }
 
     public final synchronized List<Service> getServiceList() {
-        List<byte[]> list = ByteArraySplitter.split(this.getData(), 3);
+        List<byte[]> list = ByteArraySplitter.split(this.getDescriptor_Body(), 3);
         List<Service> ret = new ArrayList<>();
         for (byte[] b : list) {
             ret.add(new Service(b));

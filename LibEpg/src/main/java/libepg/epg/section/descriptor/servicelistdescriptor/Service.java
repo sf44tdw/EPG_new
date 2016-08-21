@@ -44,6 +44,8 @@ public final class Service {
      * そのトランスポートストリーム内の他のサービスからこのサービスを識別するためのラベルの役割をする。
      * サービス識別は、対応するプログラムマップセクション内の放送番組番号識別（program_number）に等しい。
      *
+     * 
+     *
      * @return 上記の値
      */
     public final synchronized int getService_id() {

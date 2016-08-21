@@ -75,14 +75,13 @@ public class ServiceListDescriptorTest {
         LOG.info("getServiceList");
         ServiceListDescriptor instance = new ServiceListDescriptor(this.descs.getSERVICE_LIST_DESCRIPTOR());
         List<Service> expResult = new ArrayList<>();
-        expResult.add(new Service(Hex.decodeHex("411500".toCharArray())));
-        expResult.add(new Service(Hex.decodeHex("970100".toCharArray())));
-        expResult.add(new Service(Hex.decodeHex("980100".toCharArray())));
-        expResult.add(new Service(Hex.decodeHex("990102".toCharArray())));
-        expResult.add(new Service(Hex.decodeHex("f1c002".toCharArray())));
-        expResult.add(new Service(Hex.decodeHex("f3c002".toCharArray())));
-        expResult.add(new Service(Hex.decodeHex("f4c002".toCharArray())));
-        expResult.add(new Service(Hex.decodeHex("f5c000".toCharArray())));
+        expResult.add(new Service(Hex.decodeHex("009701".toCharArray())));
+        expResult.add(new Service(Hex.decodeHex("009801".toCharArray())));
+        expResult.add(new Service(Hex.decodeHex("009901".toCharArray())));
+        expResult.add(new Service(Hex.decodeHex("02f1c0".toCharArray())));
+        expResult.add(new Service(Hex.decodeHex("02f3c0".toCharArray())));
+        expResult.add(new Service(Hex.decodeHex("02f4c0".toCharArray())));
+        expResult.add(new Service(Hex.decodeHex("02f5c0".toCharArray())));
 
         List<Service> result = instance.getServiceList();
         assertEquals(expResult, result);
