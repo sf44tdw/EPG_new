@@ -57,7 +57,7 @@ public final class NetworkDescriptor extends Descriptor {
 
     @Override
     public String toString() {
-        return super.toString() + "\n+"
+        return super.toString() + "\n"
                 + "ネットワーク名記述子 文字符号 = " + Hex.encodeHexString(this.getChar_byte()) + "\n"
                 + "ネットワーク名記述子 = " + this.getChar_String() + "\n";
     }
