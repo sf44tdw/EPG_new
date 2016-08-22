@@ -16,13 +16,9 @@
  */
 package libepg.epg.section.descriptor;
 
+import epgtools.reverselookupmapfactory.DeduplicatdeNumberSetFactory;
 import epgtools.reverselookupmapfactory.ReverseLookUpMapFactory;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.Range;
@@ -103,7 +99,7 @@ public enum DESCRIPTOR_TAG {
         for (DESCRIPTOR_TAG tag : DESCRIPTOR_TAG.values()) {
             revmapf.put(tag);
         }
-        rev = revmapf.getDict();
+        rev = revmapf.getUnmodifiableMap();
     }
 
     ;
@@ -128,27 +124,12 @@ public enum DESCRIPTOR_TAG {
         if ((this.tagName == null) || ("".equals(this.tagName))) {
             throw new IllegalArgumentException("タグ名が指定されていないか空文字です。");
         }
-
-        List<Integer> t = new ArrayList<>();
-        if (tag != null) {
-            t.add(tag);
-        } else {
-            throw new NullPointerException("タグが指定されていません。");
-        }
-        if (tags != null) {
-            t.addAll(Arrays.asList(tags));
-        }
         Range<Integer> r = Range.between(0x0, 0xFF);
-        for (Integer i : t) {
-            if (!r.contains(i)) {
-                MessageFormat msg = new MessageFormat("タグが範囲外の値です。タグ={0}");
-                Object[] parameters = {Integer.toHexString(i)};
-                throw new IllegalArgumentException(msg.format(parameters));
-            }
-        }
-        Set<Integer> temp = Collections.synchronizedSet(new HashSet<Integer>());
-        temp.addAll(t);
-        this.tags = Collections.unmodifiableSet(temp);
+
+        DeduplicatdeNumberSetFactory<Integer> setf = new DeduplicatdeNumberSetFactory<>();
+
+        this.tags = setf.makeSet(r, tag, tags);
+
         this.dataType = dataType;
     }
 

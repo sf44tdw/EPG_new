@@ -5,13 +5,9 @@
  */
 package libepg.ts.packet;
 
+import epgtools.reverselookupmapfactory.DeduplicatdeNumberSetFactory;
 import epgtools.reverselookupmapfactory.ReverseLookUpMapFactory;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -78,7 +74,7 @@ public enum RESERVED_PROGRAM_ID {
         for (RESERVED_PROGRAM_ID pid : RESERVED_PROGRAM_ID.values()) {
             revmapf.put(pid);
         }
-        rev = revmapf.getDict();
+        rev = revmapf.getUnmodifiableMap();
     }
 
     ;
@@ -103,27 +99,12 @@ public enum RESERVED_PROGRAM_ID {
         if ((this.pidName == null) || ("".equals(this.pidName))) {
             throw new IllegalArgumentException("タグ名が指定されていないか空文字です。");
         }
-
-        List<Integer> t = new ArrayList<>();
-        if (pid != null) {
-            t.add(pid);
-        } else {
-            throw new NullPointerException("PIDが指定されていません。");
-        }
-        if (pids != null) {
-            t.addAll(Arrays.asList(pids));
-        }
         Range<Integer> r = Range.between(0x0000, 0x1FFF);
-        for (Integer i : t) {
-            if (!r.contains(i)) {
-                MessageFormat msg = new MessageFormat("PIDが範囲外の値です。PID={0}");
-                Object[] parameters = {Integer.toHexString(i)};
-                throw new IllegalArgumentException(msg.format(parameters));
-            }
-        }
-        Set<Integer> temp = Collections.synchronizedSet(new HashSet<Integer>());
-        temp.addAll(t);
-        this.pids = Collections.unmodifiableSet(temp);
+
+        DeduplicatdeNumberSetFactory<Integer> setf = new DeduplicatdeNumberSetFactory<>();
+
+        this.pids = setf.makeSet(r, pid, pids);
+
     }
 
     /**

@@ -5,6 +5,7 @@
  */
 package libepg.epg.section;
 
+import epgtools.reverselookupmapfactory.DeduplicatdeNumberSetFactory;
 import epgtools.reverselookupmapfactory.ReverseLookUpMapFactory;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public enum TABLE_ID {
      * 能する。ネットワーク識別の値は標準化機関の規定による。また、トランスポート識別の
      * 値は事業者が独自に選定することができる。トランスポートストリームが発生したネット ワークにおいてNIT
      * が伝送された場合には、ネットワーク識別とオリジナルネットワーク 識別は同一値である。 ARIB STD-B10 第２部 P79
+     *
+     * 注:BS放送の場合、自ネットのNITにも全チャンネル分入っている。
      */
     NIT_THIS_NETWORK("NIT（自ネットワーク", MAX_SECTION_LENGTH.BYTE_1021, NetworkInformationTableBody.class, 0x40),
     /**
@@ -137,7 +140,7 @@ public enum TABLE_ID {
         for (TABLE_ID tid : TABLE_ID.values()) {
             revmapf.put(tid);
         }
-        rev = revmapf.getDict();
+        rev = revmapf.getUnmodifiableMap();
     }
 
     ;
@@ -163,29 +166,11 @@ public enum TABLE_ID {
         if ((this.tableName == null) || ("".equals(this.tableName))) {
             throw new IllegalArgumentException("テーブル名が指定されていないか空文字です。");
         }
-
-        List<Integer> t = new ArrayList<>();
-        if (tableID != null) {
-            t.add(tableID);
-        } else {
-            throw new NullPointerException("テーブルIDが指定されていません。");
-        }
-
-        if (tableIDs != null) {
-            t.addAll(Arrays.asList(tableIDs));
-        }
         Range<Integer> r = Range.between(0x0, 0xFF);
-        for (Integer i : t) {
-            if (!r.contains(i)) {
-                MessageFormat msg = new MessageFormat("テーブルIDが範囲外の値です。テーブルID={0}");
-                Object[] parameters = {Integer.toHexString(i)};
-                throw new IllegalArgumentException(msg.format(parameters));
-            }
-        }
-
-        Set<Integer> temp = Collections.synchronizedSet(new HashSet<Integer>());
-        temp.addAll(t);
-        this.tableIDs = Collections.unmodifiableSet(temp);
+        
+        DeduplicatdeNumberSetFactory<Integer> setf =new DeduplicatdeNumberSetFactory<>();
+        
+        this.tableIDs = setf.makeSet(r, tableID, tableIDs);
         this.dataType = dataType;
         this.maxSectionLength = maxSectionLength;
     }
