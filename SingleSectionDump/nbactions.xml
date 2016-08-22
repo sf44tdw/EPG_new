@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath singlesectiondump.Main -s "42f0977fe1d500007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32846da2fe"</exec.args>
+                <exec.args>-classpath %classpath singlesectiondump.Main -s "40f0867fe1c90000f010400a3458456c392d30682331fe020301f0697fe17fe1f063410f040801040901040a010588c0fff1a4fa2a5a5a0cf00d440d980f120fba0fe4100e1062108c110a1134115e118811dc1230125a128412ae12d81356fb020588cd200242234e2348234b23452546256c456c357e0f0404080409040afff1af010588c8a875e4"</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -24,7 +24,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath singlesectiondump.Main -s "42f0977fe1d500007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32846da2fe"</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath singlesectiondump.Main -s "40f0867fe1c90000f010400a3458456c392d30682331fe020301f0697fe17fe1f063410f040801040901040a010588c0fff1a4fa2a5a5a0cf00d440d980f120fba0fe4100e1062108c110a1134115e118811dc1230125a128412ae12d81356fb020588cd200242234e2348234b23452546256c456c357e0f0404080409040afff1af010588c8a875e4"</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -39,7 +39,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath singlesectiondump.Main -s "42f0977fe1d500007fe1ff0408f30020481201000f0e4e484b451d461d6c310f456c357ec10184cf0701fe08f00104080409f3001c481201000f0e4e484b451d461d6c320f456c357ec10184cf0302fe08040af3001c481201000f0e4e484b451d461d6c330f456c357ec10184cf0302fe080588e5001f480ec0000b0e4e484b0f374842530e32c10188cf0a030e4e484b0f215d0e32846da2fe"</exec.args>
+                <exec.args>-classpath %classpath singlesectiondump.Main -s "40f0867fe1c90000f010400a3458456c392d30682331fe020301f0697fe17fe1f063410f040801040901040a010588c0fff1a4fa2a5a5a0cf00d440d980f120fba0fe4100e1062108c110a1134115e118811dc1230125a128412ae12d81356fb020588cd200242234e2348234b23452546256c456c357e0f0404080409040afff1af010588c8a875e4"</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
