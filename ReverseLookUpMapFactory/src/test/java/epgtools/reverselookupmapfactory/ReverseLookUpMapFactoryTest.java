@@ -301,7 +301,7 @@ public class ReverseLookUpMapFactoryTest {
 
 
     /**
-     * Test of getUnmodifiableSet method, of class ReverseLookUpMapFactory.
+     * Test of getUnmodifiableMap method, of class ReverseLookUpMapFactory.
      */
     @Test
     public void testGetDict() {
@@ -318,7 +318,7 @@ public class ReverseLookUpMapFactoryTest {
         expResult.put(4, SOME_ENUM_OK.C);
         expResult.put(5, SOME_ENUM_OK.C);
 
-        Map result = instance.getUnmodifiableSet();
+        Map result = instance.getUnmodifiableMap();
         assertEquals(expResult, result);
     }
 
@@ -336,7 +336,7 @@ public class ReverseLookUpMapFactoryTest {
         Map<Integer, SOME_ENUM_OK> expResult = new ConcurrentHashMap<>();
         expResult.put(0, SOME_ENUM_OK.A);
 
-        Map result = instance.getUnmodifiableSet();
+        Map result = instance.getUnmodifiableMap();
         assertEquals(expResult, result);
     }
 
