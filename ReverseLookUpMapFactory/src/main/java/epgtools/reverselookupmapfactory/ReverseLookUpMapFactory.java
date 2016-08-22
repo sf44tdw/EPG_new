@@ -96,7 +96,7 @@ public class ReverseLookUpMapFactory<KEY_TYPE, KEYSET extends Set<KEY_TYPE>, V e
         return dict.containsValue(value);
     }
 
-    public final Map<KEY_TYPE, V> getDict() {
+    public final Map<KEY_TYPE, V> getUnmodifiableSet() {
         return Collections.unmodifiableMap(dict);
     }
 
