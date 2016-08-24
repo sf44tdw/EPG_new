@@ -8,7 +8,7 @@ package descriptordump;
 import descriptordump.dumpexecutor.eit.EitDescGetter;
 import descriptordump.dumpexecutor.nit.NitDescGetter;
 import descriptordump.dumpexecutor.sdt.SdtDescGetter;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
