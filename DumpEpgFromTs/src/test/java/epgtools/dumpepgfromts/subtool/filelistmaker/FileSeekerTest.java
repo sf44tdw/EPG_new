@@ -19,7 +19,7 @@ package epgtools.dumpepgfromts.subtool.filelistmaker;
 import epgtools.dumpepgfromts.subtool.filelistmaker.Suffix;
 import epgtools.dumpepgfromts.subtool.filelistmaker.FileSeeker;
 import epgtools.dumpepgfromts.Main;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;

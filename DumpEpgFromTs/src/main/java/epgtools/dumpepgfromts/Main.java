@@ -7,7 +7,7 @@ package epgtools.dumpepgfromts;
 
 import epgtools.dumpepgfromts.dataextractor.channel.Channel;
 import epgtools.dumpepgfromts.dataextractor.programme.Programme;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
