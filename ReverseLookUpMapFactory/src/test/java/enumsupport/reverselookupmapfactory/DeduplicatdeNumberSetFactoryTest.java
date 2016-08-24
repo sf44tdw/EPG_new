@@ -6,7 +6,7 @@
 package enumsupport.reverselookupmapfactory;
 
 import enumsupport.reverselookupmapfactory.DeduplicatdeNumberSetFactory;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.Set;

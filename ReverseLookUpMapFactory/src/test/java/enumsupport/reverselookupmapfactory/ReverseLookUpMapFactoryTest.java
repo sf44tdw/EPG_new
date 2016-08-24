@@ -17,7 +17,7 @@
 package enumsupport.reverselookupmapfactory;
 
 import enumsupport.reverselookupmapfactory.ReverseLookUpMapFactory;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
 import java.util.ArrayList;
