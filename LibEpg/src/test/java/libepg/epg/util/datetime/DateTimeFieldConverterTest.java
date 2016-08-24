@@ -19,7 +19,7 @@ package libepg.epg.util.datetime;
 import java.lang.invoke.MethodHandles;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import org.junit.After;

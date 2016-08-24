@@ -21,7 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
 import org.apache.commons.logging.Log;
 import libepg.epg.section.descriptor.DescriptorsLoop;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

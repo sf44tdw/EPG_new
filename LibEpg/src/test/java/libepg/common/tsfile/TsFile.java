@@ -17,7 +17,7 @@
  */
 package libepg.common.tsfile;
 
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import org.apache.commons.logging.Log;

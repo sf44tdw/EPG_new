@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 
 /**
  *

@@ -20,7 +20,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import libepg.common.descriptor.Descriptors;
 import libepg.epg.section.descriptor.servicedescriptor.ServiceDescriptor;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import testtool.EqualsChecker;
 
 /**

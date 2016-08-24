@@ -25,7 +25,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import java.util.Arrays;
 import libepg.epg.section.descriptor.Descriptor;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 
 /**
  *

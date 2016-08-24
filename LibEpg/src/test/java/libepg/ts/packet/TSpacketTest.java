@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import libepg.common.packet.TestPacket_SDT;
 import libepg.common.packet.TestPacket_pid0x11_count_d_0_0;
 import libepg.common.packet.TsPacket_error_indicator;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import static libepg.ts.packet.RESERVED_PROGRAM_ID.SDT_OR_BAT;
 import libepg.ts.packet.TsPacket.TRANSPORT_SCRAMBLING_CONTROL;
 import testtool.EqualsChecker;

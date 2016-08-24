@@ -18,7 +18,7 @@ package libepg.epg.util.datetime;
 
 import java.lang.invoke.MethodHandles;
 import libepg.epg.util.datetime.BCD;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.logging.Log;
 import org.junit.After;
 import org.junit.AfterClass;

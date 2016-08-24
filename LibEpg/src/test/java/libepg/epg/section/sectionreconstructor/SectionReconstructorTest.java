@@ -27,7 +27,7 @@ import libepg.ts.aligner.TsPacketAligner;
 import libepg.ts.packet.RESERVED_PROGRAM_ID;
 import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacketParcel;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import org.junit.Rule;
 import testtool.testrule.regexmessagerule.ExpectedExceptionRule;

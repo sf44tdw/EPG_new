@@ -31,7 +31,7 @@ import libepg.epg.section.Section.CRC_STATUS;
 import libepg.epg.section.TABLE_ID;
 import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacketParcel;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.nio.BufferOverflowException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;

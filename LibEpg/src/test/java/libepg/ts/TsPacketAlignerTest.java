@@ -22,7 +22,7 @@ import libepg.common.packet.TestPacket_pid0x11_count_d_0_0;
 import libepg.common.packet.TsPacket_error_indicator;
 import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacketParcel;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 
 /**
  *

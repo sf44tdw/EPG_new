@@ -27,7 +27,7 @@ import java.util.Set;
 import libepg.common.tsfile.TsFile;
 import libepg.ts.packet.RESERVED_PROGRAM_ID;
 import libepg.ts.packet.TsPacketParcel;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.logging.Log;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import org.junit.After;

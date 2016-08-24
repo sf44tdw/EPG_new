@@ -19,7 +19,7 @@ package libepg.epg.section;
 import libepg.util.bytearray.ByteConverter;
 import java.lang.invoke.MethodHandles;
 import libepg.common.packet.TestPacket_SDT;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.ArrayUtils;

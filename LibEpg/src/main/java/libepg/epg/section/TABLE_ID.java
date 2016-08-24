@@ -5,8 +5,8 @@
  */
 package libepg.epg.section;
 
-import epgtools.reverselookupmapfactory.DeduplicatdeNumberSetFactory;
-import epgtools.reverselookupmapfactory.ReverseLookUpMapFactory;
+import enumsupport.reverselookupmapfactory.DeduplicatdeNumberSetFactory;
+import enumsupport.reverselookupmapfactory.ReverseLookUpMapFactory;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;

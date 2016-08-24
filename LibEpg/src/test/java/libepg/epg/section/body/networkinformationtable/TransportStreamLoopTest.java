@@ -16,7 +16,7 @@
  */
 package libepg.epg.section.body.networkinformationtable;
 
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import libepg.epg.section.descriptor.DescriptorsLoop;
 import org.apache.commons.codec.DecoderException;

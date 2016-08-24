@@ -16,7 +16,7 @@
  */
 package libepg.epg.section.descriptor.servicelistdescriptor;
 
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;

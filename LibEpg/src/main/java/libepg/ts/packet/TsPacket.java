@@ -22,7 +22,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.builder.EqualsBuilder;

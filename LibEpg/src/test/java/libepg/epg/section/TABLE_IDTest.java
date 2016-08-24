@@ -30,7 +30,7 @@ import static libepg.epg.section.TABLE_ID.EIT_THIS_STREAM_8_DAYS;
 import static libepg.epg.section.TABLE_ID.EIT_THIS_STREAM_NOW_AND_NEXT;
 import static libepg.epg.section.TABLE_ID.OTHER_TABLE_IDS;
 import libepg.epg.section.body.eventinformationtable.EventInformationTableBody;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import static libepg.epg.section.TABLE_ID.SDT_THIS_STREAM;
 
 /**

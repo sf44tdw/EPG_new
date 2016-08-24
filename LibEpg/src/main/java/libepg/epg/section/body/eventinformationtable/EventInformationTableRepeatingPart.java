@@ -15,7 +15,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import libepg.epg.section.descriptor.DescriptorsLoop;
 import libepg.epg.util.datetime.DateTimeFieldConverter;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import libepg.util.bytearray.ByteDataBlock;
 
 /**

@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 import libepg.epg.section.Section;
 import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableBody;
 import libepg.epg.section.body.servicedescriptiontable.ServiceDescriptionTableRepeatingPart;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 
 /*
 想定

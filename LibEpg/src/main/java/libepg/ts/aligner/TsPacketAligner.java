@@ -28,7 +28,7 @@ import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacket.ADAPTATION_FIELD_CONTROL;
 import libepg.ts.packet.TsPacketParcel;
 import libepg.ts.packet.TsPacketParcel.MISSING_PACKET_FLAG;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 
 /**
  * トランスポートエラーインジケータの確認を行い、エラーパケットを除去する。<br>

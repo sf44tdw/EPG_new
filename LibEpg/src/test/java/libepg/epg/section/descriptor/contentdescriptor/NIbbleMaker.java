@@ -21,7 +21,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import libepg.epg.section.descriptor.contentdescriptor.Nibble;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 
 /**
  *

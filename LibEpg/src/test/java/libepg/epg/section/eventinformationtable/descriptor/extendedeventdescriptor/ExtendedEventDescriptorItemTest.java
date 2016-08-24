@@ -19,7 +19,7 @@ package libepg.epg.section.eventinformationtable.descriptor.extendedeventdescrip
 import java.lang.invoke.MethodHandles;
 import libepg.epg.section.descriptor.Descriptor;
 import libepg.epg.section.descriptor.extendedeventdescriptor.ExtendedEventDescriptorItem;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;

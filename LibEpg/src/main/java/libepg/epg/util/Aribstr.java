@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 import java.lang.invoke.MethodHandles;
 import libepg.epg.section.Section;
 import libepg.epg.section.TABLE_ID;
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 
