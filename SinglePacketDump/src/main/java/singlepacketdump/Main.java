@@ -5,7 +5,7 @@
  */
 package singlepacketdump;
 
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import libepg.ts.packet.TsPacket;
 import org.apache.commons.cli.CommandLine;
