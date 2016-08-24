@@ -5,7 +5,7 @@
  */
 package singlesectiondump;
 
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import libepg.epg.section.Section;
 import org.apache.commons.cli.CommandLine;
