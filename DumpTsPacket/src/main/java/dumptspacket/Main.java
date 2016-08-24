@@ -16,7 +16,7 @@
  */
 package dumptspacket;
 
-import epgtools.loggerfactory.LoggerFactory;
+import loggingsupport.loggerfactory.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
