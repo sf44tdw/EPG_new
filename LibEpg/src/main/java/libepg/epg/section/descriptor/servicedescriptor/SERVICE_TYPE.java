@@ -16,20 +16,16 @@
  */
 package libepg.epg.section.descriptor.servicedescriptor;
 
+import enumsupport.reverselookupmapfactory.DeduplicatdeNumberSetFactory;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.Range;
 
 /**
- * サービスID
- * 用があるのはデジタルTVサービスだけ。
+ * サービス形式種別 用があるのはデジタルTVサービスだけ。
+ *
  * @author normal
  */
 public enum SERVICE_TYPE {
@@ -133,11 +129,11 @@ public enum SERVICE_TYPE {
     static {
         {
             for (SERVICE_TYPE sid : SERVICE_TYPE.values()) {
-                for (int i : sid.serviceIds) {
+                for (int i : sid.typeIds) {
                     if (!rev.containsKey(i)) {
                         rev.put(i, sid);
                     } else {
-                        MessageFormat msg = new MessageFormat("サービスIDが重複して登録されています。重複したサービスID={0} 重複したときの定数名={1}");
+                        MessageFormat msg = new MessageFormat("サービス形式種別が重複して登録されています。重複したサービス形式種別={0} 重複したときの定数名={1}");
                         Object[] parameters = {Integer.toHexString(i), sid};
                         throw new IllegalArgumentException(msg.format(parameters));
                     }
@@ -149,45 +145,29 @@ public enum SERVICE_TYPE {
     ;
            
     /**
-     * サービスIDから定義済みの定数を逆引きする。
+     * サービス形式種別から定義済みの定数を逆引きする。
      *
-     * @param serviceId サービスID
+     * @param typeId サービス形式種別
      * @return サービスIDを含む定数。なければnull。
      */
-    public static synchronized SERVICE_TYPE reverseLookUp(int serviceId) {
-        return rev.get(serviceId);
+    public static synchronized SERVICE_TYPE reverseLookUp(int typeId) {
+        return rev.get(typeId);
     }
 
     private final String serviceType;
-    private final Set<Integer> serviceIds;
+    private final Set<Integer> typeIds;
 
-    private SERVICE_TYPE(String serviceType, Integer serviceId, Integer... serviceIds) {
+    private SERVICE_TYPE(String serviceType, Integer typeId, Integer... typeIds) {
         this.serviceType = serviceType;
         if ((this.serviceType == null) || (this.serviceType.equals(""))) {
-            throw new IllegalArgumentException("サービス種が指定されていません。");
+            throw new IllegalArgumentException("サービス種別名が指定されていません。");
         }
 
-        List<Integer> t = new ArrayList<>();
-        if (serviceId != null) {
-            t.add(serviceId);
-        } else {
-            throw new NullPointerException("サービスIDが指定されていません。");
-        }
-        if (serviceIds != null) {
-            t.addAll(Arrays.asList(serviceIds));
-        }
         Range<Integer> r = Range.between(0x0, 0xFF);
-        for (Integer i : t) {
-            if (!r.contains(i)) {
-                MessageFormat msg = new MessageFormat("サービスIDが範囲外の値です。サービスID={0}");
-                Object[] parameters = {Integer.toHexString(i)};
-                throw new IllegalArgumentException(msg.format(parameters));
-            }
-        }
 
-        Set<Integer> temp = Collections.synchronizedSet(new HashSet<Integer>());
-        temp.addAll(t);
-        this.serviceIds = Collections.unmodifiableSet(temp);
+        DeduplicatdeNumberSetFactory<Integer> setf = new DeduplicatdeNumberSetFactory<>();
+
+        this.typeIds = setf.makeSet(r, typeId, typeIds);
     }
 
     public String getServiceType() {
@@ -195,19 +175,19 @@ public enum SERVICE_TYPE {
     }
 
     /**
-     * この定数に引数で渡されたサービスIDが含まれているか?
+     * この定数に引数で渡されたサービス形式種別が含まれているか?
      *
-     * @param serviceId サービスID
+     * @param typeId サービスID
      * @return 含まれていればtrue
      */
-    public synchronized boolean contains(int serviceId) {
-        return this.serviceIds.contains(serviceId);
+    public synchronized boolean contains(int typeId) {
+        return this.typeIds.contains(typeId);
     }
 
     @Override
     public synchronized String toString() {
         StringBuilder s = new StringBuilder();
-        for (int i : this.serviceIds) {
+        for (int i : this.typeIds) {
             s.append("[");
             s.append(Integer.toHexString(i));
             s.append("]");

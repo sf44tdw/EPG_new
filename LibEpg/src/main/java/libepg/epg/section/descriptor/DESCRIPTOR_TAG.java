@@ -28,7 +28,7 @@ import libepg.epg.section.descriptor.seriesdescriptor.SeriesDescriptor;
 import libepg.epg.section.descriptor.servicedescriptor.ServiceDescriptor;
 import libepg.epg.section.descriptor.shorteventdescriptor.ShortEventDescriptor;
 import libepg.epg.section.descriptor.extendedeventdescriptor.ExtendedEventDescriptor;
-import libepg.epg.section.descriptor.networkdescriptor.NetworkDescriptor;
+import libepg.epg.section.descriptor.networkdescriptor.NetworkNameDescriptor;
 import libepg.epg.section.descriptor.servicelistdescriptor.ServiceListDescriptor;
 
 /**
@@ -42,7 +42,7 @@ public enum DESCRIPTOR_TAG {
     /**
      * ネットワーク名記述子（Network name descriptor） ネットワーク名記述子は文字符号によりネットワーク名を記述する。
      */
-    NETWORK_NAME_DESCRIPTOR("ネットワーク名記述子", NetworkDescriptor.class, 0x40),
+    NETWORK_NAME_DESCRIPTOR("ネットワーク名記述子", NetworkNameDescriptor.class, 0x40),
     /**
      * サービスリスト記述子（表6－26 参照）は、サービス識別とサービス形式種別によるサ ービスの一覧を提供する。
      */
