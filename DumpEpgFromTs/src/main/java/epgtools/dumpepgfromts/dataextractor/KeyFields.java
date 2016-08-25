@@ -16,7 +16,7 @@
  */
 package epgtools.dumpepgfromts.dataextractor;
 
-import static libepg.epg.section.ranges.SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE;
+import static libepg.epg.section.range.SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

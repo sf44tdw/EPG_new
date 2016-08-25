@@ -90,7 +90,7 @@ public class AbstractDataExtractorTest {
     public class AbstractDataExtractorImpl extends AbstractDataExtractor {
 
         public AbstractDataExtractorImpl() {
-            super(TABLE_ID.SDT);
+            super(TABLE_ID.SDT_THIS_STREAM);
         }
 
         public void makeDataSet(Section s) throws IllegalStateException {

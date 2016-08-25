@@ -40,7 +40,7 @@ import org.apache.commons.codec.binary.Hex;
 public final class ChannelDataExtractor extends AbstractDataExtractor<Channel> {
 
     public ChannelDataExtractor() {
-        super(TABLE_ID.SDT);
+        super(TABLE_ID.SDT_THIS_STREAM);
     }
 
     /**
