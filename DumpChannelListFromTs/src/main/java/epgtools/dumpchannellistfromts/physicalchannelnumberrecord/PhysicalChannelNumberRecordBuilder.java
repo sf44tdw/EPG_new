@@ -17,12 +17,17 @@
 package epgtools.dumpchannellistfromts.physicalchannelnumberrecord;
 
 import java.util.Objects;
+import libepg.epg.section.range.SectionValueRangeChecker;
+import org.apache.commons.lang3.Range;
 
 /**
  *
  * @author normal
  */
 public class PhysicalChannelNumberRecordBuilder {
+
+    private final Range<Integer> tsIdRange = SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE;
+    private final Range<Integer> IdRange = SectionValueRangeChecker.UNSIGNED_SIXTEEN_BIT_FIELD_RANGE;
 
     private int physicalChannelNumber;
     private int networkId;
@@ -32,7 +37,7 @@ public class PhysicalChannelNumberRecordBuilder {
     private int serviceId;
 
     public PhysicalChannelNumberRecord build() {
-        return new PhysicalChannelNumberRecord(this.getPhysicalChannelNumber(),this.getNetworkId(), this.getNetworkName(), this.getTransportStreamId(), this.getOriginalNetworkId(), this.getServiceId());
+        return new PhysicalChannelNumberRecord(this.getPhysicalChannelNumber(), this.getNetworkId(), this.getNetworkName(), this.getTransportStreamId(), this.getOriginalNetworkId(), this.getServiceId());
     }
 
     public int getPhysicalChannelNumber() {
@@ -40,7 +45,12 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setPhysicalChannelNumber(int physicalChannelNumber) {
-        this.physicalChannelNumber = physicalChannelNumber;
+        if (!this.IdRange.contains(this.physicalChannelNumber)) {
+            String FieldName = "物理チャンネル番号";
+            String value = Integer.toHexString(this.networkId);
+            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
+        }
+
     }
 
     public int getNetworkId() {
@@ -48,7 +58,11 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setNetworkId(int networkId) {
-        this.networkId = networkId;
+        if (!this.IdRange.contains(this.networkId)) {
+            String FieldName = "ネットワーク識別";
+            String value = Integer.toHexString(this.networkId);
+            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
+        }
     }
 
     public String getNetworkName() {
@@ -64,7 +78,11 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setTransportStreamId(int transportStreamId) {
-        this.transportStreamId = transportStreamId;
+        if (!this.tsIdRange.contains(this.transportStreamId)) {
+            String FieldName = "トランスポートストリーム識別";
+            String value = Integer.toHexString(this.transportStreamId);
+            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
+        }
     }
 
     public int getOriginalNetworkId() {
@@ -72,7 +90,11 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setOriginalNetworkId(int originalNetworkId) {
-        this.originalNetworkId = originalNetworkId;
+        if (!this.IdRange.contains(this.originalNetworkId)) {
+            String FieldName = "オリジナルネットワーク識別";
+            String value = Integer.toHexString(this.originalNetworkId);
+            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
+        }
     }
 
     public int getServiceId() {
@@ -80,10 +102,12 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setServiceId(int serviceId) {
-        this.serviceId = serviceId;
+        if (!this.IdRange.contains(this.serviceId)) {
+            String FieldName = "サービス識別";
+            String value = Integer.toHexString(this.serviceId);
+            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
+        }
     }
-    
-    
 
     @Override
     public int hashCode() {

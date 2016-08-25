@@ -5,16 +5,22 @@
  */
 package epgtools.dumpchannellistfromts;
 
+import com.orangesignal.csv.manager.CsvManager;
+import com.orangesignal.csv.manager.CsvManagerFactory;
 import epgtools.dumpchannellistfromts.physicalchannelnumberrecord.PhysicalChannelNumberRecord;
 import epgtools.dumpchannellistfromts.physicalchannelnumberrecord.PhysicalChannelNumberRecordBuilder;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import libepg.epg.section.Section;
 import libepg.epg.section.SectionLoader;
 import libepg.epg.section.TABLE_ID;
@@ -58,9 +64,9 @@ public class Main {
      * falseのとき、このクラスはログを出さなくなる
      */
     public static final boolean CLASS_LOG_OUTPUT_MODE = true;
-
+    
     private static final Log LOG;
-
+    
     static {
         final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, Main.CLASS_LOG_OUTPUT_MODE).getLOG();
@@ -77,7 +83,7 @@ public class Main {
             System.exit(1);
         }
     }
-
+    
     public String getNameWithoutExtension(File file) {
         String fileName = file.getName();
         int index = fileName.lastIndexOf('.');
@@ -86,11 +92,11 @@ public class Main {
         }
         return "";
     }
-
+    
     public void start(String[] args) throws ParseException {
         final String fileName;
         final Long limit;
-
+        
         final Option directoryNameOption = Option.builder("d")
                 .required()
                 .longOpt("directoryname")
@@ -98,7 +104,7 @@ public class Main {
                 .hasArg()
                 .type(String.class)
                 .build();
-
+        
         final Option limitOption = Option.builder("l")
                 .required(false)
                 .longOpt("limit")
@@ -106,7 +112,7 @@ public class Main {
                 .hasArg()
                 .type(Long.class)
                 .build();
-
+        
         final Option destFileNameOption = Option.builder("f")
                 .required()
                 .longOpt("destname")
@@ -114,13 +120,13 @@ public class Main {
                 .hasArg()
                 .type(String.class)
                 .build();
-
+        
         Options opts = new Options();
         opts.addOption(directoryNameOption);
         opts.addOption(limitOption);
         opts.addOption(destFileNameOption);
         CommandLineParser parser = new DefaultParser();
-
+        
         HelpFormatter help = new HelpFormatter();
         CommandLine cl;
         try {
@@ -130,13 +136,13 @@ public class Main {
             help.printHelp("My Java Application", opts);
             throw ex;
         }
-
+        
         final File dirName = new File(cl.getOptionValue(directoryNameOption.getOpt()));
         if (!dirName.isDirectory()) {
             throw new IllegalArgumentException("読み込み先にディレクトリ以外が指定されたか、存在しません。ディレクトリ = " + dirName.getAbsolutePath());
         }
         LOG.info("読み込み先ディレクトリ = " + dirName.getAbsolutePath());
-
+        
         Long xl = null;
         try {
             if (cl.hasOption(limitOption.getOpt())) {
@@ -149,14 +155,14 @@ public class Main {
             limit = xl;
             LOG.info("読み込みパケット数 = " + limit);
         }
-
+        
         final File destFile = new File(cl.getOptionValue(destFileNameOption.getOpt()));
         LOG.info("書き込み先ファイル = " + destFile.getAbsolutePath());
-
+        
         List<File> files = new TsFileSeeker(dirName).seek();
-
+        
         LOG.info("読み込みファイル件数 = " + files.size());
-
+        
         final PhysicalChannelNumberRecordBuilder bu = new PhysicalChannelNumberRecordBuilder();
         final Set<PhysicalChannelNumberRecord> records = Collections.synchronizedSet(new TreeSet<>());
         //NITをロードする。
@@ -189,7 +195,7 @@ public class Main {
                                         for (Service service : svList) {
                                             if (service.getService_type_Enum() == SERVICE_TYPE.DIGITAL_TV_SERVICE) {
                                                 bu.setServiceId(service.getService_id());
-
+                                                
                                                 if (bu.getOriginalNetworkId() < 0x10) {
                                                     //BS
                                                     bu.setPhysicalChannelNumber(bu.getServiceId());
@@ -197,11 +203,11 @@ public class Main {
                                                     //地上波          
                                                     bu.setPhysicalChannelNumber(Integer.valueOf(this.getNameWithoutExtension(f)));
                                                 }
-
+                                                
                                                 records.add(bu.build());
                                             }
                                         }
-
+                                        
                                     }
                                 }
                             }
@@ -213,10 +219,21 @@ public class Main {
             }
         }
 
-        for (PhysicalChannelNumberRecord rec : records) {
-            LOG.info(rec);
+//        for (PhysicalChannelNumberRecord rec : records) {
+//            LOG.info(rec);
+//        }
+//        
+        //重複排除のため一回セットに入れている。
+        List<PhysicalChannelNumberRecord> nl = new ArrayList<>();
+        nl.addAll(records);
+        CsvManager csvManager = CsvManagerFactory.newCsvManager();
+        LOG.info(destFile.getAbsolutePath());
+        try {
+            csvManager.save(nl, PhysicalChannelNumberRecord.class).to(destFile, "UTF-8");
+        } catch (IOException ex) {
+            LOG.fatal("保存中に問題が発生しました。ファイル = " + destFile.getAbsolutePath(), ex);
         }
-
+        
     }
-
+    
 }

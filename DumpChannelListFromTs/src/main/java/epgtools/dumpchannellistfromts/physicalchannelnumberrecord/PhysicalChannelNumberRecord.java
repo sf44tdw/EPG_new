@@ -31,9 +31,6 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 @CsvEntity(header = true)
 public final class PhysicalChannelNumberRecord implements Comparable<PhysicalChannelNumberRecord> {
 
-    private final Range<Integer> tsIdRange = SectionValueRangeChecker.TRANSPORT_STREAM_ID_RANGE;
-    private final Range<Integer> IdRange = SectionValueRangeChecker.UNSIGNED_SIXTEEN_BIT_FIELD_RANGE;
-
     @CsvColumn(position = 0, name = "物理チャンネル番号")
     private final int physicalChannelNumber;
     @CsvColumn(position = 1, name = "ネットワーク識別")
@@ -54,40 +51,6 @@ public final class PhysicalChannelNumberRecord implements Comparable<PhysicalCha
         this.transportStreamId = transportStreamId;
         this.originalNetworkId = originalNetworkId;
         this.serviceId = serviceId;
-
-        String FieldName = null;
-        String value = null;
-        CHECK:
-        {
-            if (!this.IdRange.contains(this.physicalChannelNumber)) {
-                FieldName = "物理チャンネル番号";
-                value = Integer.toHexString(this.networkId);
-                break CHECK;
-            }
-            if (!this.IdRange.contains(this.networkId)) {
-                FieldName = "ネットワーク識別";
-                value = Integer.toHexString(this.networkId);
-                break CHECK;
-            }
-            if (!this.tsIdRange.contains(this.transportStreamId)) {
-                FieldName = "トランスポートストリーム識別";
-                value = Integer.toHexString(this.transportStreamId);
-                break CHECK;
-            }
-            if (!this.IdRange.contains(this.originalNetworkId)) {
-                FieldName = "オリジナルネットワーク識別";
-                value = Integer.toHexString(this.originalNetworkId);
-                break CHECK;
-            }
-            if (!this.IdRange.contains(this.serviceId)) {
-                FieldName = "サービス識別";
-                value = Integer.toHexString(this.serviceId);
-                break CHECK;
-            }
-        }
-        if (FieldName != null) {
-            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
-        }
     }
 
     public int getPhysicalChannelNumber() {
