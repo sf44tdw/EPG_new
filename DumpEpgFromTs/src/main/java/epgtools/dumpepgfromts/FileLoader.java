@@ -77,17 +77,17 @@ public final class FileLoader {
         final TsReader reader = new TsReader(tsFile, pids, limit);
         Map<Integer, List<TsPacketParcel>> pid_packets = reader.getPackets();
 
-        Map<Integer, Set<Section>> pids_sections_temp = new ConcurrentHashMap<>();
+        Map<Integer, List<Section>> pids_sections_temp = new ConcurrentHashMap<>();
         for (Integer pidKey : pid_packets.keySet()) {
             LOG.info("処理対象pid = " + Integer.toHexString(pidKey) + " pid定数 = " + RESERVED_PROGRAM_ID.reverseLookUp(pidKey));
             SectionReconstructor sectionMaker = new SectionReconstructor(pid_packets.get(pidKey), pidKey);
-            Set<Section> sections = sectionMaker.getSections();
+            List<Section> sections = sectionMaker.getSections();
             if (sections != null) {
                 LOG.info("セクション数 = " + sections.size());
                 pids_sections_temp.put(pidKey, sections);
             }
         }
-        Map<Integer, Set<Section>> pids_sections = Collections.unmodifiableMap(pids_sections_temp);
+        Map<Integer, List<Section>> pids_sections = Collections.unmodifiableMap(pids_sections_temp);
 
         pid_packets = null;
         pids_sections_temp = null;
