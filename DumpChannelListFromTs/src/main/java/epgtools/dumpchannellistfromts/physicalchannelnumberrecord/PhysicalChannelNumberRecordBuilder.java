@@ -37,6 +37,39 @@ public class PhysicalChannelNumberRecordBuilder {
     private int serviceId;
 
     public PhysicalChannelNumberRecord build() {
+        String FieldName = null;
+        String value = null;
+        CHECK:
+        {
+            if (!this.IdRange.contains(this.physicalChannelNumber)) {
+                FieldName = "物理チャンネル番号";
+                value = Integer.toHexString(this.networkId);
+                break CHECK;
+            }
+            if (!this.IdRange.contains(this.networkId)) {
+                FieldName = "ネットワーク識別";
+                value = Integer.toHexString(this.networkId);
+                break CHECK;
+            }
+            if (!this.tsIdRange.contains(this.transportStreamId)) {
+                FieldName = "トランスポートストリーム識別";
+                value = Integer.toHexString(this.transportStreamId);
+                break CHECK;
+            }
+            if (!this.IdRange.contains(this.originalNetworkId)) {
+                FieldName = "オリジナルネットワーク識別";
+                value = Integer.toHexString(this.originalNetworkId);
+                break CHECK;
+            }
+            if (!this.IdRange.contains(this.serviceId)) {
+                FieldName = "サービス識別";
+                value = Integer.toHexString(this.serviceId);
+                break CHECK;
+            }
+        }
+        if (FieldName != null) {
+            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
+        }
         return new PhysicalChannelNumberRecord(this.getPhysicalChannelNumber(), this.getNetworkId(), this.getNetworkName(), this.getTransportStreamId(), this.getOriginalNetworkId(), this.getServiceId());
     }
 
@@ -45,12 +78,7 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setPhysicalChannelNumber(int physicalChannelNumber) {
-        if (!this.IdRange.contains(this.physicalChannelNumber)) {
-            String FieldName = "物理チャンネル番号";
-            String value = Integer.toHexString(this.networkId);
-            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
-        }
-
+        this.physicalChannelNumber = physicalChannelNumber;
     }
 
     public int getNetworkId() {
@@ -58,11 +86,7 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setNetworkId(int networkId) {
-        if (!this.IdRange.contains(this.networkId)) {
-            String FieldName = "ネットワーク識別";
-            String value = Integer.toHexString(this.networkId);
-            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
-        }
+        this.networkId = networkId;
     }
 
     public String getNetworkName() {
@@ -78,11 +102,7 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setTransportStreamId(int transportStreamId) {
-        if (!this.tsIdRange.contains(this.transportStreamId)) {
-            String FieldName = "トランスポートストリーム識別";
-            String value = Integer.toHexString(this.transportStreamId);
-            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
-        }
+        this.transportStreamId = transportStreamId;
     }
 
     public int getOriginalNetworkId() {
@@ -90,11 +110,7 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setOriginalNetworkId(int originalNetworkId) {
-        if (!this.IdRange.contains(this.originalNetworkId)) {
-            String FieldName = "オリジナルネットワーク識別";
-            String value = Integer.toHexString(this.originalNetworkId);
-            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
-        }
+        this.originalNetworkId = originalNetworkId;
     }
 
     public int getServiceId() {
@@ -102,11 +118,7 @@ public class PhysicalChannelNumberRecordBuilder {
     }
 
     public void setServiceId(int serviceId) {
-        if (!this.IdRange.contains(this.serviceId)) {
-            String FieldName = "サービス識別";
-            String value = Integer.toHexString(this.serviceId);
-            throw new IllegalStateException("想定外の値が渡されました。フィールド = " + FieldName + " 値 = " + value);
-        }
+        this.serviceId = serviceId;
     }
 
     @Override
