@@ -140,34 +140,34 @@ public class Main {
         NetworkInformationTableBody nitbody = (NetworkInformationTableBody) section.getSectionBody();
 
         final int networkId = nitbody.getNetwork_id();
+        LOG.info("networkId = " + Integer.toHexString(networkId));
+
+        for (Descriptor d1 : nitbody.getDescriptors_loop().getDescriptors_loopList()) {
+            final String networkName;
+            if (d1.getDescriptor_tag_const() == DESCRIPTOR_TAG.NETWORK_NAME_DESCRIPTOR) {
+                final NetworkNameDescriptor nnd = (NetworkNameDescriptor) d1;
+                networkName = nnd.getChar_String();
+                LOG.info("networkName = " + networkName);
+            }
+        }
 
         final List<TransportStreamLoop> tsLoopList = nitbody.getTransport_streams_loop();
 
         for (TransportStreamLoop tsLoop : tsLoopList) {
             final int transportStreamId = tsLoop.getTransport_stream_id();
+            LOG.info("transportStreamId = " + Integer.toHexString(transportStreamId));
             final int originalNetworkId = tsLoop.getOriginal_network_id();
+            LOG.info("originalNetworkId = " + Integer.toHexString(originalNetworkId));
             final DescriptorsLoop dloop = tsLoop.getDescriptors_loop();
             final List<Descriptor> dList = dloop.getDescriptors_loopList();
             for (Descriptor desc : dList) {
-                final String networkName;
-
-                if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.NETWORK_NAME_DESCRIPTOR) {
-                    final NetworkNameDescriptor nnd = (NetworkNameDescriptor) desc;
-                    networkName = nnd.getChar_String();
-                } else {
-                    networkName = "";
-                }
 
                 if (desc.getDescriptor_tag_const() == DESCRIPTOR_TAG.SERVICE_LIST_DESCRIPTOR) {
                     ServiceListDescriptor sd = (ServiceListDescriptor) desc;
                     List<Service> svList = sd.getServiceList();
                     for (Service service : svList) {
-                        if (service.getService_type_Enum() == SERVICE_TYPE.reverseLookUp(networkId)) {
+                        if (service.getService_type_Enum() == serviceType) {
                             final int serviceId = service.getService_id();
-                            LOG.info("networkId = " + Integer.toHexString(networkId));
-                            LOG.info("transportStreamId = " + Integer.toHexString(transportStreamId));
-                            LOG.info("originalNetworkId = " + Integer.toHexString(originalNetworkId));
-                            LOG.info("networkName = " + networkName);
                             LOG.info("serviceId = " + Integer.toHexString(serviceId));
                         }
                     }
