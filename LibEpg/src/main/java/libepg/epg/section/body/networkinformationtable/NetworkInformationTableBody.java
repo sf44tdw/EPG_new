@@ -217,7 +217,7 @@ public class NetworkInformationTableBody extends SectionBody {
         System.arraycopy(this.getData(), 5 + this.getDescriptors_loop_length() + 1 + 1, t, 0, t.length);
         int it = ByteConverter.bytesToInt(t);
         it = it & 0x0FFF;
-        LOG.debug(Hex.encodeHexString(t) + " -> " + it);
+        LOG.trace(Hex.encodeHexString(t) + " -> " + Integer.toHexString(it));
         return it;
     }
 

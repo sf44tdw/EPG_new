@@ -28,7 +28,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 /*
- * 指定されたディレクトリ下のファイルをリストアップする。
+ * 指定されたディレクトリ下のtsファイルをリストアップする。
  */
 public class TsFileSeeker {
 
@@ -88,6 +88,5 @@ public class TsFileSeeker {
         Collection<File> files = FileUtils.listFiles(this.SourceDir, this.TS_SUFFIX, this.dirf);
         list.addAll(files);
         return Collections.unmodifiableList(list);
-
     }
 }
