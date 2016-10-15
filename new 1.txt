@@ -50,3 +50,8 @@ service_id=EventInformationTableBody.getService_id
 54 コンテント記述子 済み
 
 bs1のnitには、bs局の情報が全部入っている。…が、サービスID=物理チャンネルになるようなので、そこまで大きな問題にはならない。
+
+SDTの構成
+地上波=自局のみ
+BS=自局、他局ともすべて。
+

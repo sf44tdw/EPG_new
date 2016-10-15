@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import libepg.epg.section.Section;
 import libepg.epg.section.SectionLoader;
 import libepg.epg.section.TABLE_ID;
