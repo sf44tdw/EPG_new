@@ -86,9 +86,6 @@ public final class Section {
         if (tableId == null) {
             MessageFormat msg2 = new MessageFormat("テーブル識別値が見つかりません。 渡された配列={0}");
             Object[] parameters2 = {hexValue};
-            if (LOG.isTraceEnabled()) {
-                LOG.trace(msg2.format(parameters2));
-            }
             throw new IllegalArgumentException(msg2.format(parameters2));
         }
 
@@ -97,13 +94,13 @@ public final class Section {
         int sectionLength = ByteConverter.bytesToInt(t);
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("b1 = " + Integer.toHexString(sectionLength));
+            LOG.trace("セクション長フィールドを含むバイト列 = " + Integer.toHexString(sectionLength));
         }
 
         sectionLength = sectionLength & 0x0FFF;
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("b2 = " + Integer.toHexString(sectionLength));
+            LOG.trace("セクション長フィールドのバイト列 = " + Integer.toHexString(sectionLength));
         }
 
         //セクション長フィールドの値が指定された値以上になった場合。
