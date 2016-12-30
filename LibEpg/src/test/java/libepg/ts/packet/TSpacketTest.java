@@ -17,11 +17,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import libepg.common.packet.TestPacket_SDT;
 import libepg.common.packet.TestPacket_pid0x11_count_d_0_0;
-import libepg.common.packet.TsPacket_error_indicator;
+import libepg.common.packet.TsPacket_error;
 import loggingsupport.loggerfactory.LoggerFactory;
 import static libepg.ts.packet.RESERVED_PROGRAM_ID.SDT_OR_BAT;
 import libepg.ts.packet.TsPacket.TRANSPORT_SCRAMBLING_CONTROL;
+import org.junit.Rule;
 import testtool.EqualsChecker;
+import testtool.testrule.regexmessagerule.ExpectedExceptionMessage;
+import testtool.testrule.regexmessagerule.ExpectedExceptionRule;
 
 /**
  *
@@ -36,16 +39,15 @@ public class TSpacketTest {
         LOG = new LoggerFactory(myClass, TsPacket.CLASS_LOG_OUTPUT_MODE).getLOG();
     }
 
+    @Rule
+    public ExpectedExceptionRule rule = new ExpectedExceptionRule();
+
     TestPacket_pid0x11_count_d_0_0 pd;
     private final TsPacket target00;
-    private final TsPacket target01;
-    private final TsPacket target02;
 
     public TSpacketTest() throws DecoderException {
         pd = new TestPacket_pid0x11_count_d_0_0();
         target00 = pd.target_p10;
-        target01 = pd.target_p11;
-        target02 = pd.target_p12;
     }
 
     @BeforeClass
@@ -64,26 +66,27 @@ public class TSpacketTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of getSync_byte method, of class TsPacket.
-     */
+    private final TsPacket_error err = new TsPacket_error();
+
     @Test
-    public void testcheckHeader() throws DecoderException {
-        LOG.info("checkHeader");
-        TsPacket instance;
-        boolean expResult;
-        boolean result;
+    @ExpectedExceptionMessage("^.*同期ワードが不正です.*$")
+    public void testConst_sync_is_not_47() throws DecoderException {
+        final char[] p_sync_byte_not_47 = "4801ff20b710728126917eb7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toCharArray();
+        final TsPacket target_sync_byte_not_47 = new TsPacket(Hex.decodeHex(p_sync_byte_not_47));
+    }
 
-        instance = this.target00;
-        expResult = true;
-        result = instance.checkHeader();
-        assertEquals(expResult, result);
+    @Test
+    @ExpectedExceptionMessage("^.*バイト列の長さがパケット長と一致しません.*$")
+    public void testConst_too_short() throws DecoderException {
+        final char[] p_too_short = "4701ff20b710728126917eb7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toCharArray();
+        final TsPacket target_too_short = new TsPacket(Hex.decodeHex(p_too_short));
+    }
 
-        instance = new TsPacket_error_indicator().target_error01;
-        expResult = true;
-        result = instance.checkHeader();
-        assertEquals(expResult, result);
-
+    @Test
+    @ExpectedExceptionMessage("^.*バイト列の長さがパケット長と一致しません.*$")
+    public void testConst_too_long() throws DecoderException {
+        final char[] p_too_long = "4701ff20b710728126917eb7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toCharArray();
+        final TsPacket target_too_long = new TsPacket(Hex.decodeHex(p_too_long));
     }
 
     /**

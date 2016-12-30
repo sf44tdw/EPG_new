@@ -41,7 +41,7 @@ public class TsReader {
     private static final Log LOG;
 
     static {
-        final Class<?> myClass = MethodHandles.lookup().lookupClass(); 
+        final Class<?> myClass = MethodHandles.lookup().lookupClass();
         LOG = new LoggerFactory(myClass, TsReader.CLASS_LOG_OUTPUT_MODE).getLOG();
         if (NOT_DETERRENT_READ_TRACE_LOG == false) {
             LOG.info("読み込みログ抑止中。");
@@ -171,12 +171,14 @@ public class TsReader {
                     tipOfPacket = false;
 
                     //ヘッダに問題がなく、必要なPIDのパケットのみを回収する。
-                    if ((tsp.checkHeader()) && (this.pids.contains(tsp.getPid()))) {
+                    if ((this.pids.contains(tsp.getPid()))) {
+
                         TsPacketAligner tspa = temp_ret.get(tsp.getPid());
                         TsPacketAligner.ADD_RESULT resp = tspa.add(tsp);
                         if (LOG.isTraceEnabled() && NOT_DETERRENT_READ_TRACE_LOG) {
                             LOG.trace("追加結果 = " + resp);
                         }
+
                     }
                     count++;
 
@@ -213,7 +215,7 @@ public class TsReader {
             pis.close();
             fis.close();
             LOG.info("合計読み込みパケット数 = " + count);
-            
+
         } catch (FileNotFoundException e) {
             LOG.fatal("ファイルが見つかりません。", e);
         } catch (IOException e) {

@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import libepg.common.packet.TestPacket_Only_Adaptation_Field;
 import libepg.common.packet.TestPacket_pid0x11_count_d_0_0;
-import libepg.common.packet.TsPacket_error_indicator;
+import libepg.common.packet.TsPacket_error;
 import libepg.ts.packet.TsPacket;
 import libepg.ts.packet.TsPacketParcel;
 import loggingsupport.loggerfactory.LoggerFactory;
@@ -146,7 +146,7 @@ public class TsPacketAlignerTest {
         assertEquals(true, ret);
 
         LOG.info("\nエラーパケット");
-        p = new TsPacket_error_indicator().target_error01;
+        p = new TsPacket_error().target_transport_error_indicator_not_zero_01;
         instance = new TsPacketAligner(p.getPid());
         add = instance.add(p);
         ret = (add == TsPacketAligner.ADD_RESULT.ERROR_PACKET);

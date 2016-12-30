@@ -82,55 +82,40 @@ public class TsPacket {
      * TSパケットを受け取る。
      *
      * @param data TSパケットのデータ
-     * @throws IllegalArgumentException パケット長が188バイトではない場合。
+     * @throws IllegalArgumentException
+     * 渡されたバイト列の最初が動機ワードではない場合か、パケット長が188バイトではない場合。
      */
     public TsPacket(final byte[] data) throws IllegalArgumentException {
         byte[] temp = Arrays.copyOf(data, data.length);
-        if (temp.length != TsPacket.TS_PACKET_BYTE_LENGTH.PACKET_LENGTH.getByteLength()) {
-            MessageFormat msg = new MessageFormat("パケット長が正しくありません。パケット長の値={0} バイト列={1}");
-            Object[] parameters = {temp.length, Hex.encodeHexString(temp)};
-            throw new IllegalArgumentException(msg.format(parameters));
+
+        PRE_CHECK:
+        {
+            MessageFormat fmt = new MessageFormat("異常なパケットです。メッセージ={0} バイト列={1}");
+            String msg;
+            String hexDump;
+            int syncbyte = ByteConverter.byteToInt(temp[0]);
+            if (syncbyte != TsPacket.TS_SYNC_BYTE) {
+                MessageFormat fmt_sync = new MessageFormat("同期ワードが不正です。想定={0} 検出={1}");
+                Object[] parameters_sync = {Integer.toHexString(TsPacket.TS_SYNC_BYTE), Integer.toHexString(syncbyte)};
+                msg = fmt_sync.format(parameters_sync);
+            } else if (temp.length != TsPacket.TS_PACKET_BYTE_LENGTH.PACKET_LENGTH.getByteLength()) {
+                MessageFormat fmt_length = new MessageFormat("バイト列の長さがパケット長と一致しません。想定={0} 検出={1}");
+                Object[] parameters_length = {Integer.toHexString(TsPacket.TS_PACKET_BYTE_LENGTH.PACKET_LENGTH.getByteLength()), Integer.toHexString(temp.length)};
+                msg = fmt_length.format(parameters_length);
+            } else {
+                break PRE_CHECK;
+            }
+            hexDump = Hex.encodeHexString(temp);
+            Object[] parameters2 = {msg, hexDump};
+            throw new IllegalArgumentException(fmt.format(parameters2));
         }
         this.data = new ByteDataBlock(temp);
     }
 
     /**
-     * パケットヘッダの内容が正しいことを確認する。<br>
-     * 関連するメソッドが例外を発生させなかった場合、正しいものとする。<br>
+     * バイト列を取得する。
      *
-     * @return 正しい場合true。それ以外の場合はfalse。
-     *
-     * @see TsPacket#getSync_byte()
-     * @see TsPacket#getTransport_error_indicator()
-     * @see TsPacket#getPayload_unit_start_indicator()
-     * @see TsPacket#getTransport_priority()
-     * @see TsPacket#getPid()
-     * @see TsPacket#getTransport_scrambling_control_Const()
-     * @see TsPacket#getAdaptation_field_control()
-     * @see TsPacket#getContinuity_counter()
-     *
-     */
-    public synchronized boolean checkHeader() {
-        try {
-            this.getSync_byte();
-            this.getTransport_error_indicator();
-            this.getPayload_unit_start_indicator();
-            this.getTransport_priority();
-            this.getPid();
-            this.getTransport_scrambling_control_Const();
-            this.getAdaptation_field_control();
-            this.getContinuity_counter();
-            return true;
-        } catch (IllegalStateException ex) {
-            LOG.warn(ex);
-            return false;
-        }
-    }
-
-    /**
-     * バイトを取得する。
-     *
-     * @return バイト。
+     * @return バイト列。
      */
     public synchronized byte[] getData() {
         return data.getData();
