@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import libepg.ts.packet.TsPacket;
 import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.codec.binary.Hex;
@@ -59,7 +60,13 @@ public class Reader2 {
         }
     }
 
-    private static final int EOF = -1;
+    /**
+     * 下記のメソッドにおけるファイルの終了を示す値。
+     *
+     * @see java.io.FileInputStream#read()
+     */
+    public static final int EOF = -1;
+
     private final File TSFile;
     private final Long readLimit;
 
@@ -101,6 +108,16 @@ public class Reader2 {
         this(TSFile, null);
     }
 
+    /**
+     * パケットを読み込み、リストに格納する。<br>
+     * 1:ファイルの終わりまで、同期ワードが出現するまで1バイトずつ読んでゆく。<br>
+     * 2:同期ワードが見つかったらそこからパケット長分のバイト列を読み込む。<br>
+     * 3:読み込んだバイト列のトランスポートエラーインジケータが1の場合、読み込み分を破棄する。<br>
+     * そうでない場合はリストに格納する。<br>
+     * 4:1に戻る。<br>
+     *
+     * @return パケットを保管したリスト
+     */
     public synchronized List<TsPacket> getPackets() {
         ByteBuffer packetBuffer = ByteBuffer.allocate(TsPacket.TS_PACKET_BYTE_LENGTH.PACKET_LENGTH.getByteLength());
         byte[] byteData = new byte[1];
@@ -148,30 +165,27 @@ public class Reader2 {
                     byte[] AfterCutDown = new byte[packetBuffer.position()];
                     System.arraycopy(BeforeCutDown, 0, AfterCutDown, 0, AfterCutDown.length);
 
-                    try {
-                        TsPacket tsp = new TsPacket(AfterCutDown);
-                        
-//                        LOG.debug(Hex.encodeHexString(tsp.getData()));
-                        
-                        if (LOG.isTraceEnabled() && NOT_DETERRENT_READ_TRACE_LOG) {
-                            LOG.trace("1パケット分読み込んだら、内容を専用オブジェクトにコピーしてパケットバッファを初期化 ");
-                            LOG.trace(tsp.toString());
-                        }
+                    //ここで例外が出ることは基本的にあり得ない。
+                    //起きた場合はバグを疑うこと。
+                    TsPacket tsp = new TsPacket(AfterCutDown);
 
-                        if (tsp.getTransport_error_indicator() != 0) {
-                            if (LOG.isWarnEnabled()) {
-                                LOG.warn("トランスポートエラーインジケータが1のパケットです。読み込み開始位置がずれた可能性があります。\n"
-                                        + "パケット開始位置を再捜索します。");
-                                LOG.warn(tsp);
-                                LOG.warn(TSFile);
-                            }
-                            tipOfPacket = false;
-                        } else {
-                            packets.add(tsp);
-                            count++;
+//                        LOG.debug(Hex.encodeHexString(tsp.getData()));
+                    if (LOG.isTraceEnabled() && NOT_DETERRENT_READ_TRACE_LOG) {
+                        LOG.trace("1パケット分読み込んだら、内容を専用オブジェクトにコピーしてパケットバッファを初期化 ");
+                        LOG.trace(tsp.toString());
+                    }
+
+                    if (tsp.getTransport_error_indicator() != 0) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn("トランスポートエラーインジケータが1のパケットです。読み込み開始位置がずれた可能性があります。\n"
+                                    + "パケット開始位置を再捜索します。");
+                            LOG.warn(tsp);
+                            LOG.warn(TSFile);
                         }
-                    } catch (IllegalArgumentException ex) {
-                        LOG.warn(ex.getMessage());
+                        tipOfPacket = false;
+                    } else {
+                        packets.add(tsp);
+                        count++;
                     }
                     packetBuffer.clear();
                     tipOfPacket = false;
@@ -199,8 +213,14 @@ public class Reader2 {
         } catch (IOException e) {
             LOG.fatal("ファイル読み込みに失敗。", e);
         }
-
         return Collections.unmodifiableList(packets);
     }
 
+    /**パケットを読み込み、キューに格納して返す
+     * @return パケットの入ったキュー
+     * @see Reader2#getPackets() 
+     */
+    public synchronized LinkedBlockingQueue<TsPacket> getPacketQueue() {
+        return new LinkedBlockingQueue<>(this.getPackets());
+    }
 }
