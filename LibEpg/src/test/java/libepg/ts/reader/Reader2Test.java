@@ -17,6 +17,7 @@
 package libepg.ts.reader;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,6 +25,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import libepg.ts.packet.TsPacket;
 import loggingsupport.loggerfactory.LoggerFactory;
 import org.apache.commons.codec.DecoderException;
@@ -36,6 +38,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -133,7 +138,7 @@ public class Reader2Test {
         list_ContainError_WrongSync.add(p_20_ws);
         list_ContainError_WrongSync.add(p_21_ws);
         list_ContainError_WrongSync.add(p_22);
-        
+
         //データ不整合の所為で1バイト分余計な部分がある
         byte[] p_4_long = Arrays.copyOf(p_4, p_4.length + 1);
         //データ不整合の所為で1バイト分無くなっている。
@@ -273,14 +278,14 @@ public class Reader2Test {
 //            count++;
 //        }
 //    }
-    private void dumpBytes(List<byte[]> target) {
+    private void dumpBytesList(Iterable<byte[]> target) {
         for (byte[] b : target) {
             LOG.info(Hex.encodeHexString(b));
         }
         LOG.info("");
     }
 
-    private void dumpResult(List<TsPacket> target) {
+    private void dumpPacketList(Iterable<TsPacket> target) {
         for (TsPacket p : target) {
             LOG.info(Hex.encodeHexString(p.getData()));
         }
@@ -300,9 +305,9 @@ public class Reader2Test {
         List<TsPacket> _expResult = this.expResult_Normal_And_Wrong_Sync;
         List<TsPacket> result = instance.getPackets();
         LOG.info("expResult");
-        dumpResult(_expResult);
+        dumpPacketList(_expResult);
         LOG.info("result");
-        dumpResult(result);
+        dumpPacketList(result);
         assertEquals(ListUtils.isEqualList(_expResult, result), true);
     }
 
@@ -319,9 +324,9 @@ public class Reader2Test {
         List<TsPacket> _expResult = this.expResult_Normal_And_Wrong_Sync;
         List<TsPacket> result = instance.getPackets();
         LOG.info("expResult");
-        dumpResult(_expResult);
+        dumpPacketList(_expResult);
         LOG.info("result");
-        dumpResult(result);
+        dumpPacketList(result);
         assertEquals(ListUtils.isEqualList(_expResult, result), true);
     }
 
@@ -338,9 +343,26 @@ public class Reader2Test {
         List<TsPacket> _expResult = this.expResult_Wrong_Length;
         List<TsPacket> result = instance.getPackets();
         LOG.info("expResult");
-        dumpResult(_expResult);
+        dumpPacketList(_expResult);
         LOG.info("result");
-        dumpResult(result);
+        dumpPacketList(result);
         assertEquals(ListUtils.isEqualList(_expResult, result), true);
+    }
+
+    /**
+     * Test of getPacketQueue method, of class Reader2.
+     */
+    @Test
+    public void testGetPacketQueue() throws FileNotFoundException, IOException {
+        LOG.info("getPacketQueue");
+        File temp_NotContainError = this.writeBytesToFile(this.list_NotContainError);
+        Reader2 instance = new Reader2(temp_NotContainError);
+        LinkedBlockingQueue<TsPacket> expResult = new LinkedBlockingQueue(this.expResult_Normal_And_Wrong_Sync);
+        LinkedBlockingQueue<TsPacket> result = instance.getPacketQueue();
+        LOG.info("expResult");
+        dumpPacketList(expResult);
+        LOG.info("result");
+        dumpPacketList(result);
+        assertEquals(ListUtils.isEqualList(expResult, result), true);
     }
 }
