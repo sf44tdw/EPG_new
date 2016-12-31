@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package libepg.ts;
+package libepg.ts.aligner;
 
 import libepg.ts.aligner.TsPacketAligner;
 import java.lang.invoke.MethodHandles;
