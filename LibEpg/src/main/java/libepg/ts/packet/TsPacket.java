@@ -50,6 +50,55 @@ public class TsPacket {
      */
     public static final int TS_SYNC_BYTE = 0x47;
 
+    private static final Range<Integer> ZERO_TO_ONE = Range.between(0x0000, 0x0001);
+
+    /**
+     * トランスポートエラーインジケータの取りうる値の範囲。
+     */
+    public static final Range<Integer> TEI_RANGE = ZERO_TO_ONE;
+
+    /**
+     * トランスポートエラーインジケータの取りうる値の範囲。
+     */
+    public static final Range<Integer> PES_RANGE = ZERO_TO_ONE;
+
+    /**
+     * トランスポート優先度の取りうる値の範囲。
+     */
+    public static final Range<Integer> TP_RANGE = ZERO_TO_ONE;
+
+    /**
+     * PIDの取りうる値の範囲。
+     */
+    public static final Range<Integer> PID_RANGE = Range.between(0x0000, 0x1FFF);
+
+    private static final Range<Integer> ZERO_TO_THREE = Range.between(0, 3);
+
+    /**
+     * トランスポートスクランブルコントロールの取りうる値の範囲。
+     */
+    public static final Range<Integer> TSC_RANGE = ZERO_TO_THREE;
+
+    /**
+     * アダプテーションフィールドコントロールの取りうる値の範囲。
+     */
+    public static final Range<Integer> AFC_RANGE = ZERO_TO_THREE;
+
+    /**
+     * 巡回カウンターの取りうる値の範囲。
+     */
+    public static final Range<Integer> CC_RANGE = Range.between(0, 15);
+
+    /**
+     * アダプテーションフィールド長の取りうる値の範囲。
+     */
+    public static final Range<Integer> AFL_RANGE = Range.between(0, 183);
+
+    /**
+     * ペイロード長の取りうる値の範囲。
+     */
+    public static final Range<Integer> P_RANGE = Range.between(0, 184);
+
     /**
      * TSパケットで使うバイト長
      */
@@ -149,7 +198,7 @@ public class TsPacket {
         int temp;
         temp = ByteConverter.byteToInt(this.data.getData()[1]);
         temp = temp >>> 7;
-        if ((temp == 0) || (temp == 1)) {
+        if (TEI_RANGE.contains(temp)) {
             return temp;
         } else {
             MessageFormat msg = new MessageFormat("トランスポートエラーインジケータが不正です。値={0}");
@@ -202,15 +251,18 @@ public class TsPacket {
         temp = ByteConverter.byteToInt(this.data.getData()[1]);
         temp = temp & 0x40;
         temp = temp >>> 6;
+        if (!PES_RANGE.contains(temp)) {
+            MessageFormat msg = new MessageFormat("ペイロードユニットスタートインジケータが不正な値です。値={0}");
+            Object[] parameters = {temp};
+            throw new IllegalStateException(msg.format(parameters));
+        }
         switch (temp) {
             case 0:
                 return TsPacket.PAYLOAD_UNIT_START_INDICATOR.NOT_START_POINT;
             case 1:
                 return TsPacket.PAYLOAD_UNIT_START_INDICATOR.START_PES_OR_START_SECTION;
         }
-        MessageFormat msg = new MessageFormat("ペイロードユニットスタートインジケータが不正な値です。値={0}");
-        Object[] parameters = {temp};
-        throw new IllegalStateException(msg.format(parameters));
+        return null;
     }
 
     /**
@@ -240,7 +292,6 @@ public class TsPacket {
      * @throws IllegalStateException ありえない値(0x0000以上0x1FFF以下の値以外)を取得した場合。
      */
     public synchronized int getPid() throws IllegalStateException {
-        final Range<Integer> PID_RANGE = Range.between(0x0000, 0x1FFF);
         byte[] t = new byte[2];
         System.arraycopy(this.data.getData(), 1, t, 0, t.length);
         int temp = ByteConverter.bytesToInt(t);
@@ -265,10 +316,9 @@ public class TsPacket {
      * transport_scrambling_control(トランスポートスクランブルコントロール)
      *
      * @return 上記の値
-     * @throws IllegalStateException ありえない値(0以上3以下の整数)のとき
+     * @throws IllegalStateException ありえない値(0以上3以下の整数以外)のとき
      */
     public synchronized int getTransport_scrambling_control() throws IllegalStateException {
-        final Range<Integer> TSC_RANGE = Range.between(0, 3);
         int temp;
         temp = ByteConverter.byteToInt(this.data.getData()[3]);
         temp = temp >>> 6;
@@ -319,7 +369,7 @@ public class TsPacket {
      * transport_scrambling_control(トランスポートスクランブルコントロール)の定数。無い場合はnull
      *
      * @return 上記の値
-     * @throws IllegalStateException ありえない値(0以上3以下の整数)のとき
+     * @throws IllegalStateException ありえない値(0以上3以下の整数以外)のとき
      */
     public synchronized TRANSPORT_SCRAMBLING_CONTROL getTransport_scrambling_control_Const() throws IllegalStateException {
         switch (this.getTransport_scrambling_control()) {
@@ -386,6 +436,12 @@ public class TsPacket {
         temp = temp & 0x30;
         temp = temp >>> 4;
 
+        if (!AFC_RANGE.contains(temp)) {
+            MessageFormat msg = new MessageFormat("アダプテーションフィールドコントロールが不正な値です。値={0}");
+            Object[] parameters = {temp};
+            throw new IllegalStateException(msg.format(parameters));
+        }
+
         switch (temp) {
             case 0:
                 return TsPacket.ADAPTATION_FIELD_CONTROL.RESERVED;
@@ -396,9 +452,7 @@ public class TsPacket {
             case 3:
                 return TsPacket.ADAPTATION_FIELD_CONTROL.BOTH_EXIST;
         }
-        MessageFormat msg = new MessageFormat("アダプテーションフィールドコントロールが不正な値です。値={0}");
-        Object[] parameters = {temp};
-        throw new IllegalStateException(msg.format(parameters));
+        return null;
     }
 
     /**
@@ -409,13 +463,13 @@ public class TsPacket {
      * 連送パケットは2回まで許可されている。<br>
      *
      * @return 巡回カウンターの値
-     * @throws IllegalStateException ありえない値(0以上15以下の整数)を取得した場合。
+     * @throws IllegalStateException ありえない値(0以上15以下の整数以外)を取得した場合。
      */
     public synchronized int getContinuity_counter() throws IllegalStateException {
         int temp;
         temp = ByteConverter.byteToInt(this.data.getData()[3]);
         temp = temp & 0x0F;
-        if ((temp >= 0) && (temp <= 15)) {
+        if (CC_RANGE.contains(temp)) {
             return temp;
         } else {
             MessageFormat msg = new MessageFormat("巡回カウンターが不正な値です。値={0}");
@@ -428,9 +482,10 @@ public class TsPacket {
      * アダプテーションフィールドがあれば、フィールド長の直後からのアダプテーションフィールドの長さ(バイト)を返す。<br>
      *
      * @return フィールド長。フィールドがない場合は0。
+     * @throws IllegalStateException ありえない値(0以上183以下の整数以外)を取得した場合。
      *
      */
-    private int getAdaptation_length() {
+    private int getAdaptation_length() throws IllegalStateException {
         switch (this.getAdaptation_field_control()) {
             case ONLY_ADAPTATION_FIELD:
             case BOTH_EXIST:
@@ -445,6 +500,11 @@ public class TsPacket {
                     //理由がわからないがこうしないと正しい長さにならない。
                     //異常に大きな値がセットされているケースがあるが、その場合は8で割るらしい。(FFばかり続くので、パディングの類。)
                     temp = temp / 8;
+                }
+                if (!AFL_RANGE.contains(temp)) {
+                    MessageFormat msg = new MessageFormat("アダプテーションフィールド長が不正な値です。値={0}");
+                    Object[] parameters = {temp};
+                    throw new IllegalStateException(msg.format(parameters));
                 }
                 return temp;
             default:
@@ -477,11 +537,11 @@ public class TsPacket {
     }
 
     /**
-     *
+     * ペイロード長を取得する。ペイロード無しの場合は0を返す。
      * @return ペイロード長
-     *
+     * @throws IllegalStateException ありえない値(0以上184以下の整数以外)を取得した場合。
      */
-    private int getPayload_length() {
+    private int getPayload_length()  throws IllegalStateException{
 
         //ペイロードなしのケースでは0を返す。
         if (getAdaptation_field_control() == TsPacket.ADAPTATION_FIELD_CONTROL.ONLY_ADAPTATION_FIELD) {
@@ -497,6 +557,11 @@ public class TsPacket {
                     //アダプテーションの後にペイロード
                     length = this.data.length() - TsPacket.TS_PACKET_BYTE_LENGTH.HEADER_LENGTH.getByteLength() - this.getAdaptation_length();
                     break;
+            }
+            if (!P_RANGE.contains(length)) {
+                MessageFormat msg = new MessageFormat("ペイロード長が不正な値です。値={0}");
+                Object[] parameters = {length};
+                throw new IllegalStateException(msg.format(parameters));
             }
             return length;
         }
